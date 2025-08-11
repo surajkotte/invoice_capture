@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText } from "lucide-react";
-import { useState } from "react";
+import { Upload, FileText, Loader2 } from "lucide-react";
+import { useState, useRef } from "react";
 import { CalendarIcon, Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -31,6 +31,9 @@ const Dashboard = () => {
     setStatus,
     setUser,
     handleFilterChange,
+    handleFileChange,
+    isLoading,
+    data,
     searchTerm,
     status,
     backendSystem,
@@ -38,10 +41,11 @@ const Dashboard = () => {
     user,
     dateRange,
   } = useDashboardHooks();
+  const inputRef = useRef(null);
   return (
     <div className="w-full h-full bg-background">
       <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-lg">
@@ -56,7 +60,11 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-4">
               {/* <UploadDialog> */}
-              <Select value={backendSystem} onValueChange={setBackendSystem}>
+              <Select
+                value={backendSystem}
+                onValueChange={setBackendSystem}
+                disable={isLoading?.state}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Backend System" />
                 </SelectTrigger>
@@ -67,10 +75,28 @@ const Dashboard = () => {
                   <SelectItem value="netsuite">NetSuite</SelectItem>
                 </SelectContent>
               </Select>
-              <Button className="gap-2">
-                <Upload className="h-4 w-4" />
-                Upload Invoices
-              </Button>
+              <div className="flex gap-2">
+                <input
+                  type="file"
+                  accept=".pdf,.xml,.txt,.docx"
+                  ref={inputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Button
+                  className="gap-2"
+                  onClick={() => inputRef.current.click()}
+                  disabled={isLoading?.state}
+                  variant="destructive"
+                >
+                  {isLoading?.state && isLoading?.action === "Upload" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Upload className="h-4 w-4" />
+                  )}
+                  Upload Invoices
+                </Button>
+              </div>
             </div>
           </div>
         </div>

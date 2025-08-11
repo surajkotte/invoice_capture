@@ -24,7 +24,7 @@ const Menubar = ({ children }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef(null);
   const { theme, setTheme } = useTheme();
-  const [lightMode, setLightMode] = useState(true);
+  const [lightMode, setLightMode] = useState(false);
 
   const menuItems = [
     {
@@ -40,13 +40,13 @@ const Menubar = ({ children }) => {
       icon: Plus,
     },
   ];
-  const menuBarClasses = theme
+  const menuBarClasses = lightMode
     ? "bg-gray-800 border-gray-700"
     : "bg-gray-50 border-gray-200";
-  const themeClasses = theme
+  const themeClasses = lightMode
     ? "bg-gray-900 text-white"
     : "bg-white text-gray-900";
-  const userMenuClasses = theme
+  const userMenuClasses = lightMode
     ? "bg-gray-800 border-gray-700 text-white"
     : "bg-white border-gray-200 text-gray-900";
 
@@ -61,7 +61,7 @@ const Menubar = ({ children }) => {
 
   useEffect(() => {
     const mode = lightMode ? "light" : "dark";
-    setTheme("dark");
+    setTheme("light");
   }, [lightMode]);
 
   useEffect(() => {
