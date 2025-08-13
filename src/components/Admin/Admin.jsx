@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Settings, Plus, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,17 +13,26 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { SystemConfigCard } from "./SystemConfigCard";
 import { FieldManagerModal } from "./FieldManagerModal";
+import useAdminHook from "../Hooks/useAdminHook";
 const Admin = () => {
-  const [systemConfigs, setSystemConfigs] = useState([
-    { id: "1", domain: "", systemName: "", port: "" },
-  ]);
-  const [headerFields, setHeaderFields] = useState([
-    { id: "1", name: "", visible: true },
-  ]);
+  const {
+    addSystem,
+    AddFields,
+    addDocumentType,
+    systems,
+    FieldTypes,
+    headerData,
+    itemData,
+    uploadConfig,
+  } = useAdminHook();
+  // const [systemConfigs, setSystemConfigs] = useState([
+  //   { id: "1", domain: "", systemName: "", port: "" },
+  // ]);
 
-  const [itemFields, setItemFields] = useState([
-    { id: "1", name: "", visible: true },
-  ]);
+  const [systemConfigs, setSystemConfigs] = useState([]);
+  const [headerFields, setHeaderFields] = useState([]);
+
+  const [itemFields, setItemFields] = useState(itemData);
   const [headerFieldsVisible, setHeaderFieldsVisible] = useState(true);
   const [itemFieldsVisible, setItemFieldsVisible] = useState(true);
 
@@ -31,7 +40,13 @@ const Admin = () => {
     allowedTypes: "",
     maxSize: "",
   });
-
+  const handleDocTypeSave = () => {
+    if (!fileConfig?.allowedTypes && !fileConfig?.maxSize) {
+      alert("Please enter upload connfig information");
+    } else {
+      addDocumentType(fileConfig?.allowedTypes, fileConfig?.maxSize);
+    }
+  };
   const addSystemConfig = () => {
     const newConfig = {
       id: Date.now().toString(),
@@ -104,34 +119,53 @@ const Admin = () => {
   };
 
   // Modal handlers
-  const handleHeaderFieldsSave = (fields) => {
-    setHeaderFields(fields);
+  const handleHeaderFieldsSave = (Fields) => {
+    AddFields(Fields, "Header");
   };
 
-  const handleItemFieldsSave = (fields) => {
-    setItemFields(fields);
+  const handleItemFieldsSave = (Fields) => {
+    AddFields(Fields, "Item");
   };
 
   const handleSave = () => {
-    console.log("Saving configuration:", {
-      systemConfigs,
-      headerFields: headerFields.filter((field) => field.name.trim()),
-      itemFields: itemFields.filter((field) => field.name.trim()),
-      fileConfig,
-    });
+    const system_Info =
+      systemConfigs?.length != 0 && systemConfigs[systemConfigs?.length - 1];
+    addSystem(system_Info?.systemName, system_Info?.domain, system_Info?.port);
   };
 
   const [headerModalOpen, setHeaderModalOpen] = useState(false);
   const [itemModalOpen, setItemModalOpen] = useState(false);
-  const handleButtonClick = async () => {
-    const response = await Login(
-      systemDetails?.systemDomain,
-      systemDetails?.port,
-      "ap_processor",
-      "Otvim1234!"
-    );
-    console.log(response);
-  };
+
+  useEffect(() => {
+    const temp = systems?.map((info) => {
+      return {
+        id: info?.id,
+        domain: info?.systemDomain,
+        systemName: info?.systemName,
+        port: info?.systemPort,
+      };
+    });
+    setSystemConfigs(temp);
+  }, [systems]);
+
+  useEffect(() => {
+    if (headerData && headerData?.length != 0) {
+      setHeaderFields(headerData);
+    }
+  }, [headerData]);
+  useEffect(() => {
+    if (itemData && itemData?.length != 0) {
+      setItemFields(itemData);
+    }
+  }, [itemData]);
+
+  useEffect(() => {
+    console.log(uploadConfig);
+    setFileConfig({
+      allowedTypes: uploadConfig?.allowedTypes,
+      maxSize: uploadConfig?.maxSize,
+    });
+  }, [uploadConfig]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -150,10 +184,6 @@ const Admin = () => {
                 </p>
               </div>
             </div>
-            <Button onClick={handleSave} className="gap-2">
-              <Save className="h-4 w-4" />
-              Save Configuration
-            </Button>
           </div>
         </div>
       </header>
@@ -186,6 +216,7 @@ const Admin = () => {
                 onUpdate={updateSystemConfig}
                 onRemove={removeSystemConfig}
                 canRemove={systemConfigs.length > 1}
+                handleSave={handleSave}
               />
             ))}
           </div>
@@ -225,7 +256,7 @@ const Admin = () => {
                     Add Header
                   </Button>
                 </div>
-{/* 
+                {/* 
                 {headerFields.length > 0 && (
                   <div className="space-y-2">
                     <Label className="text-xs text-muted-foreground">
@@ -296,10 +327,20 @@ const Admin = () => {
         {/* File Configuration */}
         <Card>
           <CardHeader>
-            <CardTitle>File Upload Configuration</CardTitle>
-            <CardDescription>
-              Configure allowed file types and size limits
-            </CardDescription>
+            <div className="flex justify-between">
+              <div className="flex flex-col gap-2">
+                <CardTitle>File Upload Configuration</CardTitle>
+                <CardDescription>
+                  Configure allowed file types and size limits
+                </CardDescription>
+              </div>
+              <div className="flex">
+                <Button onClick={handleDocTypeSave} className="gap-2">
+                  <Save className="h-4 w-4" />
+                  Save
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -359,6 +400,7 @@ const Admin = () => {
           title="Header Fields Configuration"
           description="Define the header field mappings for invoice processing"
           fields={headerFields}
+          fieldTypes={FieldTypes}
           onSave={handleHeaderFieldsSave}
         />
 
@@ -368,6 +410,7 @@ const Admin = () => {
           title="Item Fields Configuration"
           description="Define the item field mappings for invoice processing"
           fields={itemFields}
+          fieldTypes={FieldTypes}
           onSave={handleItemFieldsSave}
         />
       </main>

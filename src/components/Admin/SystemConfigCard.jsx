@@ -1,10 +1,16 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const SystemConfigCard = ({ config, onUpdate, onRemove, canRemove }) => {
+export const SystemConfigCard = ({
+  config,
+  onUpdate,
+  onRemove,
+  canRemove,
+  handleSave,
+}) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -21,7 +27,7 @@ export const SystemConfigCard = ({ config, onUpdate, onRemove, canRemove }) => {
         )}
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 w-full">
           <div className="space-y-2">
             <Label htmlFor={`domain-${config.id}`}>Domain</Label>
             <Input
@@ -51,6 +57,12 @@ export const SystemConfigCard = ({ config, onUpdate, onRemove, canRemove }) => {
               value={config.port}
               onChange={(e) => onUpdate(config.id, { port: e.target.value })}
             />
+          </div>
+          <div className="flex h-full items-center">
+            <Button onClick={handleSave} className="gap-2">
+              <Save className="h-4 w-4" />
+              Save
+            </Button>
           </div>
         </div>
       </CardContent>

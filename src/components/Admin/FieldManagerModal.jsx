@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const FieldManagerModal = ({
   open,
@@ -18,14 +25,16 @@ export const FieldManagerModal = ({
   description,
   fields,
   onSave,
+  fieldTypes,
 }) => {
-  const [localFields, setLocalFields] = useState(fields);
+  const [localFields, setLocalFields] = useState([]);
 
   const addField = () => {
     const newField = {
       id: Date.now().toString(),
       name: "",
       visible: true,
+      fieldType: "",
     };
     setLocalFields([...localFields, newField]);
   };
@@ -34,13 +43,24 @@ export const FieldManagerModal = ({
     setLocalFields(localFields.filter((field) => field.id !== id));
   };
 
-  const updateField = (id, name) => {
-    setLocalFields(
-      localFields.map((field) => (field.id === id ? { ...field, name } : field))
-    );
+  const updateField = (id, value, fieldType) => {
+    if (fieldType === "name") {
+      setLocalFields(
+        localFields.map((field) =>
+          field.id === id ? { ...field, name: value } : field
+        )
+      );
+    } else {
+      setLocalFields(
+        localFields.map((field) =>
+          field.id === id ? { ...field, fieldType: value } : field
+        )
+      );
+    }
   };
 
   const handleSave = () => {
+    console.log(localFields);
     onSave(localFields.filter((field) => field.name.trim()));
     onOpenChange(false);
   };
@@ -50,9 +70,13 @@ export const FieldManagerModal = ({
     onOpenChange(false);
   };
 
+  useEffect(() => {
+    setLocalFields(fields);
+  }, [fields]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      {console.log(fieldTypes)}
+      <DialogContent className="sm:max-w-[600px] md:max-w-[900px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -86,19 +110,43 @@ export const FieldManagerModal = ({
                   key={field.id}
                   className="flex items-center gap-3 p-3 border rounded-lg"
                 >
-                  <div className="flex-1 space-y-1">
+                  <div className="flex-1 space-y-1 ">
                     <Label
                       htmlFor={`field-${field.id}`}
                       className="text-xs text-muted-foreground"
                     >
                       Field {index + 1}
                     </Label>
-                    <Input
-                      id={`field-${field.id}`}
-                      placeholder="Enter field name"
-                      value={field.name}
-                      onChange={(e) => updateField(field.id, e.target.value)}
-                    />
+                    <div className="flex flex-row gap-2">
+                      <Input
+                        id={`field-${field.id}`}
+                        placeholder="Enter field name"
+                        value={field.name}
+                        onChange={(e) =>
+                          updateField(field.id, e.target.value, "name")
+                        }
+                      />
+                      <Select
+                        value={field.fieldType}
+                        onValueChange={(e) =>
+                          updateField(field.id, e, "fieldType")
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Field Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {fieldTypes?.length != 0 &&
+                            fieldTypes?.map((info) => {
+                              return (
+                                <SelectItem key={info?.id} value={info}>
+                                  {info}
+                                </SelectItem>
+                              );
+                            })}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <Button
                     onClick={() => removeField(field.id)}
