@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import useDashboardHooks from "../Hooks/useDashboardHooks";
 import DashboardList from "./DashboardList";
+import DashBoardIView from "./DashBoardIView";
 const Dashboard = () => {
   const {
     setBackendSystem,
@@ -32,6 +33,7 @@ const Dashboard = () => {
     setUser,
     handleFilterChange,
     handleFileChange,
+    setDialogOpen,
     isLoading,
     data,
     searchTerm,
@@ -40,6 +42,10 @@ const Dashboard = () => {
     documentType,
     user,
     dateRange,
+    dialogOpen,
+    headerData,
+    itemData,
+    filePath,
   } = useDashboardHooks();
   const inputRef = useRef(null);
   return (
@@ -207,6 +213,20 @@ const Dashboard = () => {
         </div>
       </Card>
       <DashboardList />
+      {dialogOpen && (
+        <div className="h-full w-full p-4">
+          <DashBoardIView
+            isOpen={dialogOpen}
+            headerFields={headerData}
+            itemFields={itemData}
+            filePath={filePath}
+            data={data}
+            onClose={() => {
+              setDialogOpen("");
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

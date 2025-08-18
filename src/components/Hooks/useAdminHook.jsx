@@ -12,11 +12,6 @@ const useAdminHook = () => {
   const [headerData, setHeaderData] = useState([]);
   const [itemData, setItemData] = useState([]);
   const [uploadConfig, setUploadConfig] = useState("");
-  // { id: "1", name: "", visible: true, fieldType: "" },
-  // {
-  //   allowedTypes: "",
-  //   maxSize: "",
-  // }
   const FieldTypes = ["Number", "Boolean", "String", "Date"];
   const addSystem = async (name, domain, port) => {
     const respone = await addSystemConfig(domain, name, port);

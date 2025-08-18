@@ -3,6 +3,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import Menubar from "./components/MenuBar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Admin from "./components/Admin/Admin";
+import Login from "./components/Login/Login";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -30,5 +31,9 @@ export const reactRouter = createBrowserRouter([
         element: <Admin />,
       },
     ],
+  },
+  {
+    path: "/Login",
+    element: <Login />,
   },
 ]);
