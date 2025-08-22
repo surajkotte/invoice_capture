@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucide-react";
 
 const Header = ({ data, onChange, fields }) => {
- const updateField = (fieldName, value) => {
+  const updateField = (fieldName, value) => {
     const updatedData = { ...data, [fieldName]: value };
     onChange(updatedData);
   };
@@ -59,7 +59,7 @@ const Header = ({ data, onChange, fields }) => {
               ) : field.fieldType === "Date" ? (
                 <Input
                   type="date"
-                  value={data[field.name]}
+                  value={new Date(data[field.name])}
                   onChange={(e) => updateField(field.id, e.target.value)}
                   className="w-full"
                 />

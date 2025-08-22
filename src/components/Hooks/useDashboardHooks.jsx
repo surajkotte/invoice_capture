@@ -12,7 +12,10 @@ const useDashboardHooks = () => {
   const [status, setStatus] = useState("");
   const [documentType, setDocumentType] = useState("");
   const [user, setUser] = useState("");
-  const [data, setData] = useState("");
+  const [data, setData] = useState({
+    header: [],
+    items: [],
+  });
   const [isLoading, setIsLoading] = useState({
     action: "",
     state: false,
@@ -36,6 +39,20 @@ const useDashboardHooks = () => {
       dateRange,
     });
   };
+  const normalizeResponseData = (responseData) => {
+    if (responseData?.header) {
+      return {
+        header: responseData?.header || [],
+        items: responseData?.items || [],
+      };
+    } else {
+      const { items, ...rest } = responseData;
+      return {
+        header: rest,
+        items: items || [],
+      };
+    }
+  };
   const handleUpload = async (file) => {
     setIsLoading({
       action: "Upload",
@@ -47,7 +64,8 @@ const useDashboardHooks = () => {
     try {
       const response = await uploadInvoice(formData);
       if (response?.messageType == "S") {
-        setData(response?.data);
+        const normalizedData = normalizeResponseData(response?.data);
+        setData(normalizedData);
         setFilePath(response?.fileName);
         setDialogOpen(response?.data);
       } else {
@@ -83,9 +101,10 @@ const useDashboardHooks = () => {
         response?.data?.ItemFields?.Fields?.map((info) => {
           return {
             id: info?.id,
-            name: info?.name,
+            name: info?.name.trim(),
             visible: info?.visible,
             fieldType: info?.fieldType,
+            label: info?.name.trim(),
           };
         });
       setItemData(ItemResponse);
@@ -95,7 +114,7 @@ const useDashboardHooks = () => {
   };
   // Handle header field changes
   const handleHeaderChange = useCallback((updatedHeaderData) => {
-    console.log(updatedHeaderData);
+    console.log(data);
     setData((prevData) => ({
       ...prevData,
       header: updatedHeaderData,

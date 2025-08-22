@@ -12,3 +12,19 @@ export const getFields = async () => {
     console.log(err);
   }
 };
+
+export const submitData = async (data) => {
+  try {
+    const response = await fetch("http://localhost:3000/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    console.log(err);
+  }
+};

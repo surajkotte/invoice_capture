@@ -9,14 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import useDashboardHooks from "../Hooks/useDashboardHooks";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Save, Trash2 } from "lucide-react";
-import React from "react";
+import { useRef } from "react";
 import DataIView from "./DashboardModal/DataIView";
 import useDashboardIViewHook from "../Hooks/useDashBoardIViewHooks";
-import useDashboardHooks from "../Hooks/useDashboardHooks";
 
 const DashBoardIView = ({
   isOpen,
@@ -26,7 +25,18 @@ const DashBoardIView = ({
   filePath,
   data,
 }) => {
-  const { handleSubmit } = useDashboardHooks();
+  const dataIViewRef = useRef();
+  const { submit } = useDashboardIViewHook();
+  const handleSave = () => {
+    console.log(dataIViewRef.current);
+    const invoiceData = dataIViewRef.current?.getInvoiceData();
+    console.log("Submitting invoiceData:", invoiceData);
+    submit(invoiceData);
+  };
+
+  const handleClear = () => {
+    dataIViewRef.current?.clearInvoiceData();
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose} className="p-4">
       <DialogContent className="max-w-[85%] h-full p-2">
@@ -38,13 +48,7 @@ const DashBoardIView = ({
               </DialogTitle>
             </div>
             <div className="flex gap-2 pt-4">
-              <Button
-                variant=""
-                size="sm"
-                onClick={() => {
-                  handleSubmit();
-                }}
-              >
+              <Button variant="" size="sm" onClick={handleSave}>
                 <Save className="h-4 w-4 mr-1" />
                 Submit
               </Button>
@@ -67,11 +71,12 @@ const DashBoardIView = ({
                   headerFields={headerFields}
                   itemFields={itemFields}
                   data={data}
+                  ref={dataIViewRef}
+                  //  handleSubmit={handleSave}
                 />
               </ResizablePanel>
               <ResizableHandle withHandle />
               <ResizablePanel defaultSize={40} minSize={30}>
-                {console.log(filePath)}
                 {filePath && (
                   <iframe
                     src={`http://localhost:3000/files/${filePath}`}
