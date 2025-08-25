@@ -49,34 +49,30 @@ const useAdminHook = () => {
     }
   };
   const fetchFields = async () => {
-    const response = await getFields();
-    if (response?.messageType === "S") {
-      const HeaderResponse =
-        response?.data?.HeaderFields &&
-        response?.data?.HeaderFields?.Fields?.length != 0 &&
-        response?.data?.HeaderFields?.Fields?.map((info) => {
-          return {
-            id: info?.id,
-            name: info?.name,
-            visible: info?.visible,
-            fieldType: info?.fieldType,
-          };
-        });
+    const response1 = await getFields("Header");
+    const response2 = await getFields("Item");
+    if (response1?.messageType === "S") {
+      const HeaderResponse = response1?.data?.map((info) => {
+        return {
+          id: info?.id,
+          name: info?.field_label,
+          visible: true,
+          fieldType: info?.field_type,
+        };
+      });
+      console.log(HeaderResponse);
       setHeaderData(HeaderResponse);
-      const ItemResponse =
-        response?.data?.ItemFields &&
-        response?.data?.ItemFields?.Fields?.length != 0 &&
-        response?.data?.ItemFields?.Fields?.map((info) => {
-          return {
-            id: info?.id,
-            name: info?.name,
-            visible: info?.visible,
-            fieldType: info?.fieldType,
-          };
-        });
+    }
+    if (response2?.messageType === "S") {
+      const ItemResponse = response2?.data?.map((info) => {
+        return {
+          id: info?.id,
+          name: info?.field_label,
+          visible: true,
+          fieldType: info?.field_type,
+        };
+      });
       setItemData(ItemResponse);
-    } else {
-      console.log(response);
     }
   };
 
@@ -95,12 +91,12 @@ const useAdminHook = () => {
   const getDocumentType = async () => {
     const response = await getDocType();
     if (response?.messageType === "S") {
-      const hasData = response?.data?.documentTypes?.length != 0;
+      const hasData = response?.data[0]?.mimetypes;
       let allowedTypes = "";
       if (hasData) {
-        allowedTypes = response?.data?.documentTypes?.join(",");
+        allowedTypes = response?.data[0]?.mimetypes?.split(",");
       }
-      let maxSize = response?.data?.size;
+      let maxSize = response?.data[0]?.size;
       setUploadConfig({
         allowedTypes,
         maxSize,

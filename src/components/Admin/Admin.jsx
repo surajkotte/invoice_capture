@@ -140,9 +140,9 @@ const Admin = () => {
     const temp = systems?.map((info) => {
       return {
         id: info?.id,
-        domain: info?.systemDomain,
-        systemName: info?.systemName,
-        port: info?.systemPort,
+        domain: info?.system_domain,
+        systemName: info?.system_name,
+        port: info?.system_port,
       };
     });
     setSystemConfigs(temp);

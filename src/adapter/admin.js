@@ -1,11 +1,16 @@
-export const addSystemConfig = async (systemDomain, systemName, systemPort) => {
+export const addSystemConfig = async (
+  system_domain,
+  system_name,
+  system_port
+) => {
+  const data = { system_domain, system_name, system_port };
   try {
     const response = await fetch("http://localhost:3000/admin/system", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ systemDomain, systemName, systemPort }),
+      body: JSON.stringify(data),
     });
     const responseData = await response.json();
     return responseData;
@@ -16,7 +21,7 @@ export const addSystemConfig = async (systemDomain, systemName, systemPort) => {
 
 export const getSystems = async () => {
   try {
-    const response = await fetch("http://localhost:3000/admin/systems", {
+    const response = await fetch("http://localhost:3000/admin/system", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -45,9 +50,9 @@ export const addHeaders = async (Fields, Type) => {
   }
 };
 
-export const getFields = async () => {
+export const getFields = async (type) => {
   try {
-    const response = await fetch("http://localhost:3000/admin/Fields", {
+    const response = await fetch(`http://localhost:3000/admin/Fields/${type}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
