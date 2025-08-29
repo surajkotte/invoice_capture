@@ -1,13 +1,27 @@
-import React from "react";
-import { submitData } from "../../adapter/Dashboard";
+import React, { useEffect } from "react";
+import { getData, submitData } from "../../adapter/Dashboard";
 
 const useDashboardIViewHook = () => {
+  const [listData, setListData] = React.useState(null);
   const submit = async (data) => {
-    const response = await submitData({data});
-    console.log(response)
+    const response = await submitData({ data });
+    if (response?.messageType === "S") {
+      setListData((prev) => [response?.data, ...prev]);
+      return response;
+    }
   };
+  const fetchData = async () => {
+    const response = await getData();
+    if (response?.messageType === "S") {
+      setListData(response?.data || []);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   return {
     submit,
+    listData,
   };
 };
 

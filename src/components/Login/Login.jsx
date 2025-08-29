@@ -16,23 +16,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import SignUp from "./SignUp.jsx";
+import { useToast } from "../Hooks/useToastHook";
+import useAuthHok from "../Hooks/useAuthHook";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { signin, isLoading } = useAuthHok();
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // const response = await signUp(userDetails);
-    // if (response?.messageType == "S") {
-    //   navigate("/", { state: { from: location }, replace: true });
-    // }
+    const response = await signin(formData);
+    if (response?.messageType == "S") {
+      toast({
+        title: "Login successful",
+        variant: "default",
+      });
+      navigate("/", { state: { from: location }, replace: true });
+    } else {
+      toast({
+        variant: "destructive",
+        title: response?.message || "Login failed",
+      });
+    }
   };
   const handleOAuthLogin = (provider) => {
     console.log(`Login with ${provider}`);

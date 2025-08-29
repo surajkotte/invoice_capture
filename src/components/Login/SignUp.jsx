@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OAuthButton } from "./auth.jsx";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
-import { signUp } from "../../adapter/Login.js";
+import useAuthHok from "../Hooks/useAuthHook.jsx";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { signup, isLoading } = useAuthHok();
   const navigate = useNavigate();
   const location = useLocation();
   const handleSubmit = async (e) => {
@@ -41,16 +41,10 @@ const SignUp = () => {
       alert("Please accept the terms and conditions");
       return;
     }
-
-    setIsLoading(true);
-    const response = await signUp(formData);
+    const response = await signup(formData);
     if (response?.messageType == "S") {
       navigate("/", { state: { from: location }, replace: true });
     }
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log("Signup attempt:", formData);
-    }, 100);
   };
 
   const handleOAuthSignup = (provider) => {

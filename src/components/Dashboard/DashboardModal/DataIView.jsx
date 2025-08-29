@@ -14,6 +14,10 @@ const DataIView = ({ headerFields, itemFields, data, ref }) => {
   const [invoiceData, setInvoiceData] = useState({
     headerData: [],
     itemsData: [],
+    rawFile: "",
+    fileName: "",
+    fileType: "",
+    fileSize: "",
   });
 
   const handleHeaderChange = useCallback((updatedHeaderData) => {
@@ -35,14 +39,39 @@ const DataIView = ({ headerFields, itemFields, data, ref }) => {
       setInvoiceData({
         headerData: [],
         itemsData: [],
+        rawFile: "",
+        fileName: "",
+        fileType: "",
+        fileSize: "",
       }),
   }));
   useEffect(() => {
-    setInvoiceData({
-      headerData: data?.header || data,
-      itemsData: data?.items || data?.Items || [],
+    const Header_Data = headerFields?.reduce((acc, field) => {
+      const value = data?.normalizedData?.header
+        ? data?.normalizedData?.header[field.name] || ""
+        : data?.normalizedData[field.name] || "";
+      acc[field.fieldTechName] = value;
+      return acc;
+    }, {});
+    const Item_Data = data?.normalizedData?.items?.map((item) => {
+      let new_item = {};
+      Object.keys(item).forEach((key) => {
+        const field = itemFields.find((f) => f.name === key);
+        if (field) {
+          new_item[field.fieldTechName] = item[key] || "";
+        }
+      });
+      return new_item;
     });
-    console.log(data);
+
+    setInvoiceData({
+      headerData: Header_Data,
+      itemsData: Item_Data,
+      rawFile: data?.base64File || "",
+      fileName: data?.fileName || "",
+      fileType: data?.fileType || "",
+      fileSize: data?.fileSize || "",
+    });
   }, [data]);
   return (
     <div id="form-section" className="w-full h-full overflow-y-auto pr-2">

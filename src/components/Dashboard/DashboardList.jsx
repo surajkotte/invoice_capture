@@ -120,7 +120,7 @@ function getFileTypeIcon(fileType) {
   return <FileText className="w-4 h-4 text-muted-foreground" />;
 }
 
-const DashboardList = () => {
+const DashboardList = (data) => {
   return (
     <Card>
       <div className="p-6">
@@ -140,7 +140,48 @@ const DashboardList = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockInvoices.map((invoice) => (
+              {console.log(data)}
+              {data?.data && data?.data != null && data?.length != 0 ? (
+                data?.data?.map((invoice) => (
+                  <TableRow key={invoice.regId} className="hover:bg-muted/50">
+                    <TableCell className="font-medium">
+                      {invoice.document_id}
+                    </TableCell>
+                    <TableCell>{getStatusBadge("completed")}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {getFileTypeIcon(invoice.file_type)}
+                        <span className="font-medium">{invoice.file_type}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell
+                      className="max-w-[200px] truncate"
+                      title={invoice.file_name}
+                    >
+                      {invoice.file_name}
+                    </TableCell>
+
+                    <TableCell className="text-muted-foreground">
+                      {new Date(invoice.created_date).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{invoice.created_user}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{invoice.system_name}</Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {invoice.file_size}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-4">
+                    No invoices found.
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {/* {mockInvoices.map((invoice) => (
                 <TableRow key={invoice.regId} className="hover:bg-muted/50">
                   <TableCell className="font-medium">{invoice.regId}</TableCell>
                   <TableCell>{getStatusBadge(invoice.status)}</TableCell>
@@ -167,7 +208,7 @@ const DashboardList = () => {
                     {invoice.fileSize}
                   </TableCell>
                 </TableRow>
-              ))}
+              ))} */}
             </TableBody>
           </Table>
         </div>

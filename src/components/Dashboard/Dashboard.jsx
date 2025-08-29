@@ -21,6 +21,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import useDashboardHooks from "../Hooks/useDashboardHooks";
+import useDashboardIViewHook from "../Hooks/useDashBoardIViewHooks";
 import DashboardList from "./DashboardList";
 import DashBoardIView from "./DashBoardIView";
 const Dashboard = () => {
@@ -47,9 +48,10 @@ const Dashboard = () => {
     itemData,
     filePath,
   } = useDashboardHooks();
+  const { submit, listData } = useDashboardIViewHook();
   const inputRef = useRef(null);
   return (
-    <div className="w-full h-full bg-background">
+    <div className="w-full h-full bg-background space-y-6">
       <header className="border-b bg-card">
         <div className="container px-6 py-4">
           <div className="flex items-center justify-between">
@@ -114,7 +116,6 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -212,15 +213,16 @@ const Dashboard = () => {
           </Button>
         </div>
       </Card>
-      <DashboardList />
+      <DashboardList data={listData} />
       {dialogOpen && (
         <div className="h-full w-full p-4">
           <DashBoardIView
             isOpen={dialogOpen}
             headerFields={headerData}
             itemFields={itemData}
-            filePath={filePath}
+            filePath={data?.fileName}
             data={data}
+            submit={submit}
             onClose={() => {
               setDialogOpen("");
             }}

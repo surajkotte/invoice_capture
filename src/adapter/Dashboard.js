@@ -20,7 +20,28 @@ export const submitData = async (data) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        data,
+        domain: "mu2r3d53.otxlab.net",
+        port: "44300",
+      }),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getData = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/data", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
     });
     const responseData = await response.json();
     return responseData;

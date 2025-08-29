@@ -20,11 +20,11 @@ const Menubar = ({ children }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState("approvals");
   const location = useLocation();
   const currentPath = location.pathname;
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef(null);
   const { theme, setTheme } = useTheme();
-  const [lightMode, setLightMode] = useState(false);
+  const [lightMode, setLightMode] = useState(true);
 
   const menuItems = [
     {
@@ -61,7 +61,7 @@ const Menubar = ({ children }) => {
 
   useEffect(() => {
     const mode = lightMode ? "light" : "dark";
-    setTheme("light");
+    setTheme("dark");
   }, [lightMode]);
 
   useEffect(() => {

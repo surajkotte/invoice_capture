@@ -20,6 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Settings, Trash2, Receipt } from "lucide-react";
 import { ColumnConfigDialog } from "./ColumnConfigDialog";
+import parseDate from "../../../utils/DateParser";
 
 const Items = ({ items, onChange, fields }) => {
   const defaultColumns = [{ ...fields }];
@@ -36,25 +37,25 @@ const Items = ({ items, onChange, fields }) => {
   };
 
   const updateItem = (id, field, value) => {
-    const updatedItems = items.map((item) =>
-      item.id === id ? { ...item, [field]: value } : item
+    const updatedItems = items?.map((item, index) =>
+      index === id ? { ...item, [field]: value } : item
     );
     onChange(updatedItems);
   };
 
   const deleteItem = (id) => {
-    onChange(items.filter((item) => item.id !== id));
+    onChange(items.filter((item) => itemindex !== id));
   };
 
   useEffect(() => {
     setColumns(fields ? [...fields] : []);
   }, [fields]);
 
-  const renderCellContent = (item, column) => {
-    const isEditing = editingRow === item.id;
+  const renderCellContent = (item, column, itemindex) => {
+    const isEditing = editingRow === itemindex;
 
     if (!isEditing) {
-      const value = item[column.name];
+      const value = item[column?.fieldTechName];
       if (column.id === "ExpenseType" && value) {
         return <Badge variant="outline">{value}</Badge>;
       }
@@ -67,35 +68,43 @@ const Items = ({ items, onChange, fields }) => {
       return <span>{value}</span>;
     }
 
-    if (column.type === "String") {
+    if (column.fieldType === "String") {
       return (
         <Input
-          value={item[column.name]}
-          onChange={(e) => updateItem(item.id, column.name, e.target.value)}
-          className="w-full"
-        />
-      );
-    }
-
-    if (column.type === "Number") {
-      return (
-        <Input
-          type="number"
-          value={item[column.name]}
+          value={item[column?.fieldTechName]}
           onChange={(e) =>
-            updateItem(item.id, column.id, parseFloat(e.target.value) || 0)
+            updateItem(itemindex, column.fieldTechName, e.target.value)
           }
           className="w-full"
         />
       );
     }
 
-    if (column.type === "Date") {
+    if (column.fieldType === "Number") {
+      return (
+        <Input
+          type="number"
+          value={item[column?.fieldTechName]}
+          onChange={(e) =>
+            updateItem(
+              itemindex,
+              column.fieldTechName,
+              parseFloat(e.target.value) || 0
+            )
+          }
+          className="w-full"
+        />
+      );
+    }
+
+    if (column.fieldtype === "Date") {
       return (
         <Input
           type="date"
-          value={item[column.name]}
-          onChange={(e) => updateItem(item.id, column.id, e.target.value)}
+          value={parseDate(item[column?.fieldTechName])}
+          onChange={(e) =>
+            updateItem(itemindex, column.fieldTechName, e.target.value)
+          }
           className="w-full"
         />
       );
@@ -104,8 +113,10 @@ const Items = ({ items, onChange, fields }) => {
     if (column.type === "Dropdown") {
       return (
         <Select
-          value={item[column.name]}
-          onValueChange={(value) => updateItem(item.id, column.id, value)}
+          value={item[column?.fieldTechName]}
+          onValueChange={(value) =>
+            updateItem(itemindex, column.fieldTechName, value)
+          }
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select" />
@@ -122,8 +133,10 @@ const Items = ({ items, onChange, fields }) => {
     }
     return (
       <Input
-        value={item[column.name]}
-        onChange={(e) => updateItem(item.id, column.key, e.target.value)}
+        value={item[column?.fieldTechName]}
+        onChange={(e) =>
+          updateItem(itemindex, column.fieldTechName, e.target.value)
+        }
         className="w-full"
       />
     );
@@ -181,9 +194,9 @@ const Items = ({ items, onChange, fields }) => {
               <TableBody>
                 {items &&
                   items?.length != 0 &&
-                  items?.map((item) => (
+                  items?.map((item, itemindex) => (
                     <TableRow
-                      key={item.id}
+                      key={itemindex}
                       className="hover:bg-expense-row-hover transition-colors"
                     >
                       {columns.map((column, index) => (
@@ -191,12 +204,12 @@ const Items = ({ items, onChange, fields }) => {
                           key={`column-${column.id}-${index}`}
                           className="p-3"
                         >
-                          {renderCellContent(item, column)}
+                          {renderCellContent(item, column, itemindex)}
                         </TableCell>
                       ))}
                       <TableCell className="p-3">
                         <div className="flex gap-1">
-                          {editingRow === item.id ? (
+                          {editingRow === itemindex ? (
                             <Button
                               size="sm"
                               variant="outline"
@@ -208,7 +221,7 @@ const Items = ({ items, onChange, fields }) => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => setEditingRow(item.id)}
+                              onClick={() => setEditingRow(itemindex)}
                             >
                               Edit
                             </Button>
@@ -216,7 +229,7 @@ const Items = ({ items, onChange, fields }) => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => deleteItem(item.id)}
+                            onClick={() => deleteItem(itemindex)}
                             className="text-destructive hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />

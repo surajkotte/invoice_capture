@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { useToast } from "../Hooks/useToastHook";
 import { SystemConfigCard } from "./SystemConfigCard";
 import { FieldManagerModal } from "./FieldManagerModal";
 import useAdminHook from "../Hooks/useAdminHook";
@@ -40,11 +40,32 @@ const Admin = () => {
     allowedTypes: "",
     maxSize: "",
   });
-  const handleDocTypeSave = () => {
+  const { toast } = useToast();
+  const handleDocTypeSave = async () => {
     if (!fileConfig?.allowedTypes && !fileConfig?.maxSize) {
-      alert("Please enter upload connfig information");
+      toast({
+        title: "Error",
+        description: "Please provide allowed file types or max size",
+        variant: "destructive",
+      });
     } else {
-      addDocumentType(fileConfig?.allowedTypes, fileConfig?.maxSize);
+      const response = await addDocumentType(
+        fileConfig?.allowedTypes,
+        fileConfig?.maxSize
+      );
+      if (response?.messageType === "S") {
+        toast({
+          title: "Success",
+          description: "Document type configuration saved successfully",
+          variant: "success",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Error saving document type configuration",
+          variant: "destructive",
+        });
+      }
     }
   };
   const addSystemConfig = () => {
@@ -119,18 +140,61 @@ const Admin = () => {
   };
 
   // Modal handlers
-  const handleHeaderFieldsSave = (Fields) => {
-    AddFields(Fields, "Header");
+  const handleHeaderFieldsSave = async (Fields) => {
+    const response = await AddFields(Fields, "Header");
+    if (response?.messageType === "S") {
+      toast({
+        title: "Success",
+        description: `Header fields added successfully`,
+        variant: "success",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: `Error adding Header fields`,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleItemFieldsSave = (Fields) => {
-    AddFields(Fields, "Item");
+    const response = AddFields(Fields, "Item");
+    if (response?.messageType === "S") {
+      toast({
+        title: "Success",
+        description: `Item fields added successfully`,
+        variant: "success",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: `Error adding Item fields`,
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const system_Info =
       systemConfigs?.length != 0 && systemConfigs[systemConfigs?.length - 1];
-    addSystem(system_Info?.systemName, system_Info?.domain, system_Info?.port);
+    const response = await addSystem(
+      system_Info?.systemName,
+      system_Info?.domain,
+      system_Info?.port
+    );
+    if (response?.messageType === "S") {
+      toast({
+        title: "Success",
+        description: "System configuration saved successfully",
+        variant: "success",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Error saving system configuration",
+        variant: "destructive",
+      });
+    }
   };
 
   const [headerModalOpen, setHeaderModalOpen] = useState(false);

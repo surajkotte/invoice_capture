@@ -6,8 +6,9 @@ const useDashboardHooks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [headerData, setHeaderData] = useState([]);
   const [itemData, setItemData] = useState([]);
-  const [filePath, setFilePath] = useState("");
+  //const [filePath, setFilePath] = useState("");
   const [backendSystem, setBackendSystem] = useState("");
+  const [rawData, setRawData] = useState(null);
   const [dialogOpen, setDialogOpen] = useState("");
   const [status, setStatus] = useState("");
   const [documentType, setDocumentType] = useState("");
@@ -15,6 +16,10 @@ const useDashboardHooks = () => {
   const [data, setData] = useState({
     header: [],
     items: [],
+    fileName: "",
+    base64File: "",
+    fileType: "",
+    fileSize: "",
   });
   const [isLoading, setIsLoading] = useState({
     action: "",
@@ -62,11 +67,18 @@ const useDashboardHooks = () => {
     formData.append("file", file);
     console.log(formData);
     try {
+      fetchFields();
       const response = await uploadInvoice(formData);
       if (response?.messageType == "S") {
         const normalizedData = normalizeResponseData(response?.data);
-        setData(normalizedData);
-        setFilePath(response?.fileName);
+        setData({
+          normalizedData,
+          fileName: response?.fileName,
+          base64File: response?.base64File,
+          fileType: response?.fileType,
+          fileSize: response?.fileSize,
+        });
+        // setRawData(response?.base64File);
         setDialogOpen(response?.data);
       } else {
         alert(response?.message);
@@ -81,35 +93,31 @@ const useDashboardHooks = () => {
     }
   };
   const fetchFields = async () => {
-    const response = await getFields();
-    if (response?.messageType === "S") {
-      const HeaderResponse =
-        response?.data?.HeaderFields &&
-        response?.data?.HeaderFields?.Fields?.length != 0 &&
-        response?.data?.HeaderFields?.Fields?.map((info) => {
-          return {
-            id: info?.id,
-            name: info?.name,
-            visible: info?.visible,
-            fieldType: info?.fieldType,
-          };
-        });
+    const response1 = await getFields("Header");
+    const response2 = await getFields("Item");
+    if (response1?.messageType === "S") {
+      const HeaderResponse = response1?.data?.map((info) => {
+        return {
+          id: info?.id,
+          name: info?.field_label,
+          visible: true,
+          fieldType: info?.field_type,
+          fieldTechName: info?.field_name,
+        };
+      });
       setHeaderData(HeaderResponse);
-      const ItemResponse =
-        response?.data?.ItemFields &&
-        response?.data?.ItemFields?.Fields?.length != 0 &&
-        response?.data?.ItemFields?.Fields?.map((info) => {
-          return {
-            id: info?.id,
-            name: info?.name.trim(),
-            visible: info?.visible,
-            fieldType: info?.fieldType,
-            label: info?.name.trim(),
-          };
-        });
+    }
+    if (response2?.messageType === "S") {
+      const ItemResponse = response2?.data?.map((info) => {
+        return {
+          id: info?.id,
+          name: info?.field_label,
+          visible: true,
+          fieldType: info?.field_type,
+          fieldTechName: info?.field_name,
+        };
+      });
       setItemData(ItemResponse);
-    } else {
-      console.log(response);
     }
   };
   // Handle header field changes
@@ -145,7 +153,7 @@ const useDashboardHooks = () => {
   };
   useEffect(() => {
     if (dialogOpen) {
-      fetchFields();
+   //   fetchFields();
     }
   }, [dialogOpen]);
   return {
@@ -162,7 +170,8 @@ const useDashboardHooks = () => {
     handleHeaderChange,
     handleItemsChange,
     handleSubmit,
-    filePath,
+    rawData,
+    //filePath,
     data,
     isLoading,
     searchTerm,

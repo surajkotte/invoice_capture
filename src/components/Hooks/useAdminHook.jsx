@@ -6,7 +6,10 @@ import {
   getDocType,
   getFields,
   getSystems,
+  testConnection,
 } from "../../adapter/admin";
+import { te } from "react-day-picker/locale";
+
 const useAdminHook = () => {
   const [systems, setSystems] = useState([]);
   const [headerData, setHeaderData] = useState([]);
@@ -15,7 +18,7 @@ const useAdminHook = () => {
   const FieldTypes = ["Number", "Boolean", "String", "Date"];
   const addSystem = async (name, domain, port) => {
     const respone = await addSystemConfig(domain, name, port);
-    console.log(respone);
+    return respone;
   };
   const AddFields = async (Fields, Type) => {
     const response = await addHeaders(Fields, Type);
@@ -26,8 +29,9 @@ const useAdminHook = () => {
         response?.data?.Fields?.map((info) => {
           return {
             id: info?.id,
-            name: info?.name,
+            name: info?.field_label,
             visible: info?.visible,
+            fieldTechName: info?.name,
             fieldType: info?.fieldType,
           };
         });
@@ -36,9 +40,8 @@ const useAdminHook = () => {
       } else {
         setItemData(FieldsResponse);
       }
-    } else {
-      alert("Eror adding header fields");
     }
+    return response;
   };
   const getSystem = async () => {
     const respone = await getSystems();
@@ -52,15 +55,16 @@ const useAdminHook = () => {
     const response1 = await getFields("Header");
     const response2 = await getFields("Item");
     if (response1?.messageType === "S") {
+      console.log(response1);
       const HeaderResponse = response1?.data?.map((info) => {
         return {
           id: info?.id,
           name: info?.field_label,
           visible: true,
           fieldType: info?.field_type,
+          fieldTechName: info?.field_name,
         };
       });
-      console.log(HeaderResponse);
       setHeaderData(HeaderResponse);
     }
     if (response2?.messageType === "S") {
@@ -70,6 +74,7 @@ const useAdminHook = () => {
           name: info?.field_label,
           visible: true,
           fieldType: info?.field_type,
+          fieldTechName: info?.field_name,
         };
       });
       setItemData(ItemResponse);
@@ -86,6 +91,7 @@ const useAdminHook = () => {
     if (response?.messageType === "S") {
     } else {
     }
+    return response;
   };
 
   const getDocumentType = async () => {
@@ -105,15 +111,25 @@ const useAdminHook = () => {
     }
   };
 
+  const SystemConnectionCheck = async (domain, port) => {
+    try {
+      const response = await testConnection(domain, port);
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
     getSystem();
     fetchFields();
     getDocumentType();
+    testConnection("mu2r3d53.otxlab.net", "44300");
   }, []);
   return {
     addSystem,
     AddFields,
     addDocumentType,
+    SystemConnectionCheck,
     systems,
     FieldTypes,
     headerData,

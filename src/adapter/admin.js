@@ -95,3 +95,25 @@ export const getDocType = async (documents) => {
     console.log(err);
   }
 };
+
+export const testConnection = async (domain, port) => {
+  try {
+    const response = await fetch(`http://localhost:3000/connection/check`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ domain, port }),
+    });
+    const responseData = await response.json();
+    if (responseData?.messageType === "S") {
+    } else {
+      return { messageType: "E", message: "Connection failed" };
+    }
+    return responseData;
+  } catch (err) {
+    console.log(err);
+    return { messageType: "E", message: "Connection failed" };
+  }
+};

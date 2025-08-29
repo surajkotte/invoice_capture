@@ -1,4 +1,4 @@
-import { Trash2, Save } from "lucide-react";
+import { Trash2, Save, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ export const SystemConfigCard = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-lg">System Configuration</CardTitle>
+        <CardTitle className="text-lg">System Details</CardTitle>
         {canRemove && (
           <Button
             onClick={() => onRemove(config.id)}
@@ -58,10 +58,17 @@ export const SystemConfigCard = ({
               onChange={(e) => onUpdate(config.id, { port: e.target.value })}
             />
           </div>
-          <div className="flex h-full items-center">
-            <Button onClick={handleSave} className="gap-2">
+          <div className="flex h-full items-end gap-3">
+            <Button
+              onClick={handleSave}
+              className="gap-2"
+              variant="destructive"
+            >
               <Save className="h-4 w-4" />
               Save
+            </Button>
+            <Button onClick={handleSave} className="gap-2" variant="outline">
+              <RefreshCcw className="h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -9,13 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import useDashboardHooks from "../Hooks/useDashboardHooks";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Save, Trash2 } from "lucide-react";
+import { useToast } from "../Hooks/useToastHook";
 import { useRef } from "react";
 import DataIView from "./DashboardModal/DataIView";
-import useDashboardIViewHook from "../Hooks/useDashBoardIViewHooks";
 
 const DashBoardIView = ({
   isOpen,
@@ -23,15 +21,30 @@ const DashBoardIView = ({
   headerFields,
   itemFields,
   filePath,
+  submit,
   data,
 }) => {
+  const { toast } = useToast();
   const dataIViewRef = useRef();
-  const { submit } = useDashboardIViewHook();
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log(dataIViewRef.current);
     const invoiceData = dataIViewRef.current?.getInvoiceData();
     console.log("Submitting invoiceData:", invoiceData);
-    submit(invoiceData);
+    const response = await submit(invoiceData);
+
+    if (response?.messageType === "S") {
+      dataIViewRef.current?.clearInvoiceData();
+      toast({
+        title: "Invoice submitted successfully",
+        variant: "default",
+      });
+      onClose();
+    } else {
+      toast({
+        title: response?.message || "Failed to submit invoice",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleClear = () => {

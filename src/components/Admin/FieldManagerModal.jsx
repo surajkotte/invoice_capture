@@ -35,6 +35,7 @@ export const FieldManagerModal = ({
       name: "",
       visible: true,
       fieldType: "",
+      fieldTechName: "",
     };
     setLocalFields([...localFields, newField]);
   };
@@ -48,6 +49,12 @@ export const FieldManagerModal = ({
       setLocalFields(
         localFields.map((field) =>
           field.id === id ? { ...field, name: value } : field
+        )
+      );
+    } else if (fieldType === "fieldTechName") {
+      setLocalFields(
+        localFields.map((field) =>
+          field.id === id ? { ...field, fieldTechName: value } : field
         )
       );
     } else {
@@ -66,7 +73,7 @@ export const FieldManagerModal = ({
   };
 
   const handleCancel = () => {
-    setLocalFields(fields); // Reset to original fields
+    setLocalFields(fields);
     onOpenChange(false);
   };
 
@@ -75,6 +82,7 @@ export const FieldManagerModal = ({
   }, [fields]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      {console.log("called")}
       <DialogContent className="sm:max-w-[600px] md:max-w-[900px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -106,7 +114,7 @@ export const FieldManagerModal = ({
             ) : (
               localFields.map((field, index) => (
                 <div
-                  key={field.id}
+                  key={field.id + "" + index}
                   className="flex items-center gap-3 p-3 border rounded-lg"
                 >
                   <div className="flex-1 space-y-1 ">
@@ -136,25 +144,38 @@ export const FieldManagerModal = ({
                         </SelectTrigger>
                         <SelectContent>
                           {fieldTypes?.length != 0 &&
-                            fieldTypes?.map((info) => {
+                            fieldTypes?.map((info, index) => {
                               return (
-                                <SelectItem key={info?.id} value={info}>
+                                <SelectItem
+                                  key={info?.id + "" + index}
+                                  value={info}
+                                >
                                   {info}
                                 </SelectItem>
                               );
                             })}
                         </SelectContent>
                       </Select>
+                      <Input
+                        id={`field-${field.id}-techname`}
+                        placeholder="Enter technical name"
+                        value={field.fieldTechName}
+                        onChange={(e) =>
+                          updateField(field.id, e.target.value, "fieldTechName")
+                        }
+                      />
                     </div>
                   </div>
-                  <Button
-                    onClick={() => removeField(field.id)}
-                    size="sm"
-                    variant="outline"
-                    className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex justify-end">
+                    <Button
+                      onClick={() => removeField(field.id)}
+                      size="sm"
+                      variant="outline"
+                      className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))
             )}

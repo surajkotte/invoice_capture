@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucide-react";
+import parseDate from "../../../utils/DateParser";
 
 const Header = ({ data, onChange, fields }) => {
   const updateField = (fieldName, value) => {
     const updatedData = { ...data, [fieldName]: value };
     onChange(updatedData);
   };
-
   return (
     <Card className="shadow-md border border-muted h-full">
       <CardHeader className="bg-muted/50 border-b">
@@ -42,8 +42,10 @@ const Header = ({ data, onChange, fields }) => {
               </Label>
               {field.fieldType === "Dropdown" ? (
                 <Select
-                  value={data[field.name]}
-                  onValueChange={(value) => updateField(field.id, value)}
+                  value={data[field.fieldTechName] || ""}
+                  onValueChange={(value) =>
+                    updateField(field.fieldTechName, value)
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder={`Select ${field.name}`} />
@@ -59,29 +61,37 @@ const Header = ({ data, onChange, fields }) => {
               ) : field.fieldType === "Date" ? (
                 <Input
                   type="date"
-                  value={new Date(data[field.name])}
-                  onChange={(e) => updateField(field.id, e.target.value)}
+                  value={parseDate(data[field.fieldTechName])}
+                  onChange={(e) =>
+                    updateField(field.fieldTechName, e.target.value)
+                  }
                   className="w-full"
                 />
               ) : field.fieldType === "String" ? (
                 <Input
                   id={field.id}
-                  value={data[field.name]}
-                  onChange={(e) => updateField(field.id, e.target.value)}
+                  value={data[field.fieldTechName]}
+                  onChange={(e) =>
+                    updateField(field.fieldTechName, e.target.value)
+                  }
                   placeholder={`Enter ${field.name}`}
                 />
               ) : field.fieldType === "Number" ? (
                 <Input
                   id={field.id}
-                  value={data[field.name]}
-                  onChange={(e) => updateField(field.id, e.target.value)}
+                  value={data[field.fieldTechName]}
+                  onChange={(e) =>
+                    updateField(field.fieldTechName, e.target.value)
+                  }
                   placeholder={`Enter ${field.name}`}
                 />
               ) : (
                 <Textarea
                   id={field.id}
-                  value={data[field.name]}
-                  onChange={(e) => updateField(field.id, e.target.value)}
+                  value={data[field.fieldTechName]}
+                  onChange={(e) =>
+                    updateField(field.fieldTechName, e.target.value)
+                  }
                   placeholder={`Enter additional ${field.name}`}
                   className="min-h-[100px]"
                 />
