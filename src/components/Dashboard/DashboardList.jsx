@@ -14,60 +14,17 @@ import {
   XCircle,
   Clock,
   AlertCircle,
+  Eye,
 } from "lucide-react";
-
-const mockInvoices = [
-  {
-    regId: "INV-2024-001",
-    status: "completed",
-    fileType: "PDF",
-    fileName: "invoice_2024_001.pdf",
-    createdAt: "2024-01-15 10:30:00",
-    createdUser: "John Doe",
-    backendSystem: "SAP (System 1)",
-    fileSize: "2.3 MB",
-  },
-  {
-    regId: "INV-2024-002",
-    status: "processing",
-    fileType: "XML",
-    fileName: "invoice_data_002.xml",
-    createdAt: "2024-01-15 11:15:00",
-    createdUser: "Jane Smith",
-    backendSystem: "SAP (System 2)",
-    fileSize: "156 KB",
-  },
-  {
-    regId: "INV-2024-003",
-    status: "failed",
-    fileType: "PDF",
-    fileName: "invoice_batch_003.pdf",
-    createdAt: "2024-01-15 09:45:00",
-    createdUser: "Mike Johnson",
-    backendSystem: "Oracle ERP",
-    fileSize: "4.1 MB",
-  },
-  {
-    regId: "INV-2024-004",
-    status: "pending",
-    fileType: "CSV",
-    fileName: "invoice_export_004.csv",
-    createdAt: "2024-01-15 14:20:00",
-    createdUser: "Sarah Wilson",
-    backendSystem: "NetSuite",
-    fileSize: "89 KB",
-  },
-  {
-    regId: "INV-2024-005",
-    status: "completed",
-    fileType: "XML",
-    fileName: "structured_invoice_005.xml",
-    createdAt: "2024-01-14 16:30:00",
-    createdUser: "John Doe",
-    backendSystem: "SAP (System 1)",
-    fileSize: "234 KB",
-  },
-];
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useState } from "react";
 
 function getStatusBadge(status) {
   switch (status) {
@@ -120,7 +77,15 @@ function getFileTypeIcon(fileType) {
   return <FileText className="w-4 h-4 text-muted-foreground" />;
 }
 
-const DashboardList = (data) => {
+const DashboardList = (list_data) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const data = list_data?.data;
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(data?.length / itemsPerPage);
+  const paginatedCourses = data?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
   return (
     <Card>
       <div className="p-6">
@@ -140,9 +105,9 @@ const DashboardList = (data) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {console.log(data)}
-              {data?.data && data?.data != null && data?.length != 0 ? (
-                data?.data?.map((invoice) => (
+              {paginatedCourses &&
+                paginatedCourses?.length != 0 &&
+                paginatedCourses?.map((invoice) => (
                   <TableRow key={invoice.regId} className="hover:bg-muted/50">
                     <TableCell className="font-medium">
                       {invoice.document_id}
@@ -172,47 +137,69 @@ const DashboardList = (data) => {
                       {invoice.file_size}
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-4">
-                    No invoices found.
-                  </TableCell>
-                </TableRow>
-              )}
-
-              {/* {mockInvoices.map((invoice) => (
-                <TableRow key={invoice.regId} className="hover:bg-muted/50">
-                  <TableCell className="font-medium">{invoice.regId}</TableCell>
-                  <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getFileTypeIcon(invoice.fileType)}
-                      <span className="font-medium">{invoice.fileType}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    className="max-w-[200px] truncate"
-                    title={invoice.fileName}
-                  >
-                    {invoice.fileName}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {invoice.createdAt}
-                  </TableCell>
-                  <TableCell>{invoice.createdUser}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{invoice.backendSystem}</Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {invoice.fileSize}
-                  </TableCell>
-                </TableRow>
-              ))} */}
+                ))}
             </TableBody>
           </Table>
         </div>
+        {totalPages > 1 && (
+          <div className="mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
+      {paginatedCourses?.length === 0 && (
+        <div className="text-center py-8">
+          <Eye className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium mb-2">No courses found</h3>
+          <p className="text-muted-foreground">
+            {searchTerm || selectedInstructors.length > 0
+              ? "No courses match your current filters."
+              : "Load your first course to get started."}
+          </p>
+        </div>
+      )}
     </Card>
   );
 };

@@ -37,7 +37,7 @@ const Login = () => {
         title: "Login successful",
         variant: "default",
       });
-      navigate("/", { state: { from: location }, replace: true });
+      navigate("/dashboard", { state: { from: location }, replace: true });
     } else {
       toast({
         variant: "destructive",

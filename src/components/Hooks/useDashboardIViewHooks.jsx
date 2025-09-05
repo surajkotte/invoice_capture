@@ -3,8 +3,8 @@ import { getData, submitData } from "../../adapter/Dashboard";
 
 const useDashboardIViewHook = () => {
   const [listData, setListData] = React.useState(null);
-  const submit = async (data) => {
-    const response = await submitData({ data });
+  const submit = async (data, backendSystem) => {
+    const response = await submitData(data, backendSystem);
     if (response?.messageType === "S") {
       setListData((prev) => [response?.data, ...prev]);
       return response;

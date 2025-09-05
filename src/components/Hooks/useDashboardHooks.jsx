@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { uploadInvoice } from "../../adapter/Login";
-import { getFields } from "../../adapter/admin";
+import { getFields, getSystems } from "../../adapter/admin";
 
 const useDashboardHooks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [headerData, setHeaderData] = useState([]);
   const [itemData, setItemData] = useState([]);
-  //const [filePath, setFilePath] = useState("");
+  const [systemConnections, setSystemConnections] = useState(null);
   const [backendSystem, setBackendSystem] = useState("");
   const [rawData, setRawData] = useState(null);
   const [dialogOpen, setDialogOpen] = useState("");
@@ -152,10 +152,14 @@ const useDashboardHooks = () => {
     console.log(data);
   };
   useEffect(() => {
-    if (dialogOpen) {
-   //   fetchFields();
-    }
-  }, [dialogOpen]);
+    const fetchSystems = async () => {
+      const response = await getSystems();
+      if (response?.messageType == "S") {
+        setSystemConnections(response?.data);
+      }
+    };
+    fetchSystems();
+  }, []);
   return {
     setBackendSystem,
     setDateRange,
@@ -171,7 +175,7 @@ const useDashboardHooks = () => {
     handleItemsChange,
     handleSubmit,
     rawData,
-    //filePath,
+    systemConnections,
     data,
     isLoading,
     searchTerm,

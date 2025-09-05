@@ -1,9 +1,10 @@
 export const addSystemConfig = async (
   system_domain,
   system_name,
-  system_port
+  system_port,
+  id
 ) => {
-  const data = { system_domain, system_name, system_port };
+  const data = { system_domain, system_name, system_port, id };
   try {
     const response = await fetch("http://localhost:3000/admin/system", {
       method: "POST",
@@ -11,6 +12,7 @@ export const addSystemConfig = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      credentials: "include",
     });
     const responseData = await response.json();
     return responseData;
@@ -26,6 +28,7 @@ export const getSystems = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const responseData = await response.json();
     return responseData;
@@ -41,6 +44,7 @@ export const addHeaders = async (Fields, Type) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ Fields, Type }),
     });
     const responseData = await response.json();
@@ -57,6 +61,7 @@ export const getFields = async (type) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const responseData = await response.json();
     return responseData;
@@ -72,6 +77,7 @@ export const addDocType = async (documents, size) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ documents, size }),
     });
     const responseData = await response.json();
@@ -88,6 +94,7 @@ export const getDocType = async (documents) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const responseData = await response.json();
     return responseData;

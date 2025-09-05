@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Login, SignUp } from "../../adapter/Login";
+import { Login, Logout, SignUp } from "../../adapter/Login";
 const useAuthHok = () => {
   const [isLoading, setIsLoading] = useState(false);
   const signup = async (data) => {
@@ -14,10 +14,17 @@ const useAuthHok = () => {
     setIsLoading(false);
     return response;
   };
+  const signOut = async () => {
+    setIsLoading(true);
+    const respone = await Logout();
+    setIsLoading(false);
+    return respone;
+  };
   return {
     isLoading,
     signup,
     signin,
+    signOut,
   };
 };
 export default useAuthHok;

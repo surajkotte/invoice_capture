@@ -13,7 +13,7 @@ export const getFields = async () => {
   }
 };
 
-export const submitData = async (data) => {
+export const submitData = async (data, backendSystem) => {
   try {
     const response = await fetch("http://localhost:3000/submit", {
       method: "POST",
@@ -21,9 +21,9 @@ export const submitData = async (data) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data,
-        domain: "mu2r3d53.otxlab.net",
-        port: "44300",
+        data: { ...data },
+        domain: backendSystem?.system_domain,
+        port: backendSystem?.system_port,
       }),
       credentials: "include",
     });

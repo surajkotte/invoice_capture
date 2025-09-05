@@ -60,7 +60,9 @@ export const SystemConfigCard = ({
           </div>
           <div className="flex h-full items-end gap-3">
             <Button
-              onClick={handleSave}
+              onClick={() => {
+                handleSave(config.id);
+              }}
               className="gap-2"
               variant="destructive"
             >

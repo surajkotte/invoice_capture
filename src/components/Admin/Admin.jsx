@@ -70,7 +70,7 @@ const Admin = () => {
   };
   const addSystemConfig = () => {
     const newConfig = {
-      id: Date.now().toString(),
+      id: "new" + Date.now().toString(),
       domain: "",
       systemName: "",
       port: "",
@@ -174,13 +174,15 @@ const Admin = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (id) => {
     const system_Info =
-      systemConfigs?.length != 0 && systemConfigs[systemConfigs?.length - 1];
+      systemConfigs?.length != 0 &&
+      systemConfigs.find((info) => info?.id === id);
     const response = await addSystem(
       system_Info?.systemName,
       system_Info?.domain,
-      system_Info?.port
+      system_Info?.port,
+      system_Info?.id || ""
     );
     if (response?.messageType === "S") {
       toast({

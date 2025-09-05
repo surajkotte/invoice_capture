@@ -22,6 +22,7 @@ const DashBoardIView = ({
   itemFields,
   filePath,
   submit,
+  backendSystem,
   data,
 }) => {
   const { toast } = useToast();
@@ -29,9 +30,7 @@ const DashBoardIView = ({
   const handleSave = async () => {
     console.log(dataIViewRef.current);
     const invoiceData = dataIViewRef.current?.getInvoiceData();
-    console.log("Submitting invoiceData:", invoiceData);
-    const response = await submit(invoiceData);
-
+    const response = await submit(invoiceData, backendSystem);
     if (response?.messageType === "S") {
       dataIViewRef.current?.clearInvoiceData();
       toast({

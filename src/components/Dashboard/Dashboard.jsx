@@ -46,7 +46,7 @@ const Dashboard = () => {
     dialogOpen,
     headerData,
     itemData,
-    filePath,
+    systemConnections,
   } = useDashboardHooks();
   const { submit, listData } = useDashboardIViewHook();
   const inputRef = useRef(null);
@@ -77,10 +77,11 @@ const Dashboard = () => {
                   <SelectValue placeholder="Backend System" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sap-sys1">SAP (System 1)</SelectItem>
-                  <SelectItem value="sap-sys2">SAP (System 2)</SelectItem>
-                  <SelectItem value="oracle">Oracle ERP</SelectItem>
-                  <SelectItem value="netsuite">NetSuite</SelectItem>
+                  {systemConnections?.map((info) => {
+                    return (
+                      <SelectItem value={info}>{info?.system_name}</SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
               <div className="flex gap-2">
@@ -221,6 +222,7 @@ const Dashboard = () => {
             headerFields={headerData}
             itemFields={itemData}
             filePath={data?.fileName}
+            backendSystem={backendSystem}
             data={data}
             submit={submit}
             onClose={() => {

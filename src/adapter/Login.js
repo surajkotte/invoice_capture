@@ -55,3 +55,21 @@ export const AuthCheck = async () => {
     return responseData;
   } catch (err) {}
 };
+
+export const Logout = async () => {
+  const urlval = "http://localhost:3000/logout";
+  try {
+    const response = await fetch(urlval, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    console.log(err.message);
+  }
+};

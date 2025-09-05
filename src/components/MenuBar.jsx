@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Children } from "react";
+import React, { useEffect, useState, useRef, Children, use } from "react";
 import {
   Grid3x3,
   Plus,
@@ -16,15 +16,20 @@ import { Link } from "react-router-dom";
 //import { useThemeContext } from "../utils/ThemeProvider";
 import { Button } from "@/Components/ui/button";
 import { useLocation } from "react-router-dom";
+import useAuthHok from "./Hooks/useAuthHook";
+import { useToast } from "./Hooks/useToastHook";
+import { useNavigate } from "react-router-dom";
 const Menubar = ({ children }) => {
-  const [selectedMenuItem, setSelectedMenuItem] = useState("approvals");
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const { isLoading, signOut } = useAuthHok();
+  const { theme, setTheme } = useTheme();
+  const [lightMode, setLightMode] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef(null);
-  const { theme, setTheme } = useTheme();
-  const [lightMode, setLightMode] = useState(true);
+  const { toast } = useToast();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
 
   const menuItems = [
     {
@@ -50,8 +55,20 @@ const Menubar = ({ children }) => {
     ? "bg-gray-800 border-gray-700 text-white"
     : "bg-white border-gray-200 text-gray-900";
 
-  const handleLogout = () => {
-    console.log("Logout clicked");
+  const handleLogout = async () => {
+    const response = await signOut();
+    if (response?.messageType === "S") {
+      toast({
+        title: "Logged out successfully",
+        variant: "default",
+      });
+      navigate("/login", { state: { from: location }, replace: true });
+    } else {
+      toast({
+        title: response?.message || "Logout failed",
+        variant: "destructive",
+      });
+    }
     setShowUserMenu(false);
   };
 

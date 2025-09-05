@@ -16,8 +16,8 @@ const useAdminHook = () => {
   const [itemData, setItemData] = useState([]);
   const [uploadConfig, setUploadConfig] = useState("");
   const FieldTypes = ["Number", "Boolean", "String", "Date"];
-  const addSystem = async (name, domain, port) => {
-    const respone = await addSystemConfig(domain, name, port);
+  const addSystem = async (name, domain, port, id) => {
+    const respone = await addSystemConfig(domain, name, port, id);
     return respone;
   };
   const AddFields = async (Fields, Type) => {
