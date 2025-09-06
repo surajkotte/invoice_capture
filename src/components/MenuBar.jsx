@@ -19,6 +19,7 @@ import { useLocation } from "react-router-dom";
 import useAuthHok from "./Hooks/useAuthHook";
 import { useToast } from "./Hooks/useToastHook";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 const Menubar = ({ children }) => {
   const { isLoading, signOut } = useAuthHok();
   const { theme, setTheme } = useTheme();
@@ -30,6 +31,7 @@ const Menubar = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
+  const { logout } = useAuth();
 
   const menuItems = [
     {
@@ -58,6 +60,7 @@ const Menubar = ({ children }) => {
   const handleLogout = async () => {
     const response = await signOut();
     if (response?.messageType === "S") {
+      logout();
       toast({
         title: "Logged out successfully",
         variant: "default",

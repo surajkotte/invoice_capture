@@ -108,7 +108,7 @@ const DashboardList = (list_data) => {
               {paginatedCourses &&
                 paginatedCourses?.length != 0 &&
                 paginatedCourses?.map((invoice) => (
-                  <TableRow key={invoice.regId} className="hover:bg-muted/50">
+                  <TableRow key={invoice.id} className="hover:bg-muted/50">
                     <TableCell className="font-medium">
                       {invoice.document_id}
                     </TableCell>
@@ -192,12 +192,7 @@ const DashboardList = (list_data) => {
       {paginatedCourses?.length === 0 && (
         <div className="text-center py-8">
           <Eye className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No courses found</h3>
-          <p className="text-muted-foreground">
-            {searchTerm || selectedInstructors.length > 0
-              ? "No courses match your current filters."
-              : "Load your first course to get started."}
-          </p>
+          <h3 className="text-lg font-medium mb-2">No Data found</h3>
         </div>
       )}
     </Card>

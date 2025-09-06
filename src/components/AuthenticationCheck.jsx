@@ -23,8 +23,6 @@ const AuthenticationCheck = ({ children }) => {
 
     checkIsAuthenticated();
   }, [location.pathname]);
-
-  // While checking, don't redirect yet
   if (authenticated === null) {
     return <div>Loading...</div>; // or a spinner component
   }
@@ -37,3 +35,19 @@ const AuthenticationCheck = ({ children }) => {
 };
 
 export default AuthenticationCheck;
+
+// AuthenticationCheck.jsx
+// import { Navigate, useLocation } from "react-router-dom";
+// import { useAuth } from "../context/AuthContext";
+
+// const AuthenticationCheck = ({ children }) => {
+//   const { authenticated } = useAuth();
+//   const location = useLocation();
+//   console.log(authenticated);
+//   if (authenticated === null) return <div>Loading...</div>;
+//   if (!authenticated)
+//     return <Navigate to="/login" state={{ from: location }} replace />;
+//   return children;
+// };
+
+// export default AuthenticationCheck;

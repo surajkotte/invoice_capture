@@ -48,7 +48,7 @@ const Dashboard = () => {
     itemData,
     systemConnections,
   } = useDashboardHooks();
-  const { submit, listData } = useDashboardIViewHook();
+  const { submit, listData, isSubmitLoading } = useDashboardIViewHook();
   const inputRef = useRef(null);
   return (
     <div className="w-full h-full bg-background space-y-6">
@@ -219,6 +219,7 @@ const Dashboard = () => {
         <div className="h-full w-full p-4">
           <DashBoardIView
             isOpen={dialogOpen}
+            isSubmitLoading={isSubmitLoading}
             headerFields={headerData}
             itemFields={itemData}
             filePath={data?.fileName}

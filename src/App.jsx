@@ -13,11 +13,11 @@ function App() {
 
   return (
     <div className="min-w-screen min-h-screen">
-      <Menubar>
-        <AuthenticationCheck>
+      <AuthenticationCheck>
+        <Menubar>
           <Outlet />
-        </AuthenticationCheck>
-      </Menubar>
+        </Menubar>
+      </AuthenticationCheck>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Save, Trash2 } from "lucide-react";
+import { Loader2, Save, Trash2 } from "lucide-react";
 import { useToast } from "../Hooks/useToastHook";
 import { useRef } from "react";
 import DataIView from "./DashboardModal/DataIView";
@@ -24,6 +24,7 @@ const DashBoardIView = ({
   submit,
   backendSystem,
   data,
+  isSubmitLoading,
 }) => {
   const { toast } = useToast();
   const dataIViewRef = useRef();
@@ -50,7 +51,12 @@ const DashBoardIView = ({
     dataIViewRef.current?.clearInvoiceData();
   };
   return (
-    <Dialog open={isOpen} onOpenChange={onClose} className="p-4">
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+      className="p-4"
+      disabled={isSubmitLoading}
+    >
       <DialogContent className="max-w-[85%] h-full p-2">
         <DialogHeader className="p-6 pb-4 border-b">
           <div className="flex w-full justify-between">
@@ -60,11 +66,25 @@ const DashBoardIView = ({
               </DialogTitle>
             </div>
             <div className="flex gap-2 pt-4">
-              <Button variant="" size="sm" onClick={handleSave}>
-                <Save className="h-4 w-4 mr-1" />
-                Submit
+              <Button
+                variant=""
+                size="sm"
+                onClick={handleSave}
+                disabled={isSubmitLoading}
+              >
+                {isSubmitLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                    Submitting
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-1" />
+                    Save
+                  </>
+                )}
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" disabled={isSubmitLoading}>
                 <Trash2 className="h-4 w-4 mr-1" />
                 Clear
               </Button>

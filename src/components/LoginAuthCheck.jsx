@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthCheck } from "../adapter/Login";
+import { useAuth } from "../context/AuthContext";
 
 const LoginAuthCheck = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(null);
+  //  const { authenticated } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const LoginAuthCheck = ({ children }) => {
   }
 
   if (authenticated) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
   return children;
 };
