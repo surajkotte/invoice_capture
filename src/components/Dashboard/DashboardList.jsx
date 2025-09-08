@@ -109,7 +109,7 @@ const DashboardList = (list_data) => {
                 paginatedCourses?.length != 0 &&
                 paginatedCourses?.map((invoice) => (
                   <TableRow key={invoice.id} className="hover:bg-muted/50">
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium ">
                       {invoice.document_id}
                     </TableCell>
                     <TableCell>{getStatusBadge("completed")}</TableCell>

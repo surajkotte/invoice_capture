@@ -7,6 +7,7 @@ import Login from "./components/Login/Login";
 import AuthenticationCheck from "./components/AuthenticationCheck";
 import LoginAuthCheck from "./components/LoginAuthCheck";
 import SignUp from "./components/Login/SignUp";
+import UploadFile from "./components/Upload/UploadFile";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -34,6 +35,10 @@ export const reactRouter = createBrowserRouter([
       {
         path: "/admin",
         element: <Admin />,
+      },
+      {
+        path: "/upload",
+        element: <UploadFile />,
       },
     ],
   },

@@ -2,14 +2,13 @@ import React, { useEffect, useState, useRef, Children, use } from "react";
 import {
   Grid3x3,
   Plus,
-  FileText,
-  TrendingUp,
   User,
   Sun,
   Moon,
   ChevronDown,
   LogOut,
   Settings,
+  Upload,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Link } from "react-router-dom";
@@ -46,12 +45,18 @@ const Menubar = ({ children }) => {
       path: "/admin",
       icon: Plus,
     },
+    {
+      label: "Upload",
+      key: "upload",
+      path: "/upload",
+      icon: Upload,
+    },
   ];
   const menuBarClasses = lightMode
-    ? "bg-gray-800 border-gray-700"
+    ? "bg-background border-gray-700"
     : "bg-gray-50 border-gray-200";
   const themeClasses = lightMode
-    ? "bg-gray-900 text-white"
+    ? "bg-background text-white"
     : "bg-white text-gray-900";
   const userMenuClasses = lightMode
     ? "bg-gray-800 border-gray-700 text-white"
@@ -99,7 +104,6 @@ const Menubar = ({ children }) => {
 
   return (
     <div className={`min-h-screen min-w-screen flex flex-col ${themeClasses}`}>
-      {console.log(theme)}
       <div
         className={`h-16 border-b shadow-md flex items-center gap-2 ${menuBarClasses} justify-center`}
       >
