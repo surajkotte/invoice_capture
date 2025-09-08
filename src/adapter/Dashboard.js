@@ -49,3 +49,33 @@ export const getData = async () => {
     console.log(err);
   }
 };
+
+export const uploadInvoicePrompt = async (formData) => {
+  const response = await fetch("http://localhost:3000/prompt", {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  const responseData = await response.json();
+  return responseData;
+};
+
+export const postMessages = async (filename, message) => {
+  try {
+    const response = await fetch("http://localhost:3000/message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        filename: filename,
+        message: message,
+      }),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    console.log(error);
+  }
+};

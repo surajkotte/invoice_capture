@@ -23,6 +23,7 @@ const UploadFile = () => {
     fieldsData,
     systemConnections,
     backendSystem,
+    handleUploadPrompt,
     submit,
     setBackendSystem,
   } = useUploadHook();
@@ -94,6 +95,7 @@ const UploadFile = () => {
               submit={submit}
               selectedView={activeView}
               fieldsInfo={fieldsData}
+              handleUploadPrompt={handleUploadPrompt}
             />
           )}
         </div>

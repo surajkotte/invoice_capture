@@ -3,7 +3,15 @@ import UploadHeader from "./UploadHeader";
 import UploadItems from "./UploadItems";
 import { UploadPrompts } from "./UploadPrompts";
 import { useToast } from "../Hooks/useToastHook";
-const UploadDataView = ({ headerFields, itemFields, view, data, submit }) => {
+import { postMessages } from "../../adapter/Dashboard";
+const UploadDataView = ({
+  headerFields,
+  itemFields,
+  view,
+  data,
+  submit,
+  handleUploadPrompt,
+}) => {
   const [invoiceData, setInvoiceData] = useState({
     headerData: [],
     itemsData: [],
@@ -12,7 +20,11 @@ const UploadDataView = ({ headerFields, itemFields, view, data, submit }) => {
     fileType: "",
     fileSize: "",
   });
+  const [messages, setMessages] = useState([
+    { role: "system", content: "How can I assist you today?" },
+  ]);
   const [isLoading, setIsLoading] = useState(false);
+
   const { toast } = useToast();
   const handleSubmit = async () => {
     try {
@@ -68,6 +80,46 @@ const UploadDataView = ({ headerFields, itemFields, view, data, submit }) => {
       itemsData: updatedItems,
     }));
   }, []);
+  const handlePrompt = async (promptMessage, mode) => {
+    try {
+      setIsLoading(true);
+      console.log(promptMessage);
+      const response = await handleUploadPrompt(promptMessage);
+      if (response?.messageType == "S") {
+        toast({
+          title: "Invoice submitted successfully",
+          variant: "default",
+        });
+      } else {
+      }
+    } catch (err) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const onHandleChat = async (newChat) => {
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: newChat?.content },
+    ]);
+    setIsLoading(true);
+    const response = await postMessages(
+      invoiceData?.fileName,
+      newChat?.content
+    );
+    if (response?.messageType === "S") {
+      setMessages((prev) => [
+        ...prev,
+        { role: "system", content: response?.data },
+      ]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        { role: "system", content: response?.message },
+      ]);
+    }
+    setIsLoading(false);
+  };
   useEffect(() => {
     const Header_Data = headerFields?.reduce((acc, field) => {
       const value = data?.normalizedData?.header
@@ -112,11 +164,17 @@ const UploadDataView = ({ headerFields, itemFields, view, data, submit }) => {
             <UploadItems
               fields={itemFields}
               onChange={handleItemsChange}
+              isLoading={isLoading}
               items={invoiceData?.itemsData}
             />
           </>
         ) : (
-          <UploadPrompts />
+          <UploadPrompts
+            onSendPrompt={handlePrompt}
+            isLoading={isLoading}
+            onSendChat={onHandleChat}
+            messages={messages}
+          />
         )}
       </div>
     </div>

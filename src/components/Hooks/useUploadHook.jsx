@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { uploadInvoice } from "../../adapter/Login";
 import { getFields, getSystems } from "../../adapter/admin";
-import { submitData } from "../../adapter/Dashboard";
+import { submitData, uploadInvoicePrompt } from "../../adapter/Dashboard";
 
 const useUploadHook = () => {
   const [isLoading, setIsLoading] = useState({
@@ -9,6 +9,7 @@ const useUploadHook = () => {
     state: false,
   });
   const [backendSystem, setBackendSystem] = useState("");
+  const [selectedFile, setSelectedFile] = useState("");
   const [systemConnections, setSystemConnections] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
   const [fieldsData, setFieldsData] = useState({
@@ -26,6 +27,7 @@ const useUploadHook = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     event.target.value = null;
+    setSelectedFile(file);
     handleUpload(file);
   };
   const normalizeResponseData = (responseData) => {
@@ -70,7 +72,6 @@ const useUploadHook = () => {
     });
     const formData = new FormData();
     formData.append("file", file);
-    console.log(formData);
     try {
       fetchFields();
       const response = await uploadInvoice(formData);
@@ -121,6 +122,39 @@ const useUploadHook = () => {
       });
     }
   };
+  const handleUploadPrompt = async (promptMessage) => {
+    setIsLoading({
+      action: "Prompt",
+      state: true,
+    });
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("prompt", promptMessage);
+    try {
+      fetchFields();
+      const response = await uploadInvoicePrompt(formData);
+      if (response?.messageType == "S") {
+        const normalizedData = normalizeResponseData(response?.data);
+        setData({
+          normalizedData,
+          fileName: response?.fileName,
+          base64File: response?.base64File,
+          fileType: response?.fileType,
+          fileSize: response?.fileSize,
+        });
+        setUploadStatus("uploaded");
+      } else {
+        alert(response?.message);
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsLoading({
+        action: "",
+        state: false,
+      });
+    }
+  };
   useEffect(() => {
     const fetchSystems = async () => {
       const response = await getSystems();
@@ -137,6 +171,7 @@ const useUploadHook = () => {
     fieldsData,
     systemConnections,
     backendSystem,
+    handleUploadPrompt,
     submit,
     setBackendSystem,
     setUploadStatus,

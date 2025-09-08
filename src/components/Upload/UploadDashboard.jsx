@@ -5,7 +5,13 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import UploadDataView from "./UploadDataView";
-const UploadDashboard = ({ data, selectedView, fieldsInfo, submit }) => {
+const UploadDashboard = ({
+  data,
+  selectedView,
+  fieldsInfo,
+  submit,
+  handleUploadPrompt,
+}) => {
   return (
     <div className="min-h-screen min-w-full bg-background w-full">
       <div className="w-full h-[calc(100vh-80px)]">
@@ -20,6 +26,7 @@ const UploadDashboard = ({ data, selectedView, fieldsInfo, submit }) => {
               view={selectedView}
               data={data}
               submit={submit}
+              handleUploadPrompt={handleUploadPrompt}
             />
           </ResizablePanel>
           <ResizableHandle withHandle />
