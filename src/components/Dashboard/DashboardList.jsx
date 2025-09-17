@@ -24,7 +24,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function getStatusBadge(status) {
   switch (status) {
@@ -77,15 +77,16 @@ function getFileTypeIcon(fileType) {
   return <FileText className="w-4 h-4 text-muted-foreground" />;
 }
 
-const DashboardList = (list_data) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const data = list_data?.data;
+const DashboardList = ({
+  list_data,
+  totalCount,
+  currentPage,
+  setCurrentPage,
+}) => {
+  const data = list_data;
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
-  const paginatedCourses = data?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const paginatedCourses = data;
   return (
     <Card>
       <div className="p-6">

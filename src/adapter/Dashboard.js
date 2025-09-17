@@ -34,15 +34,18 @@ export const submitData = async (data, backendSystem) => {
   }
 };
 
-export const getData = async () => {
+export const getData = async (currentPage) => {
   try {
-    const response = await fetch("http://localhost:3000/data", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
+    const response = await fetch(
+      `http://localhost:3000/data?page=${currentPage}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
     const responseData = await response.json();
     return responseData;
   } catch (err) {

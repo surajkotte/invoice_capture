@@ -32,7 +32,7 @@ const UploadDataView = ({
       const response = await submit(invoiceData);
       if (response?.messageType === "S") {
         toast({
-          title: "Invoice submitted successfully",
+          title: `Invoice submitted successfully ${response?.data?.document_id}`,
           variant: "default",
         });
         setInvoiceData({

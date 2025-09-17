@@ -48,7 +48,8 @@ const Dashboard = () => {
     itemData,
     systemConnections,
   } = useDashboardHooks();
-  const { submit, listData, isSubmitLoading } = useDashboardIViewHook();
+  const { submit, setCurrentPage, currentPage, listData, isSubmitLoading } =
+    useDashboardIViewHook();
   const inputRef = useRef(null);
   return (
     <div className="w-full h-full bg-background space-y-6">
@@ -79,7 +80,9 @@ const Dashboard = () => {
                 <SelectContent>
                   {systemConnections?.map((info) => {
                     return (
-                      <SelectItem value={info}>{info?.system_name}</SelectItem>
+                      <SelectItem key={info?.system_name} value={info}>
+                        {info?.system_name}
+                      </SelectItem>
                     );
                   })}
                 </SelectContent>
@@ -214,7 +217,12 @@ const Dashboard = () => {
           </Button>
         </div>
       </Card>
-      <DashboardList data={listData} />
+      <DashboardList
+        list_data={listData?.data}
+        totalCount={listData?.totalCount || 0}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
       {dialogOpen && (
         <div className="h-full w-full p-4">
           <DashBoardIView
