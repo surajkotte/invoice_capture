@@ -19,11 +19,13 @@ const Admin = () => {
     addSystem,
     AddFields,
     addDocumentType,
+    handleTestConnection,
     systems,
     FieldTypes,
     headerData,
     itemData,
     uploadConfig,
+    isLoading,
   } = useAdminHook();
   // const [systemConfigs, setSystemConfigs] = useState([
   //   { id: "1", domain: "", systemName: "", port: "" },
@@ -74,14 +76,22 @@ const Admin = () => {
       domain: "",
       systemName: "",
       port: "",
+      is_default: false,
+      connectionStatus: "error",
     };
     setSystemConfigs([...systemConfigs, newConfig]);
   };
   const updateSystemConfig = (id, updates) => {
-    setSystemConfigs(
-      systemConfigs.map((config) =>
-        config.id === id ? { ...config, ...updates } : config
-      )
+    setSystemConfigs((prev) =>
+      prev.map((config) => {
+        if (updates.is_default) {
+          if (config.id === id) {
+            return { ...config, ...updates };
+          }
+          return { ...config, is_default: false };
+        }
+        return config.id === id ? { ...config, ...updates } : config;
+      })
     );
   };
 
@@ -182,6 +192,7 @@ const Admin = () => {
       system_Info?.systemName,
       system_Info?.domain,
       system_Info?.port,
+      system_Info?.is_default,
       system_Info?.id || ""
     );
     if (response?.messageType === "S") {
@@ -209,6 +220,8 @@ const Admin = () => {
         domain: info?.system_domain,
         systemName: info?.system_name,
         port: info?.system_port,
+        is_default: info?.is_default,
+        connectionStatus: info?.connectionStatus,
       };
     });
     setSystemConfigs(temp);
@@ -275,16 +288,29 @@ const Admin = () => {
           </div>
 
           <div className="space-y-4">
-            {systemConfigs.map((config) => (
-              <SystemConfigCard
-                key={config.id}
-                config={config}
-                onUpdate={updateSystemConfig}
-                onRemove={removeSystemConfig}
-                canRemove={systemConfigs.length > 1}
-                handleSave={handleSave}
-              />
-            ))}
+            {isLoading.action === "get_system" && isLoading.status ? (
+              <div className="flex justify-center items-center py-6">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-blue-500">Loading systems...</span>
+              </div>
+            ) : systemConfigs.length === 0 ? (
+              <div className="text-center text-gray-400 py-6">
+                No system configurations found.
+              </div>
+            ) : (
+              systemConfigs.map((config) => (
+                <SystemConfigCard
+                  key={config.id}
+                  config={config}
+                  onUpdate={updateSystemConfig}
+                  onRemove={removeSystemConfig}
+                  canRemove={systemConfigs.length > 1}
+                  handleSave={handleSave}
+                  handleTestConnection={handleTestConnection}
+                  isLoading={isLoading}
+                />
+              ))
+            )}
           </div>
         </div>
         <div className="space-y-6">

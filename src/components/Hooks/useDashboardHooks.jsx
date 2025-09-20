@@ -166,6 +166,15 @@ const useDashboardHooks = () => {
     };
     fetchSystems();
   }, []);
+
+  useEffect(() => {
+    if (systemConnections?.length > 0) {
+      const defaultSystem = systemConnections.find((s) => s.is_default);
+      if (defaultSystem) {
+        setBackendSystem(defaultSystem);
+      }
+    }
+  }, [systemConnections]);
   return {
     setBackendSystem,
     setDateRange,

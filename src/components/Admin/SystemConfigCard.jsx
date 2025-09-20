@@ -1,4 +1,4 @@
-import { Trash2, Save, RefreshCcw } from "lucide-react";
+import { Trash2, Save, RefreshCcw, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ export const SystemConfigCard = ({
   onRemove,
   canRemove,
   handleSave,
+  handleTestConnection,
+  isLoading,
 }) => {
   return (
     <Card>
@@ -27,7 +29,7 @@ export const SystemConfigCard = ({
         )}
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-2 w-full">
           <div className="space-y-2">
             <Label htmlFor={`domain-${config.id}`}>Domain</Label>
             <Input
@@ -35,8 +37,14 @@ export const SystemConfigCard = ({
               placeholder="https://api.example.com"
               value={config.domain}
               onChange={(e) => onUpdate(config.id, { domain: e.target.value })}
+              disabled={
+                isLoading?.status &&
+                isLoading?.id === config?.id &&
+                isLoading?.action === "test"
+              }
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor={`systemName-${config.id}`}>System Name</Label>
             <Input
@@ -46,8 +54,14 @@ export const SystemConfigCard = ({
               onChange={(e) =>
                 onUpdate(config.id, { systemName: e.target.value })
               }
+              disabled={
+                isLoading?.status &&
+                isLoading?.id === config?.id &&
+                isLoading?.action === "test"
+              }
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor={`port-${config.id}`}>Port</Label>
             <Input
@@ -56,23 +70,97 @@ export const SystemConfigCard = ({
               type="number"
               value={config.port}
               onChange={(e) => onUpdate(config.id, { port: e.target.value })}
+              disabled={
+                isLoading?.status &&
+                isLoading?.id === config?.id &&
+                isLoading?.action === "test"
+              }
             />
           </div>
-          <div className="flex h-full items-end gap-3">
-            <Button
-              onClick={() => {
-                handleSave(config.id);
-              }}
-              className="gap-2"
-              variant="destructive"
-            >
-              <Save className="h-4 w-4" />
-              Save
-            </Button>
-            <Button onClick={handleSave} className="gap-2" variant="outline">
-              <RefreshCcw className="h-4 w-4" />
-            </Button>
+
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Input
+                id={`default-${config.id}`}
+                type="checkbox"
+                checked={config.is_default}
+                onChange={(e) =>
+                  onUpdate(config.id, { is_default: e.target.checked })
+                }
+                className="h-4 w-4 rounded border border-gray-300 text-blue-600 focus:ring-blue-500"
+                disabled={
+                  isLoading?.status &&
+                  isLoading?.id === config?.id &&
+                  isLoading?.action === "test"
+                }
+              />
+              <Label htmlFor={`default-${config.id}`}>Default</Label>
+            </div>
           </div>
+
+          <div className="space-y-2">
+            <Label>Connection Status</Label>
+            <div className="flex items-center space-x-2">
+              <div
+                className={`h-3 w-3 rounded-full ${
+                  config.connectionStatus === "active"
+                    ? "bg-green-500 animate-pulse"
+                    : config.connectionStatus === "error"
+                    ? "bg-red-500"
+                    : "bg-gray-400"
+                }`}
+              />
+              <span
+                className={`text-sm font-medium ${
+                  config.connectionStatus === "connected"
+                    ? "text-green-700"
+                    : config.connectionStatus === "error"
+                    ? "text-red-700"
+                    : "text-gray-600"
+                }`}
+              >
+                {config.connectionStatus === "active"
+                  ? "Connected"
+                  : config.connectionStatus === "error"
+                  ? "Connection Failed"
+                  : "Not Connected"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 pt-4">
+          <Button
+            onClick={() => handleTestConnection(config.id)}
+            className="gap-2"
+            variant="secondary"
+            disabled={
+              !config.domain ||
+              !config.port ||
+              (isLoading?.status && isLoading?.id === config?.id)
+            }
+          >
+            {isLoading?.action === "test" &&
+            isLoading?.status &&
+            isLoading?.id === config?.id ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> checking connection
+              </>
+            ) : (
+              <>
+                <Zap className="h-4 w-4" />
+                Test Connection
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={() => handleSave(config.id)}
+            className="gap-2"
+            variant="default"
+          >
+            <Save className="h-4 w-4" />
+            Save
+          </Button>
         </div>
       </CardContent>
     </Card>

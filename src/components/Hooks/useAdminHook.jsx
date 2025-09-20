@@ -15,9 +15,14 @@ const useAdminHook = () => {
   const [headerData, setHeaderData] = useState([]);
   const [itemData, setItemData] = useState([]);
   const [uploadConfig, setUploadConfig] = useState("");
+  const [isLoading, setIsLoading] = useState({
+    action: "",
+    status: false,
+    id: "",
+  });
   const FieldTypes = ["Number", "Boolean", "String", "Date"];
-  const addSystem = async (name, domain, port, id) => {
-    const respone = await addSystemConfig(domain, name, port, id);
+  const addSystem = async (name, domain, port, is_default, id) => {
+    const respone = await addSystemConfig(domain, name, port, id, is_default);
     return respone;
   };
   const AddFields = async (Fields, Type) => {
@@ -44,12 +49,14 @@ const useAdminHook = () => {
     return response;
   };
   const getSystem = async () => {
+    setIsLoading({ action: "get_system", status: true, id: "" });
     const respone = await getSystems();
     if (respone?.messageType == "S") {
       setSystems(respone?.data);
     } else {
       setSystems([]);
     }
+    setIsLoading({ action: "", status: false, id: "" });
   };
   const fetchFields = async () => {
     const response1 = await getFields("Header");
@@ -111,25 +118,38 @@ const useAdminHook = () => {
     }
   };
 
-  const SystemConnectionCheck = async (domain, port) => {
+  const handleTestConnection = async (id) => {
     try {
-      const response = await testConnection(domain, port);
-      return response;
+      setIsLoading({ action: "test", status: true, id: id });
+      const response = await testConnection(id);
+      if (response?.messageType === "S") {
+        setSystems((prev) =>
+          prev.map((sys) =>
+            sys.id === response?.data?.id
+              ? { ...sys, connectionStatus: response?.data?.connectionStatus }
+              : sys
+          )
+        );
+      }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading({ action: "", status: false, id: "" });
     }
   };
+
   useEffect(() => {
     getSystem();
     fetchFields();
     getDocumentType();
-    testConnection("mu2r3d53.otxlab.net", "44300");
+    //testConnection("mu2r3d53.otxlab.net", "44300");
   }, []);
   return {
     addSystem,
     AddFields,
     addDocumentType,
-    SystemConnectionCheck,
+    handleTestConnection,
+    isLoading,
     systems,
     FieldTypes,
     headerData,

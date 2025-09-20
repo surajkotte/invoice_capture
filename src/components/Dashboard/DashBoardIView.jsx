@@ -35,7 +35,7 @@ const DashBoardIView = ({
     if (response?.messageType === "S") {
       dataIViewRef.current?.clearInvoiceData();
       toast({
-        title: "Invoice submitted successfully",
+        title: `Invoice submitted successfully ${response?.data?.document_id}`,
         variant: "default",
       });
       onClose();

@@ -2,9 +2,10 @@ export const addSystemConfig = async (
   system_domain,
   system_name,
   system_port,
-  id
+  id,
+  is_default
 ) => {
-  const data = { system_domain, system_name, system_port, id };
+  const data = { system_domain, system_name, system_port, id, is_default };
   try {
     const response = await fetch("http://localhost:3000/admin/system", {
       method: "POST",
@@ -103,7 +104,7 @@ export const getDocType = async (documents) => {
   }
 };
 
-export const testConnection = async (domain, port) => {
+export const testConnection = async (id) => {
   try {
     const response = await fetch(`http://localhost:3000/connection/check`, {
       method: "POST",
@@ -111,7 +112,7 @@ export const testConnection = async (domain, port) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ domain, port }),
+      body: JSON.stringify({ id }),
     });
     const responseData = await response.json();
     if (responseData?.messageType === "S") {

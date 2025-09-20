@@ -84,7 +84,7 @@ const DashboardList = ({
   setCurrentPage,
 }) => {
   const data = list_data;
-  const itemsPerPage = 10;
+  const itemsPerPage = 20;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const paginatedCourses = data;
   return (
@@ -135,7 +135,7 @@ const DashboardList = ({
                       <Badge variant="outline">{invoice.system_name}</Badge>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {invoice.file_size}
+                      {Math.round((invoice.file_size / 1048476)*100)/100} MB
                     </TableCell>
                   </TableRow>
                 ))}

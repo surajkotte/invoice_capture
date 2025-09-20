@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Children, use } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Grid3x3,
   Plus,
@@ -11,31 +11,27 @@ import {
   Upload,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Link } from "react-router-dom";
-//import { useThemeContext } from "../utils/ThemeProvider";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/Components/ui/button";
-import { useLocation } from "react-router-dom";
 import useAuthHok from "./Hooks/useAuthHook";
 import { useToast } from "./Hooks/useToastHook";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+
 const Menubar = ({ children }) => {
   const { isLoading, signOut } = useAuthHok();
-  const { theme, setTheme } = useTheme();
-  const [lightMode, setLightMode] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const { theme, setTheme } = useTheme(); // useTheme provides the current theme
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef(null);
   const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
-  const currentPath = location.pathname;
   const { logout } = useAuth();
+  const currentPath = location.pathname;
 
   const menuItems = [
     {
       label: "Dashboard",
-      key: "dashbaord",
+      key: "dashboard",
       path: "/dashboard",
       icon: Grid3x3,
     },
@@ -52,15 +48,6 @@ const Menubar = ({ children }) => {
       icon: Upload,
     },
   ];
-  const menuBarClasses = lightMode
-    ? "bg-background border-gray-700"
-    : "bg-gray-50 border-gray-200";
-  const themeClasses = lightMode
-    ? "bg-background text-white"
-    : "bg-white text-gray-900";
-  const userMenuClasses = lightMode
-    ? "bg-gray-800 border-gray-700 text-white"
-    : "bg-white border-gray-200 text-gray-900";
 
   const handleLogout = async () => {
     const response = await signOut();
@@ -81,13 +68,8 @@ const Menubar = ({ children }) => {
   };
 
   const handleThemeToggle = () => {
-    setLightMode((prev) => !prev);
+    setTheme(theme === "light" ? "dark" : "light");
   };
-
-  useEffect(() => {
-    const mode = lightMode ? "light" : "dark";
-    setTheme("dark");
-  }, [lightMode]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -95,7 +77,6 @@ const Menubar = ({ children }) => {
         setShowUserMenu(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -103,9 +84,12 @@ const Menubar = ({ children }) => {
   }, []);
 
   return (
-    <div className={`min-h-screen min-w-screen flex flex-col ${themeClasses}`}>
+    <div className={`h-screen min-w-screen flex flex-col`}>
+      {/* <div
+        className={`h-16 border-b shadow-md flex items-center gap-2 justify-center`}
+      > */}
       <div
-        className={`h-16 border-b shadow-md flex items-center gap-2 ${menuBarClasses} justify-center`}
+        className={`fixed top-0 left-0 right-0 h-16 border-b shadow-md flex items-center gap-2 justify-center z-50 bg-card`}
       >
         <div className="flex justify-start items-center">
           <span className="cursor-pointer ml-4 flex items-center font-bold text-lg">
@@ -136,7 +120,7 @@ const Menubar = ({ children }) => {
             className={`
               flex items-center gap-2 p-3 rounded-md transition-all duration-200
               ${
-                isDarkMode
+                theme === "dark"
                   ? "text-gray-300 hover:bg-gray-700 hover:text-white"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }
@@ -150,43 +134,41 @@ const Menubar = ({ children }) => {
               }`}
             />
           </button>
-
-          {/* User Dropdown Menu */}
           {showUserMenu && (
             <div
               className={`
                 absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg border z-50
-                ${userMenuClasses}
+                ${
+                  theme === "dark"
+                    ? "bg-gray-800 border-gray-700 text-white"
+                    : "bg-white border-gray-200 text-gray-900"
+                }
               `}
             >
               <div className="py-1">
-                {/* Theme Toggle */}
                 <button
                   onClick={handleThemeToggle}
                   className={`
                     w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200
                     ${
-                      isDarkMode
+                      theme === "dark"
                         ? "hover:bg-gray-700 text-gray-300"
                         : "hover:bg-gray-100 text-gray-700"
                     }
                   `}
                 >
-                  {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-                  {isDarkMode ? "Light Mode" : "Dark Mode"}
+                  {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
                 </button>
-
-                {/* Settings */}
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
-                    // Add navigation to settings page
                     console.log("Settings clicked");
                   }}
                   className={`
                     w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200
                     ${
-                      isDarkMode
+                      theme === "dark"
                         ? "hover:bg-gray-700 text-gray-300"
                         : "hover:bg-gray-100 text-gray-700"
                     }
@@ -196,17 +178,16 @@ const Menubar = ({ children }) => {
                   Settings
                 </button>
                 <div
-                  className={`
-                    my-1 border-t
-                    ${isDarkMode ? "border-gray-700" : "border-gray-200"}
-                  `}
+                  className={`my-1 border-t ${
+                    theme === "dark" ? "border-gray-700" : "border-gray-200"
+                  }`}
                 />
                 <button
                   onClick={handleLogout}
                   className={`
                     w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200
                     ${
-                      isDarkMode
+                      theme === "dark"
                         ? "hover:bg-red-900 text-red-400 hover:text-red-300"
                         : "hover:bg-red-50 text-red-600 hover:text-red-700"
                     }
@@ -220,9 +201,7 @@ const Menubar = ({ children }) => {
           )}
         </div>
       </div>
-      <div className={`w-full h-full flex flex-col ${themeClasses}`}>
-        {children}
-      </div>
+      <div className={`w-full h-full flex flex-col mt-16`}>{children}</div>
     </div>
   );
 };
