@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/components/ui/button";
 import useAuthHok from "./Hooks/useAuthHook";
 import { useToast } from "./Hooks/useToastHook";
 import { useAuth } from "../context/AuthContext";

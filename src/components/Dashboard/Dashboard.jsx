@@ -21,7 +21,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import useDashboardHooks from "../Hooks/useDashboardHooks";
-import useDashboardIViewHook from "../Hooks/useDashBoardIViewHooks";
+import useDashboardIViewHook from "../Hooks/useDashboardIViewHooks";
 import DashboardList from "./DashboardList";
 import DashBoardIView from "./DashBoardIView";
 const Dashboard = () => {
@@ -35,6 +35,7 @@ const Dashboard = () => {
     handleFilterChange,
     handleFileChange,
     setDialogOpen,
+    setIsLoading,
     isLoading,
     data,
     searchTerm,
@@ -236,6 +237,10 @@ const Dashboard = () => {
             submit={submit}
             onClose={() => {
               setDialogOpen("");
+              setIsLoading({
+                action: "",
+                state: false,
+              });
             }}
           />
         </div>

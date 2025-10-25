@@ -1,4 +1,4 @@
-import React from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -33,7 +33,7 @@ const UploadDashboard = ({
           <ResizablePanel defaultSize={40} minSize={30}>
             {data && data?.fileName && (
               <iframe
-                src={`http://localhost:3000/files/${data?.fileName}`}
+                src={`${API_URL}/files/${data?.fileName}`}
                 //title={isFileUploaded?.fileName}
                 className="w-full h-full"
                 style={{ border: "none" }}

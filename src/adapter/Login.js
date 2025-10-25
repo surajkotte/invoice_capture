@@ -1,5 +1,6 @@
+const API_URL = import.meta.env.VITE_API_URL;
 export const Login = async (email, password) => {
-  const urlval = "http://localhost:3000/login";
+  const urlval = `${API_URL}/login`;
   try {
     const response = await fetch(urlval, {
       method: "POST",
@@ -17,7 +18,7 @@ export const Login = async (email, password) => {
 };
 
 export const SignUp = async (data) => {
-  const urlval = "http://localhost:3000/signup";
+  const urlval = `${API_URL}/signup`;
   try {
     const response = await fetch(urlval, {
       method: "POST",
@@ -35,7 +36,7 @@ export const SignUp = async (data) => {
 };
 
 export const uploadInvoice = async (formData) => {
-  const response = await fetch("http://localhost:3000/upload", {
+  const response = await fetch(`${API_URL}/upload`, {
     method: "POST",
     body: formData,
     credentials: "include",
@@ -45,7 +46,7 @@ export const uploadInvoice = async (formData) => {
 };
 
 export const AuthCheck = async () => {
-  const urlval = "http://localhost:3000/check";
+  const urlval = `${API_URL}/check`;
   try {
     const responsse = await fetch(urlval, {
       method: "GET",
@@ -57,7 +58,7 @@ export const AuthCheck = async () => {
 };
 
 export const Logout = async () => {
-  const urlval = "http://localhost:3000/logout";
+  const urlval = `${API_URL}/logout`;
   try {
     const response = await fetch(urlval, {
       method: "POST",

@@ -1,6 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
 export const getFields = async () => {
   try {
-    const response = await fetch("http://localhost:3000/admin/Fields", {
+    const response = await fetch(`${API_URL}/admin/Fields`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -15,7 +16,7 @@ export const getFields = async () => {
 
 export const submitData = async (data, backendSystem) => {
   try {
-    const response = await fetch("http://localhost:3000/submit", {
+    const response = await fetch(`${API_URL}/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,16 +37,13 @@ export const submitData = async (data, backendSystem) => {
 
 export const getData = async (currentPage) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/data?page=${currentPage}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`${API_URL}/data?page=${currentPage}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
     const responseData = await response.json();
     return responseData;
   } catch (err) {
@@ -54,7 +52,7 @@ export const getData = async (currentPage) => {
 };
 
 export const uploadInvoicePrompt = async (formData) => {
-  const response = await fetch("http://localhost:3000/prompt", {
+  const response = await fetch(`${API_URL}/prompt`, {
     method: "POST",
     body: formData,
     credentials: "include",
@@ -65,7 +63,7 @@ export const uploadInvoicePrompt = async (formData) => {
 
 export const postMessages = async (filename, message) => {
   try {
-    const response = await fetch("http://localhost:3000/message", {
+    const response = await fetch(`${API_URL}/message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

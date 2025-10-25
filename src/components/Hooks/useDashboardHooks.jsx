@@ -58,9 +58,11 @@ const useDashboardHooks = () => {
       };
     } else {
       const { items, ...rest } = responseData;
+      const itemKey = "Material Descriptions";
+      const materialDescriptions = responseData[itemKey];
       return {
         header: rest,
-        items: items || [],
+        items: items || materialDescriptions || [],
       };
     }
   };
@@ -189,6 +191,7 @@ const useDashboardHooks = () => {
     handleHeaderChange,
     handleItemsChange,
     handleSubmit,
+    setIsLoading,
     rawData,
     systemConnections,
     data,

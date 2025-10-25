@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL;
 export const addSystemConfig = async (
   system_domain,
   system_name,
@@ -7,7 +8,7 @@ export const addSystemConfig = async (
 ) => {
   const data = { system_domain, system_name, system_port, id, is_default };
   try {
-    const response = await fetch("http://localhost:3000/admin/system", {
+    const response = await fetch(`${API_URL}/admin/system`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +25,7 @@ export const addSystemConfig = async (
 
 export const getSystems = async () => {
   try {
-    const response = await fetch("http://localhost:3000/admin/system", {
+    const response = await fetch(`${API_URL}/admin/system`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +41,7 @@ export const getSystems = async () => {
 
 export const addHeaders = async (Fields, Type) => {
   try {
-    const response = await fetch("http://localhost:3000/admin/Fields", {
+    const response = await fetch(`${API_URL}/admin/Fields`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +58,7 @@ export const addHeaders = async (Fields, Type) => {
 
 export const getFields = async (type) => {
   try {
-    const response = await fetch(`http://localhost:3000/admin/Fields/${type}`, {
+    const response = await fetch(`${API_URL}/admin/Fields/${type}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +74,7 @@ export const getFields = async (type) => {
 
 export const addDocType = async (documents, size) => {
   try {
-    const response = await fetch("http://localhost:3000/admin/doctype", {
+    const response = await fetch(`${API_URL}/admin/doctype`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,7 +91,7 @@ export const addDocType = async (documents, size) => {
 
 export const getDocType = async (documents) => {
   try {
-    const response = await fetch("http://localhost:3000/admin/doctype", {
+    const response = await fetch(`${API_URL}/admin/doctype`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -106,7 +107,7 @@ export const getDocType = async (documents) => {
 
 export const testConnection = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/connection/check`, {
+    const response = await fetch(`${API_URL}/connection/check`, {
       method: "POST",
       credentials: "include",
       headers: {
