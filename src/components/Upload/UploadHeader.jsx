@@ -91,7 +91,7 @@ const UploadHeader = ({
                   onChange={(e) =>
                     updateField(field.fieldTechName, e.target.value)
                   }
-                  onClick={() => setActiveField(field.fieldTechName)}
+                  onClick={() => setActiveField(field.name)}
                   className="w-full"
                 />
               ) : field.fieldType === "String" ? (
@@ -101,17 +101,17 @@ const UploadHeader = ({
                   onChange={(e) =>
                     updateField(field.fieldTechName, e.target.value)
                   }
-                  onClick={() => setActiveField(field.fieldTechName)}
+                  onClick={() => setActiveField(field.name)}
                   placeholder={`Enter ${field.name}`}
                 />
               ) : field.fieldType === "Number" ? (
                 <Input
                   id={field.id}
-                  value={data[field.fieldTechName]}
+                  value={data[field.name]}
                   onChange={(e) =>
                     updateField(field.fieldTechName, e.target.value)
                   }
-                  onClick={() => setActiveField(field.fieldTechName)}
+                  onClick={() => setActiveField(field.name)}
                   placeholder={`Enter ${field.name}`}
                 />
               ) : (
@@ -121,7 +121,7 @@ const UploadHeader = ({
                   onChange={(e) =>
                     updateField(field.fieldTechName, e.target.value)
                   }
-                  onClick={() => setActiveField(field.fieldTechName)}
+                  onClick={() => setActiveField(field.name)}
                   placeholder={`Enter additional ${field.name}`}
                   className="min-h-[100px]"
                 />

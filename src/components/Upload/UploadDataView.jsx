@@ -129,16 +129,19 @@ const UploadDataView = ({
       acc[field.fieldTechName] = value;
       return acc;
     }, {});
-    const Item_Data = data?.normalizedData?.items?.map((item) => {
-      let new_item = {};
-      Object.keys(item).forEach((key) => {
-        const field = itemFields?.find((f) => f.name === key);
-        if (field) {
-          new_item[field.fieldTechName] = item[key] || "";
-        }
-      });
-      return new_item;
-    });
+    const Item_Data = data?.normalizedData?.items?.map(
+      (item) => {
+        let new_item = {};
+        Object.keys(item).forEach((key) => {
+          const field = itemFields?.find((f) => f.name === key);
+          if (field) {
+            new_item[field.fieldTechName] = item[key] || "";
+          }
+        });
+        return new_item;
+      },
+      [data]
+    );
 
     setInvoiceData({
       headerData: Header_Data,
@@ -148,7 +151,7 @@ const UploadDataView = ({
       fileType: data?.fileType || "",
       fileSize: data?.fileSize || "",
     });
-  }, [data]);
+  });
   return (
     <div id="form-section" className="w-full h-full overflow-y-auto pr-2">
       <div className="flex flex-col space-y-6 h-full">

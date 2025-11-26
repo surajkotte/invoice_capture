@@ -169,14 +169,7 @@ const UploadDashboard = ({
   const [activeField, setActiveField] = useState(null); // currently selected field
   const [numPages, setNumPages] = useState(null);
   const [highlights, setHighlights] = useState([]);
-  const [invoiceData, setInvoiceData] = useState({
-    headerData: {},
-    itemsData: [],
-    rawFile: "",
-    fileName: "",
-    fileType: "",
-    fileSize: "",
-  });
+  const [invoiceData, setInvoiceData] = useState({ ...data });
 
   // Load PDF
   function onDocumentLoadSuccess({ numPages }) {
@@ -232,13 +225,19 @@ const UploadDashboard = ({
 
     // Map to field
     if (activeField) {
+      console.log(data);
       setInvoiceData((prev) => ({
         ...prev,
-        headerData: {
-          ...prev.headerData,
-          [activeField]: text,
+        normalizedData: {
+          ...prev.normalizedData,
+          header: {
+            ...prev.normalizedData.header,
+            [activeField]: text,
+          },
+          items: [...prev.normalizedData.items], // ensure items remain untouched
         },
       }));
+
       // Optionally clear after mapping
       setActiveField(null);
     }
@@ -277,11 +276,16 @@ const UploadDashboard = ({
 
       // Map to field
       if (activeField) {
+        console.log(data);
         setInvoiceData((prev) => ({
           ...prev,
-          headerData: {
-            ...prev.headerData,
-            [activeField]: text,
+          normalizedData: {
+            ...prev.normalizedData,
+            header: {
+              ...prev.normalizedData.header,
+              [activeField]: text,
+            },
+            items: [...prev.normalizedData.items],
           },
         }));
         setActiveField(null);
@@ -334,7 +338,7 @@ const UploadDashboard = ({
               headerFields={fieldsInfo?.headerData}
               itemFields={fieldsInfo?.itemData}
               view={selectedView}
-              data={data}
+              data={invoiceData}
               submit={submit}
               handleUploadPrompt={handleUploadPrompt}
               setActiveField={setActiveField} // pass down for SCE
