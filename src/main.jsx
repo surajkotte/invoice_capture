@@ -8,6 +8,8 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import "./pdf-text-layer.css";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>

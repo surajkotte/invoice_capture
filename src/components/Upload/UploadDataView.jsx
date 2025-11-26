@@ -11,6 +11,7 @@ const UploadDataView = ({
   data,
   submit,
   handleUploadPrompt,
+  setActiveField,
 }) => {
   const [invoiceData, setInvoiceData] = useState({
     headerData: [],
@@ -124,7 +125,7 @@ const UploadDataView = ({
     const Header_Data = headerFields?.reduce((acc, field) => {
       const value = data?.normalizedData?.header
         ? data?.normalizedData?.header[field.name] || ""
-        : data?.normalizedData[field.name] || "";
+        : data?.normalizedData?.[field.name] || "";
       acc[field.fieldTechName] = value;
       return acc;
     }, {});
@@ -160,12 +161,14 @@ const UploadDataView = ({
               handleSubmit={handleSubmit}
               handleClear={handleClear}
               isLoading={isLoading}
+              setActiveField={setActiveField}
             />
             <UploadItems
               fields={itemFields}
               onChange={handleItemsChange}
               isLoading={isLoading}
               items={invoiceData?.itemsData}
+              setActiveField={setActiveField}
             />
           </>
         ) : (

@@ -22,7 +22,7 @@ import { Plus, Settings, Trash2, Receipt } from "lucide-react";
 import parseDate from "../../utils/DateParser";
 import { UploadConfigDialog } from "./UploadConfigDialog";
 
-const UploadItems = ({ items, onChange, fields }) => {
+const UploadItems = ({ items, onChange, fields, setActiveField }) => {
   const defaultColumns = [{ ...fields }];
   const [columns, setColumns] = useState(() => (fields ? [...fields] : []));
   const [showColumnConfig, setShowColumnConfig] = useState(false);
@@ -72,6 +72,7 @@ const UploadItems = ({ items, onChange, fields }) => {
           onChange={(e) =>
             updateItem(itemindex, column.fieldTechName, e.target.value)
           }
+          onClick={() => setActiveField(column.fieldTechName)}
           className="w-full"
         />
       );
@@ -89,6 +90,7 @@ const UploadItems = ({ items, onChange, fields }) => {
               parseFloat(e.target.value) || 0
             )
           }
+          onClick={() => setActiveField(column.fieldTechName)}
           className="w-full"
         />
       );
@@ -102,6 +104,7 @@ const UploadItems = ({ items, onChange, fields }) => {
           onChange={(e) =>
             updateItem(itemindex, column.fieldTechName, e.target.value)
           }
+          onClick={() => setActiveField(column.fieldTechName)}
           className="w-full"
         />
       );
@@ -134,6 +137,7 @@ const UploadItems = ({ items, onChange, fields }) => {
         onChange={(e) =>
           updateItem(itemindex, column.fieldTechName, e.target.value)
         }
+        onClick={() => setActiveField(column.fieldTechName)}
         className="w-full"
       />
     );

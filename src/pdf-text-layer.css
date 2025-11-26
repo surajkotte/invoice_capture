@@ -1,0 +1,17 @@
+.react-pdf__Page__textContent {
+  color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.react-pdf__Page__textContent span {
+  position: absolute;
+  transform-origin: left top;
+  white-space: pre;
+  pointer-events: all; /* Needed for click */
+  cursor: text;
+}
