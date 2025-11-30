@@ -8,6 +8,7 @@ const useUploadHook = () => {
     action: "",
     state: false,
   });
+  const [sceTemplate, setSceTemplate] = useState({});
   const [backendSystem, setBackendSystem] = useState("");
   const [selectedFile, setSelectedFile] = useState("");
   const [systemConnections, setSystemConnections] = useState(null);
@@ -55,7 +56,7 @@ const useUploadHook = () => {
       action: "Submit",
       state: true,
     });
-    const response = await submitData(data, backendSystem);
+    const response = await submitData(data, backendSystem, sceTemplate);
     if (response?.messageType === "S") {
       setUploadStatus("");
       return response;
@@ -171,6 +172,8 @@ const useUploadHook = () => {
     fieldsData,
     systemConnections,
     backendSystem,
+    sceTemplate,
+    setSceTemplate,
     handleUploadPrompt,
     submit,
     setBackendSystem,

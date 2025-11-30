@@ -165,6 +165,8 @@ const UploadDashboard = ({
   fieldsInfo,
   submit,
   handleUploadPrompt,
+  setSceTemplate,
+  sceTemplate,
 }) => {
   const [activeField, setActiveField] = useState(null); // currently selected field
   const [numPages, setNumPages] = useState(null);
@@ -210,6 +212,7 @@ const UploadDashboard = ({
     if (!nearest) return;
 
     const text = nearest.span.textContent.trim();
+    console.log(text);
     const highlightRect = {
       top: nearest.rect.top - pageRect.top,
       left: nearest.rect.left - pageRect.left,
@@ -225,7 +228,7 @@ const UploadDashboard = ({
 
     // Map to field
     if (activeField) {
-      console.log(data);
+      console.log(invoiceData);
       setInvoiceData((prev) => ({
         ...prev,
         normalizedData: {
@@ -237,7 +240,15 @@ const UploadDashboard = ({
           items: [...prev.normalizedData.items], // ensure items remain untouched
         },
       }));
-
+      if (text) {
+        setSceTemplate((prev) => ({
+          ...prev,
+          [activeField]: {
+            page: pageNumber,
+            rect: highlightRect,
+          },
+        }));
+      }
       // Optionally clear after mapping
       setActiveField(null);
     }

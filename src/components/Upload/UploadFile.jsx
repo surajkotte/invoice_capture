@@ -26,6 +26,8 @@ const UploadFile = () => {
     handleUploadPrompt,
     submit,
     setBackendSystem,
+    sceTemplate,
+    setSceTemplate,
   } = useUploadHook();
 
   return (
@@ -96,6 +98,8 @@ const UploadFile = () => {
               selectedView={activeView}
               fieldsInfo={fieldsData}
               handleUploadPrompt={handleUploadPrompt}
+              sceTemplate={sceTemplate}
+              setSceTemplate={setSceTemplate}
             />
           )}
         </div>

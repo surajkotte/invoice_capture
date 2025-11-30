@@ -107,7 +107,7 @@ const UploadHeader = ({
               ) : field.fieldType === "Number" ? (
                 <Input
                   id={field.id}
-                  value={data[field.name]}
+                  value={data[field.fieldTechName]}
                   onChange={(e) =>
                     updateField(field.fieldTechName, e.target.value)
                   }

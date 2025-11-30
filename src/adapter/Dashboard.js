@@ -14,7 +14,7 @@ export const getFields = async () => {
   }
 };
 
-export const submitData = async (data, backendSystem) => {
+export const submitData = async (data, backendSystem, sceTemplate) => {
   try {
     const response = await fetch(`${API_URL}/submit`, {
       method: "POST",
@@ -25,6 +25,7 @@ export const submitData = async (data, backendSystem) => {
         data: { ...data },
         domain: backendSystem?.system_domain,
         port: backendSystem?.system_port,
+        sceTemplate: sceTemplate,
       }),
       credentials: "include",
     });

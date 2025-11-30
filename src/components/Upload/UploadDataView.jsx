@@ -140,7 +140,6 @@ const UploadDataView = ({
         });
         return new_item;
       },
-      [data]
     );
 
     setInvoiceData({
@@ -151,7 +150,7 @@ const UploadDataView = ({
       fileType: data?.fileType || "",
       fileSize: data?.fileSize || "",
     });
-  });
+  },[data, headerFields, itemFields]);
   return (
     <div id="form-section" className="w-full h-full overflow-y-auto pr-2">
       <div className="flex flex-col space-y-6 h-full">
