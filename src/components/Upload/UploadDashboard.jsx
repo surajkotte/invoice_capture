@@ -177,58 +177,270 @@ const UploadDashboard = ({
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
+// Convert absolute px → normalized 0–1
+function normalizeRect(wrapperRect, rect) {
+  return {
+    top: rect.top / wrapperRect.height,
+    left: rect.left / wrapperRect.width,
+    width: rect.width / wrapperRect.width,
+    height: rect.height / wrapperRect.height,
+  };
+}
 
   // -------------------------------------------------------------------
   // CLICK PDF → nearest text → map to activeField
   // -------------------------------------------------------------------
-  const handlePdfClick = (event, pageNumber) => {
-    const wrapper = event.target.closest(".pdf-page-wrapper");
+  // const handlePdfClick = (event, pageNumber) => {
+  //   const wrapper = event.target.closest(".pdf-page-wrapper");
+  //   if (!wrapper) return;
+
+  //   const pageRect = wrapper.getBoundingClientRect();
+
+  //   const textSpans = wrapper.querySelectorAll(
+  //     ".react-pdf__Page__textContent span"
+  //   );
+
+  //   let nearest = null;
+  //   let nearestDist = Infinity;
+
+  //   const clickX = event.clientX;
+  //   const clickY = event.clientY;
+
+  //   textSpans.forEach((span) => {
+  //     const r = span.getBoundingClientRect();
+  //     const cx = r.left + r.width / 2;
+  //     const cy = r.top + r.height / 2;
+  //     const dist = Math.hypot(cx - clickX, cy - clickY);
+
+  //     if (dist < nearestDist) {
+  //       nearestDist = dist;
+  //       nearest = { span, rect: r };
+  //     }
+  //   });
+
+  //   if (!nearest) return;
+
+  //   const text = nearest.span.textContent.trim();
+  //   console.log(text);
+  //   const highlightRect = {
+  //     top: nearest.rect.top - pageRect.top,
+  //     left: nearest.rect.left - pageRect.left,
+  //     width: nearest.rect.width,
+  //     height: nearest.rect.height,
+  //   };
+
+  //   console.log("Clicked text:", highlightRect, text);
+
+  //   // Add highlight
+  //   setHighlights((prev) => [
+  //     ...prev,
+  //     { page: pageNumber, text, field: activeField, rects: [highlightRect] },
+  //   ]);
+
+  //   // Map to field
+  //   if (activeField) {
+  //     console.log(invoiceData);
+  //     setInvoiceData((prev) => ({
+  //       ...prev,
+  //       normalizedData: {
+  //         ...prev.normalizedData,
+  //         header: {
+  //           ...prev.normalizedData.header,
+  //           [activeField]: text,
+  //         },
+  //         items: [...prev.normalizedData.items], // ensure items remain untouched
+  //       },
+  //     }));
+  //     if (text) {
+  //       setSceTemplate((prev) => ({
+  //         ...prev,
+  //         [activeField]: {
+  //           page: pageNumber,
+  //           rect: highlightRect,
+  //         },
+  //       }));
+  //     }
+  //     // Optionally clear after mapping
+  //     setActiveField(null);
+  //   }
+  // };
+const handlePdfClick = (event, pageNumber) => {
+  const wrapper = event.target.closest(".pdf-page-wrapper");
+  if (!wrapper) return;
+
+  const pageRect = wrapper.getBoundingClientRect();
+
+  const textSpans = wrapper.querySelectorAll(
+    ".react-pdf__Page__textContent span"
+  );
+
+  let nearest = null;
+  let nearestDist = Infinity;
+
+  const clickX = event.clientX;
+  const clickY = event.clientY;
+
+  textSpans.forEach((span) => {
+    const r = span.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dist = Math.hypot(cx - clickX, cy - clickY);
+
+    if (dist < nearestDist) {
+      nearestDist = dist;
+      nearest = { span, rect: r };
+    }
+  });
+
+  if (!nearest) return;
+
+  const text = nearest.span.textContent.trim();
+
+  // Original rectangle in rendered pixel coords
+  const abs = {
+    top: nearest.rect.top - pageRect.top,
+    left: nearest.rect.left - pageRect.left,
+    width: nearest.rect.width,
+    height: nearest.rect.height,
+  };
+
+  // NORMALIZE (0–1)
+  const norm = normalizeRect(
+    { width: pageRect.width, height: pageRect.height },
+    abs
+  );
+
+  // Save highlight (using pixel coords for UI only)
+  setHighlights((prev) => [
+    ...prev,
+    { page: pageNumber, text, field: activeField, rects: [abs] },
+  ]);
+
+  // SAVE NORMALIZED TEMPLATE
+  if (activeField) {
+    setSceTemplate((prev) => ({
+      ...prev,
+      [activeField]: {
+        page: pageNumber,
+        rect: norm, // <-- normalized rectangle (0–1)
+      },
+    }));
+
+    // also update extracted text in invoiceData
+    setInvoiceData((prev) => ({
+      ...prev,
+      normalizedData: {
+        ...prev.normalizedData,
+        header: {
+          ...prev.normalizedData.header,
+          [activeField]: text,
+        },
+        items: [...prev.normalizedData.items],
+      },
+    }));
+
+    setActiveField(null);
+  }
+};
+
+  // -------------------------------------------------------------------
+  // TEXT SELECTION → map to activeField
+  // -------------------------------------------------------------------
+  // useEffect(() => {
+  //   const handleMouseUp = () => {
+  //     const sel = window.getSelection();
+  //     if (!sel || sel.isCollapsed) return;
+
+  //     const range = sel.getRangeAt(0);
+  //     const wrapper =
+  //       range.startContainer.parentElement.closest(".pdf-page-wrapper");
+  //     if (!wrapper) return;
+
+  //     const pageNumber = parseInt(wrapper.dataset.pageNumber);
+  //     const wrapperRect = wrapper.getBoundingClientRect();
+
+  //     const rects = Array.from(range.getClientRects()).map((r) => ({
+  //       top: r.top - wrapperRect.top,
+  //       left: r.left - wrapperRect.left,
+  //       width: r.width,
+  //       height: r.height,
+  //     }));
+
+  //     const text = sel.toString().trim();
+
+  //     // Add highlight
+  //     setHighlights((prev) => [
+  //       ...prev,
+  //       { page: pageNumber, text, field: activeField, rects },
+  //     ]);
+
+  //     // Map to field
+  //     if (activeField) {
+  //       console.log(data);
+  //       setInvoiceData((prev) => ({
+  //         ...prev,
+  //         normalizedData: {
+  //           ...prev.normalizedData,
+  //           header: {
+  //             ...prev.normalizedData.header,
+  //             [activeField]: text,
+  //           },
+  //           items: [...prev.normalizedData.items],
+  //         },
+  //       }));
+  //       setActiveField(null);
+  //     }
+
+  //     sel.removeAllRanges();
+  //   };
+
+  //   document.addEventListener("mouseup", handleMouseUp);
+  //   return () => document.removeEventListener("mouseup", handleMouseUp);
+  // }, [activeField]);
+  useEffect(() => {
+  const handleMouseUp = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) return;
+
+    const range = sel.getRangeAt(0);
+    const wrapper =
+      range.startContainer.parentElement.closest(".pdf-page-wrapper");
     if (!wrapper) return;
 
-    const pageRect = wrapper.getBoundingClientRect();
+    const pageNumber = parseInt(wrapper.dataset.pageNumber);
+    const wrapperRect = wrapper.getBoundingClientRect();
 
-    const textSpans = wrapper.querySelectorAll(
-      ".react-pdf__Page__textContent span"
-    );
+    const pixelRects = Array.from(range.getClientRects()).map((r) => ({
+      top: r.top - wrapperRect.top,
+      left: r.left - wrapperRect.left,
+      width: r.width,
+      height: r.height,
+    }));
 
-    let nearest = null;
-    let nearestDist = Infinity;
+    const text = sel.toString().trim();
 
-    const clickX = event.clientX;
-    const clickY = event.clientY;
-
-    textSpans.forEach((span) => {
-      const r = span.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const dist = Math.hypot(cx - clickX, cy - clickY);
-
-      if (dist < nearestDist) {
-        nearestDist = dist;
-        nearest = { span, rect: r };
-      }
-    });
-
-    if (!nearest) return;
-
-    const text = nearest.span.textContent.trim();
-    console.log(text);
-    const highlightRect = {
-      top: nearest.rect.top - pageRect.top,
-      left: nearest.rect.left - pageRect.left,
-      width: nearest.rect.width,
-      height: nearest.rect.height,
-    };
-
-    // Add highlight
+    // Save highlight (pixel coords)
     setHighlights((prev) => [
       ...prev,
-      { page: pageNumber, text, field: activeField, rects: [highlightRect] },
+      { page: pageNumber, text, field: activeField, rects: pixelRects },
     ]);
 
-    // Map to field
+    // Normalize FIRST rect (multi-line selection still ok)
     if (activeField) {
-      console.log(invoiceData);
+      const firstAbs = pixelRects[0];
+      const norm = normalizeRect(
+        { width: wrapperRect.width, height: wrapperRect.height },
+        firstAbs
+      );
+
+      setSceTemplate((prev) => ({
+        ...prev,
+        [activeField]: {
+          page: pageNumber,
+          rect: norm, // normalized coords saved
+        },
+      }));
+
       setInvoiceData((prev) => ({
         ...prev,
         normalizedData: {
@@ -237,77 +449,20 @@ const UploadDashboard = ({
             ...prev.normalizedData.header,
             [activeField]: text,
           },
-          items: [...prev.normalizedData.items], // ensure items remain untouched
+          items: [...prev.normalizedData.items],
         },
       }));
-      if (text) {
-        setSceTemplate((prev) => ({
-          ...prev,
-          [activeField]: {
-            page: pageNumber,
-            rect: highlightRect,
-          },
-        }));
-      }
-      // Optionally clear after mapping
+
       setActiveField(null);
     }
+
+    sel.removeAllRanges();
   };
 
-  // -------------------------------------------------------------------
-  // TEXT SELECTION → map to activeField
-  // -------------------------------------------------------------------
-  useEffect(() => {
-    const handleMouseUp = () => {
-      const sel = window.getSelection();
-      if (!sel || sel.isCollapsed) return;
+  document.addEventListener("mouseup", handleMouseUp);
+  return () => document.removeEventListener("mouseup", handleMouseUp);
+}, [activeField]);
 
-      const range = sel.getRangeAt(0);
-      const wrapper =
-        range.startContainer.parentElement.closest(".pdf-page-wrapper");
-      if (!wrapper) return;
-
-      const pageNumber = parseInt(wrapper.dataset.pageNumber);
-      const wrapperRect = wrapper.getBoundingClientRect();
-
-      const rects = Array.from(range.getClientRects()).map((r) => ({
-        top: r.top - wrapperRect.top,
-        left: r.left - wrapperRect.left,
-        width: r.width,
-        height: r.height,
-      }));
-
-      const text = sel.toString().trim();
-
-      // Add highlight
-      setHighlights((prev) => [
-        ...prev,
-        { page: pageNumber, text, field: activeField, rects },
-      ]);
-
-      // Map to field
-      if (activeField) {
-        console.log(data);
-        setInvoiceData((prev) => ({
-          ...prev,
-          normalizedData: {
-            ...prev.normalizedData,
-            header: {
-              ...prev.normalizedData.header,
-              [activeField]: text,
-            },
-            items: [...prev.normalizedData.items],
-          },
-        }));
-        setActiveField(null);
-      }
-
-      sel.removeAllRanges();
-    };
-
-    document.addEventListener("mouseup", handleMouseUp);
-    return () => document.removeEventListener("mouseup", handleMouseUp);
-  }, [activeField]);
 
   // -------------------------------------------------------------------
   // RENDER HIGHLIGHTS
