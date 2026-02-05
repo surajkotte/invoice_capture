@@ -3,7 +3,7 @@ import UploadHeader from "./UploadHeader";
 import UploadItems from "./UploadItems";
 import { UploadPrompts } from "./UploadPrompts";
 import { useToast } from "../Hooks/useToastHook";
-import { postMessages } from "../../adapter/Dashboard";
+import { postMessages, savePrompt } from "../../adapter/Dashboard";
 const UploadDataView = ({
   headerFields,
   itemFields,
@@ -25,6 +25,7 @@ const UploadDataView = ({
     { role: "system", content: "How can I assist you today?" },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaveLoading, setIsSaveLoading] = useState(false);
 
   const { toast } = useToast();
   const handleSubmit = async () => {
@@ -59,6 +60,27 @@ const UploadDataView = ({
       setIsLoading(false);
     }
   };
+  const handleSave =async (prompt)=>{
+    setIsSaveLoading(true);
+    try{
+      const response = await savePrompt(prompt, data?.fileName);
+      if(response?.messageType === "S"){
+        toast({
+          title: "Prompt saved successfully",
+          variant: "default",
+        });
+      }else{
+        throw new Error(response?.message || "Failed to save prompt");
+      }
+    }catch(err){
+      toast({
+        title: err?.message || "Failed to save prompt",
+        variant: "destructive",
+      });
+    }finally{
+      setIsSaveLoading(false);
+    } 
+  }
   const handleClear = () => {
     console.log(invoiceData)
     setInvoiceData({
@@ -178,6 +200,8 @@ const UploadDataView = ({
           <UploadPrompts
             onSendPrompt={handlePrompt}
             isLoading={isLoading}
+            onSavePrompt={handleSave}
+            isSaveLoading={isSaveLoading}
             onSendChat={onHandleChat}
             messages={messages}
           />

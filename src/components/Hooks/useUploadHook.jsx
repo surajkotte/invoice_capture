@@ -130,6 +130,7 @@ const useUploadHook = () => {
     });
     const formData = new FormData();
     formData.append("file", selectedFile);
+    formData.append("filename", data?.fileName);
     formData.append("prompt", promptMessage);
     try {
       fetchFields();

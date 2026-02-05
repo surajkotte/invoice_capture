@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Eye, MessageSquare } from "lucide-react";
@@ -29,7 +29,6 @@ const UploadFile = () => {
     sceTemplate,
     setSceTemplate,
   } = useUploadHook();
-
   return (
     <div className="h-full w-full space-y-6">
       <div className="border-b">

@@ -81,3 +81,23 @@ export const postMessages = async (filename, message) => {
     console.log(error);
   }
 };
+
+export const savePrompt = async (prompt, filename) => {
+  try {
+    const response = await fetch(`${API_URL}/save/prompt`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        filename: filename,
+      }),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    console.log(error);
+  }
+};

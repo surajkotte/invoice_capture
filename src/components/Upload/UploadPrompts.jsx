@@ -3,12 +3,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Send, Sparkles, MessageSquare, Edit3, Loader2 } from "lucide-react";
+import { Send, Sparkles, MessageSquare, Edit3, Loader2, SaveIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const UploadPrompts = ({
   onSendPrompt,
   isLoading,
+  isSaveLoading,
+  onSavePrompt,
   disabled = false,
   processingStage,
   messages,
@@ -20,6 +22,7 @@ export const UploadPrompts = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const action = e.nativeEvent.submitter.name
     if (!prompt.trim()) return;
 
     if (mode === "chat") {
@@ -27,7 +30,13 @@ export const UploadPrompts = ({
       onSendChat(newMessage);
       setPrompt("");
     } else {
-      onSendPrompt(prompt.trim(), mode);
+      if( action === "save"){
+        // Implement save functionality here (e.g., save to local storage or backend)
+        onSavePrompt(prompt.trim());
+        console.log("Prompt saved:", prompt.trim());
+      }else{
+        onSendPrompt(prompt.trim(), mode);
+      }
     }
   };
 
@@ -177,10 +186,11 @@ export const UploadPrompts = ({
             <Send className="h-4 w-4" />
           </Button>
         ) : (
+          <div className="flex flex-col gap-2 w-full">
           <Button
             type="submit"
             name="prompt"
-            disabled={disabled || !prompt.trim() || isLoading}
+            disabled={disabled || !prompt.trim() || isLoading || isSaveLoading}
             className="w-full bg-primary hover:bg-primary-hover"
           >
             {isLoading ? (
@@ -194,6 +204,24 @@ export const UploadPrompts = ({
               </>
             )}
           </Button>
+          <Button
+            type="submit"
+            name="save"
+            disabled={disabled || !prompt.trim() || isSaveLoading}
+            className="w-full bg-primary hover:bg-primary-hover"
+          >
+            {isSaveLoading ? (
+              <>
+                <Loader2 className=" h-4 w-4 mr-2 animate-spin" />
+                Saving prompt
+              </>
+            ) : (
+              <>
+                <SaveIcon className="h-4 w-4 mr-2 " /> Save prompt
+              </>
+            )}
+          </Button>
+          </div>
         )}
       </form>
     </Card>
