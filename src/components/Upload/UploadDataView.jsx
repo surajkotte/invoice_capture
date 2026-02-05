@@ -59,7 +59,8 @@ const UploadDataView = ({
       setIsLoading(false);
     }
   };
-  const handleClear = async () => {
+  const handleClear = () => {
+    console.log(invoiceData)
     setInvoiceData({
       headerData: [],
       itemsData: [],
