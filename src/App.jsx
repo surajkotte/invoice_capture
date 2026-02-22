@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
 import AuthenticationCheck from "./components/AuthenticationCheck";
+import Analytics from "./components/Analytics/Analytics";
 import LoginAuthCheck from "./components/LoginAuthCheck";
 import SignUp from "./components/Login/SignUp";
 import UploadFile from "./components/Upload/UploadFile";
@@ -39,6 +40,10 @@ export const reactRouter = createBrowserRouter([
       {
         path: "/upload",
         element: <UploadFile />,
+      },
+      {
+        path: "/analytics",
+        element: <Analytics />,
       },
     ],
   },

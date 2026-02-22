@@ -20,6 +20,7 @@ const Admin = () => {
     AddFields,
     addDocumentType,
     handleTestConnection,
+    delete_system,
     systems,
     FieldTypes,
     headerData,
@@ -95,8 +96,22 @@ const Admin = () => {
     );
   };
 
-  const removeSystemConfig = (id) => {
-    setSystemConfigs(systemConfigs.filter((config) => config.id !== id));
+  const removeSystemConfig = async(id) => {
+    const response = await delete_system(id);
+    if(response?.messageType == 'S'){
+      toast({
+          title: "Success",
+          description: "System config removed successfully",
+          variant: "success",
+      })
+      setSystemConfigs(systemConfigs.filter((config) => config.id !== id));
+    }else{
+            toast({
+          title: "Error",
+          description: "Unable to delete System config, Please contact system administrator",
+          variant: "Error",
+      })
+    }
   };
 
   // Field handlers
@@ -167,8 +182,8 @@ const Admin = () => {
     }
   };
 
-  const handleItemFieldsSave = (Fields) => {
-    const response = AddFields(Fields, "Item");
+  const handleItemFieldsSave = async (Fields) => {
+    const response = await AddFields(Fields, "Item");
     if (response?.messageType === "S") {
       toast({
         title: "Success",

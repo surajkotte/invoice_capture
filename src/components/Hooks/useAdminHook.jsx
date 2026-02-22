@@ -7,8 +7,8 @@ import {
   getFields,
   getSystems,
   testConnection,
+  delete_systemconfig
 } from "../../adapter/admin";
-import { te } from "react-day-picker/locale";
 
 const useAdminHook = () => {
   const [systems, setSystems] = useState([]);
@@ -137,7 +137,23 @@ const useAdminHook = () => {
       setIsLoading({ action: "", status: false, id: "" });
     }
   };
-
+    const delete_system = async (id)=>{
+    try{
+      setIsLoading({
+        action: "delete",
+        state: true,
+      })
+      const response = await delete_systemconfig(id);
+      return response;
+    }catch(err){
+      console.log(err)
+    }finally{
+        setIsLoading({
+        action: "",
+        state: false,
+      })
+    }
+  }
   useEffect(() => {
     getSystem();
     fetchFields();
@@ -149,6 +165,7 @@ const useAdminHook = () => {
     AddFields,
     addDocumentType,
     handleTestConnection,
+    delete_system,
     isLoading,
     systems,
     FieldTypes,

@@ -266,7 +266,9 @@ const norm = normalizeRect(boundingAbs, pageRect, pdfPage);
   document.addEventListener("mouseup", handleMouseUp);
   return () => document.removeEventListener("mouseup", handleMouseUp);
 }, [activeField]);
-
+useEffect(() => {
+    setInvoiceData({ ...data });
+  }, [data]);
 
   // -------------------------------------------------------------------
   // RENDER HIGHLIGHTS
@@ -318,54 +320,49 @@ const norm = normalizeRect(boundingAbs, pageRect, pdfPage);
           <ResizableHandle withHandle />
 
           <ResizablePanel defaultSize={40} minSize={30}>
-            {data?.fileName && data?.fileType === '.pdf' ? (
-              <Document
-                file={`${API_URL}/files/${data.fileName}`}
-                onLoadSuccess={onDocumentLoadSuccess}
-              >
-                {Array.from(new Array(numPages), (_, i) => {
-                  const pageNum = i + 1;
-                  return (
-                    <div
-                      key={pageNum}
-                      className="relative pdf-page-wrapper"
-                      data-page-number={pageNum}
-                      style={{ marginBottom: 20 }}
-                    >
-                      <Page
-                        pageNumber={pageNum}
-                        renderTextLayer={true}
-                        renderAnnotationLayer={false}
-                        scale={1.0}
-                          onRenderSuccess={(page) => {
-    pageRefs.current[pageNum] = page;
-  }}
-                        onClick={(e) => handlePdfClick(e, pageNum)}
-                      />
-                      {renderHighlightLayer(pageNum)}
-                    </div>
-                  );
-                })}
-              </Document>
-            ):(
-              <div className="flex items-center justify-center h-full text-muted-foreground">
-                <iframe
-                key={data?.fileName}
-                  src={
-                    data?.fileName
-                      ? `${API_URL}/files/${data.fileName}`
-                      : "about:blank"
-                  }
-                  title="Uploaded File"
-                  className="w-full h-full"
-                  style={{ 
-          border: '1px solid #ccc',
-          backgroundColor: '#fff' 
-        }}
-                />
-              </div>
-            )
-            }
+<div className="h-full w-full overflow-y-auto bg-slate-100 p-4">
+    {data?.fileName && data?.fileType === '.pdf' ? (
+      <Document
+        file={`${API_URL}/files/${data.fileName}`}
+        onLoadSuccess={onDocumentLoadSuccess}
+        // Centers the pages within the scrollable area
+        className="flex flex-col items-center" 
+      >
+        {Array.from(new Array(numPages), (_, i) => {
+          const pageNum = i + 1;
+          return (
+            <div
+              key={pageNum}
+              className="relative pdf-page-wrapper shadow-lg"
+              data-page-number={pageNum}
+              style={{ marginBottom: 20 }}
+            >
+              <Page
+                pageNumber={pageNum}
+                renderTextLayer={true}
+                renderAnnotationLayer={false}
+                scale={1}
+                onRenderSuccess={(page) => {
+                  pageRefs.current[pageNum] = page;
+                }}
+                onClick={(e) => handlePdfClick(e, pageNum)}
+              />
+              {renderHighlightLayer(pageNum)}
+            </div>
+          );
+        })}
+      </Document>
+    ) : (
+      <div className="flex items-center justify-center h-full text-muted-foreground">
+        <iframe
+          key={data?.fileName}
+          src={data?.fileName ? `${API_URL}/files/${data.fileName}` : "about:blank"}
+          title="Uploaded File"
+          className="w-full h-full border-none bg-white"
+        />
+      </div>
+    )}
+  </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

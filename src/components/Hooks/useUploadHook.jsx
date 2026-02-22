@@ -81,14 +81,14 @@ const useUploadHook = () => {
         setData({
           normalizedData,
           fileName: response?.fileName,
-          base64File: response?.base64File,
+          base64File: response?.base64Files,
           fileType: response?.fileType,
           fileSize: response?.fileSize,
         });
 
         setUploadStatus("uploaded");
       } else {
-        alert(response?.message);
+        alert(response?.error);
       }
     } catch (error) {
       alert(error.message);
@@ -145,8 +145,10 @@ const useUploadHook = () => {
           fileSize: response?.fileSize,
         });
         setUploadStatus("uploaded");
+        return response;
       } else {
         alert(response?.message);
+        return response;
       }
     } catch (error) {
       alert(error.message);

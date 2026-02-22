@@ -126,3 +126,25 @@ export const testConnection = async (id) => {
     return { messageType: "E", message: "Connection failed" };
   }
 };
+
+export const delete_systemconfig = async(id)=>{
+  try{
+    const response = await fetch(`${API_URL}/admin/system/delete`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+    const responseData = await response.json();
+    if (responseData?.messageType === "S") {
+      return {messageType:'S', message:'Data deleted successfully'}
+    } else {
+      return { messageType: "E", message: "Connection failed" };
+    }
+  }catch(err){
+    console.log(err);
+    return { messageType: "E", message: "Unable to delete system config, Please check with administrator" };
+  }
+}

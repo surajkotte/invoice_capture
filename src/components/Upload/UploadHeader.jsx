@@ -28,7 +28,7 @@ const UploadHeader = ({
     onChange(updatedData);
   };
   return (
-    <Card className="shadow-md border border-muted h-full">
+    <Card className="shadow-md border border-muted ">
       <CardHeader className="bg-muted/50 border-b">
         <CardTitle className="flex items-center gap-2 text-lg font-semibold text-primary justify-between">
           <div className="flex items-center gap-2">
