@@ -53,16 +53,20 @@ export const getData = async (currentPage) => {
 };
 
 export const uploadInvoicePrompt = async (formData) => {
+  console.log(formData)
   const response = await fetch(`${API_URL}/prompt`, {
     method: "POST",
-    body: formData,
+    headers: {
+        "Content-Type": "application/json",
+      },
+    body:  JSON.stringify({...formData}),
     credentials: "include",
   });
   const responseData = await response.json();
   return responseData;
 };
 
-export const postMessages = async (filename, message) => {
+export const postMessages = async (filename, message, session_id) => {
   try {
     const response = await fetch(`${API_URL}/message`, {
       method: "POST",
@@ -72,6 +76,7 @@ export const postMessages = async (filename, message) => {
       body: JSON.stringify({
         filename: filename,
         message: message,
+        session_doc_id:session_id
       }),
       credentials: "include",
     });
@@ -101,3 +106,17 @@ export const savePrompt = async (prompt, filename) => {
     console.log(error);
   }
 };
+
+export const getLogs = async () => {
+  try {
+    const response = await fetch(`${API_URL}/analytics/logs`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    return{ messageType:"E", message:error.message}
+  }
+}

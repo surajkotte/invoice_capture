@@ -20,6 +20,7 @@ const UploadDataView = ({
     fileName: "",
     fileType: "",
     fileSize: "",
+    log_data:""
   });
   const [messages, setMessages] = useState([
     { role: "system", content: "How can I assist you today?" },
@@ -44,6 +45,7 @@ const UploadDataView = ({
           fileName: "",
           fileType: "",
           fileSize: "",
+          log_data:""
         });
       } else {
         toast({
@@ -129,7 +131,8 @@ const UploadDataView = ({
     setIsLoading(true);
     const response = await postMessages(
       invoiceData?.fileName,
-      newChat?.content
+      newChat?.content,
+      invoiceData?.log_data?.session_doc_id,
     );
     if (response?.messageType === "S") {
       setMessages((prev) => [
@@ -145,6 +148,8 @@ const UploadDataView = ({
     setIsLoading(false);
   };
   useEffect(() => {
+    console.log("in data view")
+    console.log(data)
     const Header_Data = headerFields?.reduce((acc, field) => {
       const value = data?.normalizedData?.header
         ? data?.normalizedData?.header[field.name] || ""
@@ -172,6 +177,7 @@ const UploadDataView = ({
       fileName: data?.fileName || "",
       fileType: data?.fileType || "",
       fileSize: data?.fileSize || "",
+      log_data: data?.log_data || ""
     });
   },[data, headerFields, itemFields]);
   return (

@@ -85,6 +85,7 @@ const useDashboardHooks = () => {
           base64File: response?.base64File,
           fileType: response?.fileType,
           fileSize: response?.fileSize,
+          log_data: response?.log_data
         });
         // setRawData(response?.base64File);
         setDialogOpen(response?.data);
