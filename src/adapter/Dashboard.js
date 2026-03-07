@@ -36,9 +36,9 @@ export const submitData = async (data, backendSystem, sceTemplate) => {
   }
 };
 
-export const getData = async (currentPage) => {
+export const getData = async (currentPage, filters = {}) => {
   try {
-    const response = await fetch(`${API_URL}/data?page=${currentPage}`, {
+    const response = await fetch(`${API_URL}/data?page=${currentPage}&filters=${JSON.stringify(filters)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

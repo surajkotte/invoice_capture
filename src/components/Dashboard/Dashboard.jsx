@@ -49,7 +49,7 @@ const Dashboard = () => {
     itemData,
     systemConnections,
   } = useDashboardHooks();
-  const { submit, setCurrentPage, currentPage, listData, isSubmitLoading } =
+  const { submit, setCurrentPage, currentPage, listData, isSubmitLoading, filters, setFilters } =
     useDashboardIViewHook();
   const inputRef = useRef(null);
   return (
@@ -124,18 +124,20 @@ const Dashboard = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search invoices..."
-              value={searchTerm}
+              placeholder="Search Reg Id's or Usernames"
+              value={filters.searchTerm}
               onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleFilterChange();
+                setFilters((prev) => ({
+                  ...prev,
+                  searchTerm: e.target.value,
+                }));
               }}
               className="pl-10"
             />
           </div>
 
           {/* Status */}
-          <Select value={status} onValueChange={setStatus}>
+          {/* <Select value={status} onValueChange={setStatus}>
             <SelectTrigger>
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -145,23 +147,23 @@ const Dashboard = () => {
               <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="failed">Failed</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* Document Type */}
-          <Select value={documentType} onValueChange={setDocumentType}>
+          <Select value={filters.documentType} onValueChange={(value) => setFilters((prev) => ({ ...prev, documentType: value }))}>
             <SelectTrigger>
               <SelectValue placeholder="Document Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="xml">XML</SelectItem>
               <SelectItem value="pdf">PDF</SelectItem>
-              <SelectItem value="csv">CSV</SelectItem>
-              <SelectItem value="json">JSON</SelectItem>
+              <SelectItem value="csv">DOCX</SelectItem>
+              <SelectItem value="json">TEXT</SelectItem>
             </SelectContent>
           </Select>
 
           {/* User */}
-          <Select value={user} onValueChange={setUser}>
+          {/* <Select value={user} onValueChange={setUser}>
             <SelectTrigger>
               <SelectValue placeholder="User" />
             </SelectTrigger>
@@ -171,7 +173,7 @@ const Dashboard = () => {
               <SelectItem value="mike.johnson">Mike Johnson</SelectItem>
               <SelectItem value="sarah.wilson">Sarah Wilson</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* Date Range */}
           <Popover>
@@ -180,18 +182,18 @@ const Dashboard = () => {
                 variant="outline"
                 className={cn(
                   "justify-start text-left font-normal",
-                  !dateRange.from && "text-muted-foreground"
+                  !dateRange.from && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange.from ? (
-                  dateRange.to ? (
+                {filters.dateRange.from ? (
+                  filters.dateRange.to ? (
                     <>
-                      {format(dateRange.from, "LLL dd")} -{" "}
-                      {format(dateRange.to, "LLL dd")}
+                      {format(filters.dateRange.from, "LLL dd")} -{" "}
+                      {format(filters.dateRange.to, "LLL dd")}
                     </>
                   ) : (
-                    format(dateRange.from, "LLL dd, y")
+                    format(filters.dateRange.from, "LLL dd, y")
                   )
                 ) : (
                   <span>Date range</span>
@@ -202,20 +204,17 @@ const Dashboard = () => {
               <Calendar
                 initialFocus
                 mode="range"
-                defaultMonth={dateRange.from}
-                selected={dateRange}
-                onSelect={setDateRange}
+                defaultMonth={filters.dateRange.from}
+                selected={filters.dateRange}
+                onSelect={(dateRange) => setFilters((prev) => ({ ...prev, 'dateRange':{
+                  from: dateRange?.from,
+                  to: dateRange?.to,
+                } }))}
                 numberOfMonths={2}
                 className="p-3 pointer-events-auto"
               />
             </PopoverContent>
           </Popover>
-        </div>
-
-        <div className="flex justify-end">
-          <Button onClick={handleFilterChange} className="ml-auto">
-            Apply Filters
-          </Button>
         </div>
       </Card>
       <DashboardList
