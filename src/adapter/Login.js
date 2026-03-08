@@ -39,6 +39,10 @@ export const uploadInvoice = async (formData) => {
   const response = await fetch(`${API_URL}/upload`, {
     method: "POST",
     body: formData,
+    headers: {
+      // "Content-Type": "multipart/form-data", // Let the browser set this boundary for multipart data
+      "X-CSRF-Token": sessionStorage.getItem("csrfToken") || "",
+    },
     credentials: "include",
   });
   const responseData = await response.json();
@@ -48,9 +52,14 @@ export const uploadInvoice = async (formData) => {
 export const AuthCheck = async () => {
   const urlval = `${API_URL}/check`;
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const responsse = await fetch(urlval, {
       method: "GET",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
     });
     const responseData = await responsse.json();
     return responseData;

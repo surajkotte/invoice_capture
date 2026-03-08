@@ -11,14 +11,27 @@ const useAuthHok = () => {
   const signin = async (data) => {
     setIsLoading(true);
     const response = await Login(data?.email, data.password);
+    if(response?.messageType === "S"){
+      const { csrfToken, ...userData } = response.data;
+      if (csrfToken) {
+        sessionStorage.setItem("csrfToken", csrfToken);
+      }
+    }
     setIsLoading(false);
     return response;
   };
   const signOut = async () => {
+    try{
     setIsLoading(true);
     const respone = await Logout();
-    setIsLoading(false);
+
     return respone;
+    }catch(err){
+      console.log(err);
+    }finally{
+      sessionStorage.removeItem("csrfToken");
+      setIsLoading(false);
+    }
   };
   return {
     isLoading,

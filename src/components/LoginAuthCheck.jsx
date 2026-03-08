@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthCheck } from "../adapter/Login";
 import { useAuth } from "../context/AuthContext";
+import Spinner from "./ui/spinner";
 
 const LoginAuthCheck = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(null);
@@ -27,7 +28,7 @@ const LoginAuthCheck = ({ children }) => {
   }, [location.pathname]);
 
   if (authenticated === null) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (authenticated) {

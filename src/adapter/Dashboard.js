@@ -1,10 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL;
 export const getFields = async () => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/Fields`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
     });
     const responseData = await response.json();
@@ -16,10 +18,12 @@ export const getFields = async () => {
 
 export const submitData = async (data, backendSystem, sceTemplate) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       body: JSON.stringify({
         data: { ...data },
@@ -36,28 +40,56 @@ export const submitData = async (data, backendSystem, sceTemplate) => {
   }
 };
 
+// export const getData = async (currentPage, filters = {}) => {
+//   try {
+//     const csrfToken = sessionStorage?.getItem("csrfToken") || "";
+//     console.log("csrfToken:", csrfToken);
+//     const response = await fetch(`${API_URL}/data?page=${currentPage}&filters=${JSON.stringify(filters)}`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "X-CSRF-Token": csrfToken,
+//       },
+//       credentials: "include",
+//     });
+//     const responseData = await response.json();
+//     return responseData;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 export const getData = async (currentPage, filters = {}) => {
   try {
-    const response = await fetch(`${API_URL}/data?page=${currentPage}&filters=${JSON.stringify(filters)}`, {
+    const csrfToken = sessionStorage?.getItem("csrfToken") || "";
+    console.log("csrfToken:", csrfToken);
+    const params = new URLSearchParams({
+      page: currentPage,
+      filters: JSON.stringify(filters) 
+    });
+    const url = `${API_URL}/data?${params.toString()}`;
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
       },
       credentials: "include",
     });
+    
     const responseData = await response.json();
     return responseData;
   } catch (err) {
     console.log(err);
   }
 };
-
 export const uploadInvoicePrompt = async (formData) => {
   console.log(formData)
+  const csrfToken = sessionStorage.getItem("csrfToken");
   const response = await fetch(`${API_URL}/prompt`, {
     method: "POST",
     headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
     body:  JSON.stringify({...formData}),
     credentials: "include",
@@ -68,10 +100,12 @@ export const uploadInvoicePrompt = async (formData) => {
 
 export const postMessages = async (filename, message, session_id) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       body: JSON.stringify({
         filename: filename,
@@ -89,10 +123,12 @@ export const postMessages = async (filename, message, session_id) => {
 
 export const savePrompt = async (prompt, filename) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/save/prompt`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       body: JSON.stringify({
         prompt: prompt,
@@ -109,9 +145,13 @@ export const savePrompt = async (prompt, filename) => {
 
 export const getLogs = async () => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/analytics/logs`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
       credentials: "include",
     });
     const responseData = await response.json();

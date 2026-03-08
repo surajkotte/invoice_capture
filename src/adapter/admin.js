@@ -8,10 +8,12 @@ export const addSystemConfig = async (
 ) => {
   const data = { system_domain, system_name, system_port, id, is_default };
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/system`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       body: JSON.stringify(data),
       credentials: "include",
@@ -25,10 +27,12 @@ export const addSystemConfig = async (
 
 export const getSystems = async () => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/system`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       credentials: "include",
     });
@@ -41,10 +45,12 @@ export const getSystems = async () => {
 
 export const addHeaders = async (Fields, Type) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/Fields`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify({ Fields, Type }),
@@ -58,10 +64,12 @@ export const addHeaders = async (Fields, Type) => {
 
 export const getFields = async (type) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/Fields/${type}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       credentials: "include",
     });
@@ -74,10 +82,12 @@ export const getFields = async (type) => {
 
 export const addDocType = async (documents, size) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/doctype`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       credentials: "include",
       body: JSON.stringify({ documents, size }),
@@ -91,10 +101,12 @@ export const addDocType = async (documents, size) => {
 
 export const getDocType = async (documents) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/doctype`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       credentials: "include",
     });
@@ -107,11 +119,13 @@ export const getDocType = async (documents) => {
 
 export const testConnection = async (id) => {
   try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/connection/check`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       body: JSON.stringify({ id }),
     });
@@ -129,11 +143,13 @@ export const testConnection = async (id) => {
 
 export const delete_systemconfig = async(id)=>{
   try{
+    const csrfToken = sessionStorage.getItem("csrfToken");
     const response = await fetch(`${API_URL}/admin/system/delete`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
       },
       body: JSON.stringify({ id }),
     });

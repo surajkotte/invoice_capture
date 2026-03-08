@@ -113,7 +113,7 @@ const UploadDataView = ({
       const response = await handleUploadPrompt(promptMessage);
       if (response?.messageType == "S") {
         toast({
-          title: "Invoice submitted successfully",
+          title: "Prompt retrieved successfully",
           variant: "default",
         });
       } else {

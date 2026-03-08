@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthCheck } from "../adapter/Login";
+import Spinner from "./ui/spinner";
 
 const AuthenticationCheck = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(null); // null = not checked yet
@@ -13,10 +14,12 @@ const AuthenticationCheck = ({ children }) => {
         if (response?.messageType === "S") {
           setAuthenticated(true);
         } else {
+          sessionStorage.removeItem("csrfToken"); 
           setAuthenticated(false);
         }
       } catch (err) {
         console.error("Auth check failed:", err);
+        sessionStorage.removeItem("csrfToken"); 
         setAuthenticated(false);
       }
     };
@@ -24,7 +27,7 @@ const AuthenticationCheck = ({ children }) => {
     checkIsAuthenticated();
   }, [location.pathname]);
   if (authenticated === null) {
-    return <div>Loading...</div>; // or a spinner component
+    return <Spinner />;
   }
 
   if (!authenticated) {

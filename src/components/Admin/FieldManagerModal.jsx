@@ -82,7 +82,6 @@ export const FieldManagerModal = ({
   }, [fields]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {console.log("called")}
       <DialogContent className="sm:max-w-[600px] md:max-w-[900px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
