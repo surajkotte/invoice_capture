@@ -24,13 +24,14 @@ const useUploadHook = () => {
     base64File: "",
     fileType: "",
     fileSize: "",
-    log_data:""
+    log_data: "",
   });
-  const handleFileChange = (event) => {
+  const handleFileChange = async(event) => {
     const file = event.target.files[0];
     event.target.value = null;
     setSelectedFile(file);
-    handleUpload(file);
+    const response = await handleUpload(file);
+    return response;
   };
   const normalizeResponseData = (responseData) => {
     if (responseData?.header) {
@@ -85,15 +86,15 @@ const useUploadHook = () => {
           base64File: response?.base64Files,
           fileType: response?.fileType,
           fileSize: response?.fileSize,
-          log_data: response?.log_data
+          log_data: response?.log_data,
         });
-
         setUploadStatus("uploaded");
+        return response;
       } else {
-        alert(response?.error);
+        return response;
       }
     } catch (error) {
-      alert(error.message);
+      return { messageType: "E", message: error.message };
     } finally {
       setIsLoading({
         action: "",
@@ -134,15 +135,15 @@ const useUploadHook = () => {
     formData.append("file", selectedFile);
     formData.append("filename", data?.fileName);
     formData.append("prompt", promptMessage);
-    formData.append("session_id", data?.log_data?.session_doc_id)
-    formData.append("base64file", data?.base64File)
+    formData.append("session_id", data?.log_data?.session_doc_id);
+    formData.append("base64file", data?.base64File);
     try {
       fetchFields();
       const response = await uploadInvoicePrompt({
         filename: data?.fileName,
-        prompt:promptMessage,
-        session_id:data?.log_data?.session_doc_id,
-        base64file:data?.base64File
+        prompt: promptMessage,
+        session_id: data?.log_data?.session_doc_id,
+        base64file: data?.base64File,
       });
       if (response?.messageType == "S") {
         const normalizedData = normalizeResponseData(response?.data);
@@ -152,7 +153,7 @@ const useUploadHook = () => {
           base64File: response?.base64File,
           fileType: response?.fileType,
           fileSize: data?.fileSize,
-          log_data:data?.log_data
+          log_data: data?.log_data,
         });
         setUploadStatus("uploaded");
         return response;
