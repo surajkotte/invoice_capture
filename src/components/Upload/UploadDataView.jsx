@@ -84,7 +84,6 @@ const UploadDataView = ({
     } 
   }
   const handleClear = () => {
-    console.log(invoiceData)
     setInvoiceData({
       headerData: [],
       itemsData: [],
@@ -109,7 +108,6 @@ const UploadDataView = ({
   const handlePrompt = async (promptMessage, mode) => {
     try {
       setIsLoading(true);
-      console.log(promptMessage);
       const response = await handleUploadPrompt(promptMessage);
       if (response?.messageType == "S") {
         toast({
@@ -148,8 +146,6 @@ const UploadDataView = ({
     setIsLoading(false);
   };
   useEffect(() => {
-    console.log("in data view")
-    console.log(data)
     const Header_Data = headerFields?.reduce((acc, field) => {
       const value = data?.normalizedData?.header
         ? data?.normalizedData?.header[field.name] || ""

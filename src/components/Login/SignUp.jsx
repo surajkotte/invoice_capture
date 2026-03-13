@@ -48,7 +48,7 @@ const SignUp = () => {
   };
 
   const handleOAuthSignup = (provider) => {
-    console.log(`Sign up with ${provider}`);
+
   };
 
   return (

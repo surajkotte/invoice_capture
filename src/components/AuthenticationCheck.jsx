@@ -46,7 +46,7 @@ export default AuthenticationCheck;
 // const AuthenticationCheck = ({ children }) => {
 //   const { authenticated } = useAuth();
 //   const location = useLocation();
-//   console.log(authenticated);
+//   
 //   if (authenticated === null) return <div>Loading...</div>;
 //   if (!authenticated)
 //     return <Navigate to="/login" state={{ from: location }} replace />;

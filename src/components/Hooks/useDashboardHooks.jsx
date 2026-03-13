@@ -73,7 +73,6 @@ const useDashboardHooks = () => {
     });
     const formData = new FormData();
     formData.append("file", file);
-    console.log(formData);
     try {
       fetchFields();
       const response = await uploadInvoice(formData);
@@ -131,7 +130,6 @@ const useDashboardHooks = () => {
   };
   // Handle header field changes
   const handleHeaderChange = useCallback((updatedHeaderData) => {
-    console.log(data);
     setData((prevData) => ({
       ...prevData,
       header: updatedHeaderData,
@@ -158,7 +156,7 @@ const useDashboardHooks = () => {
   }, []);
 
   const handleSubmit = () => {
-    console.log(data);
+
   };
   useEffect(() => {
     const fetchSystems = async () => {

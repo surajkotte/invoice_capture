@@ -41,7 +41,6 @@ const useDashboardIViewHook = () => {
   }, [currentPage]);
 useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      console.log("Filters applied:", filters);
       setCurrentPage(1);
       fetchData();
     }, 500);

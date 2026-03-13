@@ -29,7 +29,6 @@ const DashBoardIView = ({
   const { toast } = useToast();
   const dataIViewRef = useRef();
   const handleSave = async () => {
-    console.log(dataIViewRef.current);
     const invoiceData = dataIViewRef.current?.getInvoiceData();
     const response = await submit(invoiceData, backendSystem);
     if (response?.messageType === "S") {
@@ -98,7 +97,6 @@ const DashBoardIView = ({
               className="rounded-lg border w-full"
             >
               <ResizablePanel defaultSize={60} minSize={40}>
-                {console.log(data)}
                 <DataIView
                   headerFields={headerFields}
                   itemFields={itemFields}

@@ -163,7 +163,7 @@
 //                 <button
 //                   onClick={() => {
 //                     setShowUserMenu(false);
-//                     console.log("Settings clicked");
+//                    
 //                   }}
 //                   className={`
 //                     w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200
@@ -324,7 +324,6 @@ const Menubar = ({ children }) => {
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
-                    console.log("Settings clicked");
                   }}
                   className="w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200 hover:bg-accent hover:text-accent-foreground"
                 >

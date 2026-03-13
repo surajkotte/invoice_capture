@@ -46,7 +46,7 @@ const Login = () => {
     }
   };
   const handleOAuthLogin = (provider) => {
-    console.log(`Login with ${provider}`);
+
   };
 
   return (

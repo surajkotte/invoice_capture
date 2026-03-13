@@ -33,7 +33,6 @@ export const UploadPrompts = ({
       if( action === "save"){
         // Implement save functionality here (e.g., save to local storage or backend)
         onSavePrompt(prompt.trim());
-        console.log("Prompt saved:", prompt.trim());
       }else{
         onSendPrompt(prompt.trim(), mode);
       }

@@ -67,7 +67,6 @@ export const FieldManagerModal = ({
   };
 
   const handleSave = () => {
-    console.log(localFields);
     onSave(localFields.filter((field) => field.name.trim()));
     onOpenChange(false);
   };

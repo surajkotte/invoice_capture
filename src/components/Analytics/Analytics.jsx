@@ -27,6 +27,9 @@ const CHANNEL_STYLES = {
   prompt:     "bg-purple-100 text-purple-700 border-purple-200",
   chat:       "bg-emerald-100 text-emerald-700 border-emerald-200",
   submit:     "bg-amber-100 text-amber-700 border-amber-200",
+  mail_upload : "bg-amber-100 text-amber-700 border-amber-200",
+  mail_extraction : "bg-blue-100 text-blue-700 border-blue-200",
+  mail_submit : "bg-amber-100 text-amber-700 border-amber-200",
 };
 
 function channelBadge(channel = "") {
@@ -58,12 +61,12 @@ function groupBySession(logs) {
   }
   return [...map.entries()]
     .map(([sessionId, rows]) => {
-      const totalCost = rows.reduce((s, r) => { return r.channel !== "submit" ? s + Number(r.total_cost ?? 0) : s; }, 0);
+      const totalCost = rows.reduce((s, r) => { return r.channel !== "submit" && r.channel !== "MAIL_SUBMIT" && r.channel !== "MAIL_UPLOAD" ? s + Number(r.total_cost ?? 0) : s; }, 0);
       const totalInputTokens = rows.reduce((s, r) => {
-        return r.channel !== "submit" ? s + Number(r.input_tokens ?? 0) : s;
+        return r.channel !== "submit" && r.channel !== "MAIL_SUBMIT" && r.channel !== "MAIL_UPLOAD" ? s + Number(r.input_tokens ?? 0) : s;
       }, 0);
       const totalOutputTokens = rows.reduce((s, r) => {
-        return r.channel !== "submit" ? s + Number(r.output_tokens ?? 0) : s;
+        return r.channel !== "submit" && r.channel !== "MAIL_SUBMIT" && r.channel !== "MAIL_UPLOAD" ? s + Number(r.output_tokens ?? 0) : s;
       }, 0);
       const latestDate = rows.reduce((max, r) => {
         const d = new Date(r.created_date ?? r.created_at ?? 0);

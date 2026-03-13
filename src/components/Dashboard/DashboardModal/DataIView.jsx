@@ -64,9 +64,6 @@ const DataIView = ({ headerFields, itemFields, data, ref }) => {
       return new_item;
     });
 
-    console.log(Header_Data);
-    console.log(Item_Data);
-
     setInvoiceData({
       headerData: Header_Data,
       itemsData: Item_Data,

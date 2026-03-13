@@ -61,7 +61,6 @@ export const submitData = async (data, backendSystem, sceTemplate) => {
 export const getData = async (currentPage, filters = {}) => {
   try {
     const csrfToken = sessionStorage?.getItem("csrfToken") || "";
-    console.log("csrfToken:", csrfToken);
     const params = new URLSearchParams({
       page: currentPage,
       filters: JSON.stringify(filters) 
@@ -83,7 +82,6 @@ export const getData = async (currentPage, filters = {}) => {
   }
 };
 export const uploadInvoicePrompt = async (formData) => {
-  console.log(formData)
   const csrfToken = sessionStorage.getItem("csrfToken");
   const response = await fetch(`${API_URL}/prompt`, {
     method: "POST",

@@ -62,7 +62,6 @@ const useAdminHook = () => {
     const response1 = await getFields("Header");
     const response2 = await getFields("Item");
     if (response1?.messageType === "S") {
-      console.log(response1);
       const HeaderResponse = response1?.data?.map((info) => {
         return {
           id: info?.id,
@@ -92,7 +91,6 @@ const useAdminHook = () => {
     let formattedDocumentTypes = [];
     if (documents) {
       formattedDocumentTypes = documents.split(",").toString().split(",");
-      console.log(formattedDocumentTypes);
     }
     const response = await addDocType(formattedDocumentTypes, size);
     if (response?.messageType === "S") {

@@ -254,7 +254,6 @@ const Admin = () => {
   }, [itemData]);
 
   useEffect(() => {
-    console.log(uploadConfig);
     setFileConfig({
       allowedTypes: uploadConfig?.allowedTypes,
       maxSize: uploadConfig?.maxSize,
