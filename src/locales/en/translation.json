@@ -1,0 +1,30 @@
+{
+  "dashboard": {
+    "title": "Invoice Documents",
+    "no_data": "No Data found",
+    "next": "Next",
+    "previous": "Previous",
+    "filters": {
+      "title": "Filters",
+      "search_placeholder": "Search by Registration ID, File Name or Created User",
+      "document_type": "Document Type",
+      "date_range": "Date Range",
+      "status": "Status",
+      "all": "All",
+      "pending": "Pending",
+      "processed": "Processed",
+      "failed": "Failed",
+      "clear_filter": "Clear Filter"
+    },
+    "dashboard_fields": {
+      "reg_id": "Registration ID",
+      "status": "Status",
+      "created_at": "Created At",
+      "file_type": "File Type",
+      "file_name": "File Name",
+      "created_user": "Created User",
+      "backend_system": "Backend System",
+      "file_size": "File Size"
+    }
+  }
+}

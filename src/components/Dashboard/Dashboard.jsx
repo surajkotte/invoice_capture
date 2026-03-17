@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import { useTranslation } from 'react-i18next';
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import useDashboardHooks from "../Hooks/useDashboardHooks";
@@ -26,25 +26,15 @@ import DashboardList from "./DashboardList";
 import DashBoardIView from "./DashBoardIView";
 import { Calendarnew } from "../ui/calendarnew";
 const Dashboard = () => {
+  const { t, i18n } = useTranslation();
   const {
     setBackendSystem,
-    setDateRange,
-    setDocumentType,
-    setSearchTerm,
-    setStatus,
-    setUser,
-    handleFilterChange,
     handleFileChange,
     setDialogOpen,
     setIsLoading,
     isLoading,
     data,
-    searchTerm,
-    status,
     backendSystem,
-    documentType,
-    user,
-    dateRange,
     dialogOpen,
     headerData,
     itemData,
@@ -125,14 +115,14 @@ const Dashboard = () => {
       <Card className="p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Filter className="h-5 w-5 text-muted-foreground" />
-          <h3 className="text-lg font-semibold">Filters</h3>
+          <h3 className="text-lg font-semibold">{t('dashboard.filters.title')}</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search Reg Id's or Usernames"
+              placeholder={t('dashboard.filters.search_placeholder')}
               value={filters.searchTerm}
               onChange={(e) => {
                 setFilters((prev) => ({
@@ -186,7 +176,7 @@ const Dashboard = () => {
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder="Document Type" />
+              <SelectValue placeholder={t('dashboard.filters.document_type')} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem
@@ -275,7 +265,7 @@ const Dashboard = () => {
                     format(filters.dateRange.from, "LLL dd, y")
                   )
                 ) : (
-                  <span>Date range</span>
+                  <span>{t('dashboard.filters.date_range')}</span>
                 )}
               </Button>
             </PopoverTrigger>
@@ -306,7 +296,7 @@ const Dashboard = () => {
                     }))
                   }
                 >
-                  Clear Filter
+                  {t('dashboard.filters.clear_filter')}
                 </Button>
               </div>
             </PopoverContent>

@@ -52,7 +52,7 @@ export const PaginationLink = ({
 );
 PaginationLink.displayName = "PaginationLink";
 
-export const PaginationPrevious = ({ className, ...props }) => (
+export const PaginationPrevious = ({ className, name, ...props }) => (
   <PaginationLink
     aria-label="Go to previous page"
     size="default"
@@ -60,19 +60,19 @@ export const PaginationPrevious = ({ className, ...props }) => (
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
+    <span>{name}</span>
   </PaginationLink>
 );
 PaginationPrevious.displayName = "PaginationPrevious";
 
-export const PaginationNext = ({ className, ...props }) => (
+export const PaginationNext = ({ className, name, ...props }) => (
   <PaginationLink
     aria-label="Go to next page"
     size="default"
     className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
-    <span>Next</span>
+    <span>{name}</span>
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
 );

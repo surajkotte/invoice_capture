@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import "./pdf-text-layer.css";
-
+import "./i18n"; 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>

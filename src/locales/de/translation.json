@@ -1,0 +1,30 @@
+{
+    "dashboard": {
+        "title": "Rechnungsdokumente",
+        "no_data": "Keine Daten gefunden",
+        "next": "Nächste Seite",
+        "previous": "Vorherige Seite",
+        "filters": {
+            "title": "Filter",
+            "search_placeholder": "Nach Registrierungs-ID, Dateiname oder erstelltem Benutzer suchen",
+            "document_type": "Dokumenttyp",
+            "date_range": "Datumsbereich",
+            "status": "Status",
+            "all": "Alle",
+            "pending": "Ausstehend",
+            "processed": "Verarbeitet",
+            "failed": "Fehlgeschlagen",
+            "clear_filter": "Filter löschen"
+        },
+        "dashboard_fields": {
+            "reg_id": "Registrierungs-ID",
+            "status": "Status",
+            "created_at": "Erstellt am",
+            "file_type": "Dateityp",
+            "file_name": "Dateiname",
+            "created_user": "Erstellt von",
+            "backend_system": "Backend-System",
+            "file_size": "Dateigröße"
+        }
+    }
+}

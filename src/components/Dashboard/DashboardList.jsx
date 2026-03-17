@@ -24,8 +24,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useEffect, useState } from "react";
-
+import { useTranslation } from 'react-i18next';
 function getStatusBadge(status) {
   switch (status) {
     case "completed":
@@ -83,6 +82,7 @@ const DashboardList = ({
   currentPage,
   setCurrentPage,
 }) => {
+    const { t } = useTranslation();
   const data = list_data;
   const itemsPerPage = 20;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -95,14 +95,14 @@ const DashboardList = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Reg ID</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>File Type</TableHead>
-                <TableHead>File Name</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Created User</TableHead>
-                <TableHead>Backend System</TableHead>
-                <TableHead>File Size</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.reg_id')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.status')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.file_type')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.file_name')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.created_at')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.created_user')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.backend_system')}</TableHead>
+                <TableHead>{t('dashboard.dashboard_fields.file_size')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -151,11 +151,13 @@ const DashboardList = ({
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(1, prev - 1))
                     }
+
                     className={
                       currentPage === 1
                         ? "pointer-events-none opacity-50"
                         : "cursor-pointer"
                     }
+                    name={t('dashboard.previous')}
                   />
                 </PaginationItem>
 
@@ -183,6 +185,7 @@ const DashboardList = ({
                         ? "pointer-events-none opacity-50"
                         : "cursor-pointer"
                     }
+                    name={t('dashboard.next')}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -193,7 +196,7 @@ const DashboardList = ({
       {paginatedCourses?.length === 0 && (
         <div className="text-center py-8">
           <Eye className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No Data found</h3>
+          <h3 className="text-lg font-medium mb-2">{t('dashboard.no_data')}</h3>
         </div>
       )}
     </Card>
