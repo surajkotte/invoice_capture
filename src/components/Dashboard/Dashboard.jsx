@@ -24,6 +24,7 @@ import useDashboardHooks from "../Hooks/useDashboardHooks";
 import useDashboardIViewHook from "../Hooks/useDashboardIViewHooks";
 import DashboardList from "./DashboardList";
 import DashBoardIView from "./DashBoardIView";
+import { Calendarnew } from "../ui/calendarnew";
 const Dashboard = () => {
   const {
     setBackendSystem,
@@ -49,8 +50,15 @@ const Dashboard = () => {
     itemData,
     systemConnections,
   } = useDashboardHooks();
-  const { submit, setCurrentPage, currentPage, listData, isSubmitLoading, filters, setFilters } =
-    useDashboardIViewHook();
+  const {
+    submit,
+    setCurrentPage,
+    currentPage,
+    listData,
+    isSubmitLoading,
+    filters,
+    setFilters,
+  } = useDashboardIViewHook();
   const inputRef = useRef(null);
   return (
     <div className="w-full h-full bg-background space-y-6">
@@ -120,7 +128,7 @@ const Dashboard = () => {
           <h3 className="text-lg font-semibold">Filters</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -150,7 +158,12 @@ const Dashboard = () => {
           </Select> */}
 
           {/* Document Type */}
-          <Select value={filters.documentType} onValueChange={(value) => setFilters((prev) => ({ ...prev, documentType: value }))}>
+          {/* <Select
+            value={filters.documentType}
+            onValueChange={(value) =>
+              setFilters((prev) => ({ ...prev, documentType: value }))
+            }
+          >
             <SelectTrigger>
               <SelectValue placeholder="Document Type" />
             </SelectTrigger>
@@ -160,8 +173,35 @@ const Dashboard = () => {
               <SelectItem value="csv">DOCX</SelectItem>
               <SelectItem value="json">TEXT</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
+          <Select
+            // Fallback to empty string so the placeholder shows when cleared
+            value={filters.documentType || ""}
+            onValueChange={(value) =>
+              setFilters((prev) => ({
+                ...prev,
+                // If "clear" is selected, set to undefined. Otherwise, use the value.
+                documentType: value === "clear" ? undefined : value,
+              }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Document Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                value="clear"
+                className="text-muted-foreground italic"
+              >
+                Clear
+              </SelectItem>
 
+              <SelectItem value="xml">XML</SelectItem>
+              <SelectItem value="pdf">PDF</SelectItem>
+              <SelectItem value="docx">DOCX</SelectItem>
+              <SelectItem value="text">TEXT</SelectItem>
+            </SelectContent>
+          </Select>
           {/* User */}
           {/* <Select value={user} onValueChange={setUser}>
             <SelectTrigger>
@@ -176,7 +216,7 @@ const Dashboard = () => {
           </Select> */}
 
           {/* Date Range */}
-          <Popover>
+          {/* <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -213,6 +253,62 @@ const Dashboard = () => {
                 numberOfMonths={2}
                 className="p-3 pointer-events-auto"
               />
+            </PopoverContent>
+          </Popover> */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "justify-start text-left font-normal",
+                  !filters?.dateRange?.from && "text-muted-foreground",
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {filters?.dateRange?.from ? (
+                  filters.dateRange.to ? (
+                    <>
+                      {format(filters.dateRange.from, "LLL dd, y")} -{" "}
+                      {format(filters.dateRange.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(filters.dateRange.from, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Date range</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendarnew
+                defaultMonth={filters?.dateRange?.from}
+                selected={filters?.dateRange}
+                onSelect={(newDateRange) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    dateRange: {
+                      from: newDateRange?.from,
+                      to: newDateRange?.to,
+                    },
+                  }))
+                }
+                numberOfMonths={2}
+                className="pointer-events-auto"
+              />
+              <div className="flex items-center justify-end border-t p-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      dateRange: { from: undefined, to: undefined },
+                    }))
+                  }
+                >
+                  Clear Filter
+                </Button>
+              </div>
             </PopoverContent>
           </Popover>
         </div>

@@ -126,9 +126,12 @@ function SessionRow({ session, isOpen, onToggle }) {
           {formatDate(latestDate.toISOString())}
         </TableCell>
         <TableCell className="text-center">
-          <span className="text-xs font-semibold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
+          {/* <span className="text-xs font-semibold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
             {rows.length} calls
-          </span>
+          </span> */}
+          <Badge className="bg-slate-200 text-slate-700 font-semibold px-2">
+            {rows.length} call{rows.length !== 1 ? "s" : ""}
+          </Badge>
         </TableCell>
         <TableCell className="text-xs text-right font-mono">
           {totalInputTokens.toLocaleString()}
