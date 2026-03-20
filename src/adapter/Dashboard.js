@@ -63,7 +63,7 @@ export const getData = async (currentPage, filters = {}) => {
     const csrfToken = sessionStorage?.getItem("csrfToken") || "";
     const params = new URLSearchParams({
       page: currentPage,
-      filters: JSON.stringify(filters) 
+      filters: JSON.stringify(filters),
     });
     const url = `${API_URL}/data?${params.toString()}`;
     const response = await fetch(url, {
@@ -74,7 +74,7 @@ export const getData = async (currentPage, filters = {}) => {
       },
       credentials: "include",
     });
-    
+
     const responseData = await response.json();
     return responseData;
   } catch (err) {
@@ -86,10 +86,10 @@ export const uploadInvoicePrompt = async (formData) => {
   const response = await fetch(`${API_URL}/prompt`, {
     method: "POST",
     headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": csrfToken || "",
-      },
-    body:  JSON.stringify({...formData}),
+      "Content-Type": "application/json",
+      "X-CSRF-Token": csrfToken || "",
+    },
+    body: JSON.stringify({ ...formData }),
     credentials: "include",
   });
   const responseData = await response.json();
@@ -108,7 +108,7 @@ export const postMessages = async (filename, message, session_id) => {
       body: JSON.stringify({
         filename: filename,
         message: message,
-        session_doc_id:session_id
+        session_doc_id: session_id,
       }),
       credentials: "include",
     });
@@ -155,6 +155,25 @@ export const getLogs = async () => {
     const responseData = await response.json();
     return responseData;
   } catch (error) {
-    return{ messageType:"E", message:error.message}
+    return { messageType: "E", message: error.message };
   }
-}
+};
+
+export const setUserSettings = async (settings) => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/user/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      body: JSON.stringify(settings),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    return { messageType: "E", message: error.message };
+  }
+};
