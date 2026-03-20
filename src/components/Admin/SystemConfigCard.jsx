@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { useTranslation } from "react-i18next";
 export const SystemConfigCard = ({
   config,
   onUpdate,
@@ -13,10 +13,13 @@ export const SystemConfigCard = ({
   handleTestConnection,
   isLoading,
 }) => {
+  const { t } = useTranslation();
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-lg">System Details</CardTitle>
+        <CardTitle className="text-lg">
+          {t("admin.system_configuration.system_details")}
+        </CardTitle>
         {canRemove && (
           <Button
             onClick={() => onRemove(config.id)}
@@ -31,7 +34,9 @@ export const SystemConfigCard = ({
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-2 w-full">
           <div className="space-y-2">
-            <Label htmlFor={`domain-${config.id}`}>Domain</Label>
+            <Label htmlFor={`domain-${config.id}`}>
+              {t("admin.system_configuration.domain")}
+            </Label>
             <Input
               id={`domain-${config.id}`}
               placeholder="https://api.example.com"
@@ -46,7 +51,9 @@ export const SystemConfigCard = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor={`systemName-${config.id}`}>System Name</Label>
+            <Label htmlFor={`systemName-${config.id}`}>
+              {t("admin.system_configuration.system_name")}
+            </Label>
             <Input
               id={`systemName-${config.id}`}
               placeholder="SAP(SYS1)"
@@ -63,7 +70,9 @@ export const SystemConfigCard = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor={`port-${config.id}`}>Port</Label>
+            <Label htmlFor={`port-${config.id}`}>
+              {t("admin.system_configuration.port")}
+            </Label>
             <Input
               id={`port-${config.id}`}
               placeholder="8080"
@@ -99,15 +108,15 @@ export const SystemConfigCard = ({
           </div>
 
           <div className="space-y-2">
-            <Label>Connection Status</Label>
+            <Label>{t("admin.system_configuration.connection_status")}</Label>
             <div className="flex items-center space-x-2">
               <div
                 className={`h-3 w-3 rounded-full ${
                   config.connectionStatus === "active"
                     ? "bg-green-500 animate-pulse"
                     : config.connectionStatus === "error"
-                    ? "bg-red-500"
-                    : "bg-gray-400"
+                      ? "bg-red-500"
+                      : "bg-gray-400"
                 }`}
               />
               <span
@@ -115,15 +124,15 @@ export const SystemConfigCard = ({
                   config.connectionStatus === "connected"
                     ? "text-green-700"
                     : config.connectionStatus === "error"
-                    ? "text-red-700"
-                    : "text-gray-600"
+                      ? "text-red-700"
+                      : "text-gray-600"
                 }`}
               >
                 {config.connectionStatus === "active"
-                  ? "Connected"
+                  ? t("admin.system_configuration.connection_successful")
                   : config.connectionStatus === "error"
-                  ? "Connection Failed"
-                  : "Not Connected"}
+                    ? t("admin.system_configuration.connection_failed")
+                    : t("admin.system_configuration.not_connected")}
               </span>
             </div>
           </div>
@@ -149,7 +158,7 @@ export const SystemConfigCard = ({
             ) : (
               <>
                 <Zap className="h-4 w-4" />
-                Test Connection
+                {t("admin.system_configuration.test_connection")}
               </>
             )}
           </Button>
@@ -159,7 +168,7 @@ export const SystemConfigCard = ({
             variant="default"
           >
             <Save className="h-4 w-4" />
-            Save
+            {t("admin.system_configuration.save")}
           </Button>
         </div>
       </CardContent>

@@ -1,30 +1,58 @@
 {
-    "dashboard": {
-        "title": "Rechnungsdokumente",
-        "no_data": "Keine Daten gefunden",
-        "next": "Nächste Seite",
-        "previous": "Vorherige Seite",
-        "filters": {
-            "title": "Filter",
-            "search_placeholder": "Nach Registrierungs-ID, Dateiname oder erstelltem Benutzer suchen",
-            "document_type": "Dokumenttyp",
-            "date_range": "Datumsbereich",
-            "status": "Status",
-            "all": "Alle",
-            "pending": "Ausstehend",
-            "processed": "Verarbeitet",
-            "failed": "Fehlgeschlagen",
-            "clear_filter": "Filter löschen"
-        },
-        "dashboard_fields": {
-            "reg_id": "Registrierungs-ID",
-            "status": "Status",
-            "created_at": "Erstellt am",
-            "file_type": "Dateityp",
-            "file_name": "Dateiname",
-            "created_user": "Erstellt von",
-            "backend_system": "Backend-System",
-            "file_size": "Dateigröße"
-        }
+  "dashboard": {
+    "title": "Rechnungsdokumente",
+    "no_data": "Keine Daten gefunden",
+    "next": "Nächste Seite",
+    "previous": "Vorherige Seite",
+    "filters": {
+      "title": "Filter",
+      "search_placeholder": "Nach Registrierungs-ID, Dateiname oder erstelltem Benutzer suchen",
+      "document_type": "Dokumenttyp",
+      "date_range": "Datumsbereich",
+      "status": "Status",
+      "all": "Alle",
+      "pending": "Ausstehend",
+      "processed": "Verarbeitet",
+      "failed": "Fehlgeschlagen",
+      "clear_filter": "Filter löschen"
+    },
+    "dashboard_fields": {
+      "reg_id": "Registrierungs-ID",
+      "status": "Status",
+      "created_at": "Erstellt am",
+      "file_type": "Dateityp",
+      "file_name": "Dateiname",
+      "created_user": "Erstellt von",
+      "backend_system": "Backend-System",
+      "file_size": "Dateigröße"
     }
+  },
+  "admin": {
+    "system_configuration": {
+      "title": "Systemkonfiguration",
+      "description": "Verbindungsdetails des Backend-Systems konfigurieren",
+      "add_system": "System hinzufügen",
+      "system_detailare": "Systemdetails",
+      "domain": "Domäne",
+      "system_name": "Systemname",
+      "port": "Port",
+      "connection_status": "Verbindungsstatus",
+      "connection_successful": "Verbindung erfolgreich",
+      "connection_failed": "Verbindung fehlgeschlagen",
+      "test_connection": "Verbindung testen",
+      "save": "Speichern"
+    },
+    "field_configuration": {
+      "title": "Feldkonfiguration",
+      "description": "Kopf- und Artikelfeldmappings konfigurieren",
+      "hedaer_field_description": "Verwalten Sie Kopffeldmappings für die Rechnungsverarbeitung",
+      "item_field_description": "Verwalten Sie Artikelfeldmappings für die Rechnungsverarbeitung"
+    },
+    "file_upload_configuration": {
+      "title": "Datei-Upload-Konfiguration",
+      "description": "Zulässige Dateitypen und Größenlimits konfigurieren",
+      "alloed_file_types": "Zulässige Dateitypen",
+      "file_size_limit": "Maximale Dateigröße (MB)"
+    }
+  }
 }

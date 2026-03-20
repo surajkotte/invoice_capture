@@ -14,7 +14,9 @@ import { useToast } from "../Hooks/useToastHook";
 import { SystemConfigCard } from "./SystemConfigCard";
 import { FieldManagerModal } from "./FieldManagerModal";
 import useAdminHook from "../Hooks/useAdminHook";
+import { useTranslation } from "react-i18next";
 const Admin = () => {
+  const { t, i18n } = useTranslation();
   const {
     addSystem,
     AddFields,
@@ -54,7 +56,7 @@ const Admin = () => {
     } else {
       const response = await addDocumentType(
         fileConfig?.allowedTypes,
-        fileConfig?.maxSize
+        fileConfig?.maxSize,
       );
       if (response?.messageType === "S") {
         toast({
@@ -92,25 +94,26 @@ const Admin = () => {
           return { ...config, is_default: false };
         }
         return config.id === id ? { ...config, ...updates } : config;
-      })
+      }),
     );
   };
 
-  const removeSystemConfig = async(id) => {
+  const removeSystemConfig = async (id) => {
     const response = await delete_system(id);
-    if(response?.messageType == 'S'){
+    if (response?.messageType == "S") {
       toast({
-          title: "Success",
-          description: "System config removed successfully",
-          variant: "success",
-      })
+        title: "Success",
+        description: "System config removed successfully",
+        variant: "success",
+      });
       setSystemConfigs(systemConfigs.filter((config) => config.id !== id));
-    }else{
-            toast({
-          title: "Error",
-          description: "Unable to delete System config, Please contact system administrator",
-          variant: "Error",
-      })
+    } else {
+      toast({
+        title: "Error",
+        description:
+          "Unable to delete System config, Please contact system administrator",
+        variant: "Error",
+      });
     }
   };
 
@@ -136,14 +139,14 @@ const Admin = () => {
     if (type === "header") {
       setHeaderFields(
         headerFields.map((field) =>
-          field.id === id ? { ...field, name } : field
-        )
+          field.id === id ? { ...field, name } : field,
+        ),
       );
     } else {
       setItemFields(
         itemFields.map((field) =>
-          field.id === id ? { ...field, name } : field
-        )
+          field.id === id ? { ...field, name } : field,
+        ),
       );
     }
   };
@@ -208,7 +211,7 @@ const Admin = () => {
       system_Info?.domain,
       system_Info?.port,
       system_Info?.is_default,
-      system_Info?.id || ""
+      system_Info?.id || "",
     );
     if (response?.messageType === "S") {
       toast({
@@ -286,9 +289,9 @@ const Admin = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold">System Configurations</h2>
+              <h2 className="text-xl font-semibold">{t('admin.system_configuration.title')}</h2>
               <p className="text-sm text-muted-foreground">
-                Configure backend system connection details
+                {t('admin.system_configuration.description')}
               </p>
             </div>
             <Button
@@ -297,7 +300,7 @@ const Admin = () => {
               className="gap-2"
             >
               <Plus className="h-4 w-4" />
-              Add System
+              {t('admin.system_configuration.add_system')}
             </Button>
           </div>
 
@@ -329,9 +332,9 @@ const Admin = () => {
         </div>
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold">Field Configuration</h2>
+            <h2 className="text-xl font-semibold">{t('admin.field_configuration.title')}</h2>
             <p className="text-sm text-muted-foreground">
-              Configure header and item field mappings
+              {t('admin.field_configuration.description')}
             </p>
           </div>
 
@@ -341,7 +344,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Header Fields</CardTitle>
                 <CardDescription>
-                  Manage header field mappings for invoice processing
+                 {t('admin.field_configuration.hedaer_field_description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -387,7 +390,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Item Fields</CardTitle>
                 <CardDescription>
-                  Manage item field mappings for invoice processing
+                  {t('admin.field_configuration.item_field_description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

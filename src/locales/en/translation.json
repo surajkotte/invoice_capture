@@ -26,5 +26,33 @@
       "backend_system": "Backend System",
       "file_size": "File Size"
     }
+  },
+  "admin": {
+    "system_configuration": {
+      "title": "System Configuration",
+      "description": "Configure backend system connection details",
+      "add_system": "Add System",
+      "system_details": "System Details",
+      "domain": "Domain",
+      "system_name": "System Name",
+      "port": "Port",
+      "connection_status": "connection status",
+      "connection_successful": "Connection Successful",
+      "connection_failed": "Connection Failed",
+      "test_connection": "Test Connection",
+      "save": "Save"
+    },
+    "field_configuration": {
+      "title": "Field Configuration",
+      "description": "Configure header and item field mappings",
+      "hedaer_field_description": "Manage header field mappings for invoice processing",
+      "item_field_description": "Manage item field mappings for invoice processing"
+    },
+    "file_upload_configuration": {
+        "title": "File Upload Configuration",
+        "description": "Configure allowed file types and size limits",
+        "alloed_file_types": "Allowed File Types",
+        "file_size_limit": "Maximum File Size Limit (MB)"
+    }
   }
 }
