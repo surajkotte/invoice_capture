@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { setUserSettings } from "../adapter/Dashboard";
@@ -9,15 +9,14 @@ import {
   date_format_mapping,
   currency_format_mapping,
 } from "../utils/Mapper";
+
 const SettingsModal = ({ isOpen, onClose }) => {
   const { toast } = useToast();
   const [config, setConfig] = useState({
-    language: "English",
-    dateformat: "DD/MM/YYYY",
-    currency: "USD ($)",
+    language: "",
+    dateformat: "",
+    currency: "",
   });
-
-  if (!isOpen) return null;
 
   const handleChange = (field, value) => {
     console.log(field, value);
@@ -27,6 +26,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
   const handleSave = async () => {
     const response = await setUserSettings(config);
     if (response?.messageType === "S") {
+      sessionStorage.setItem("language", config?.language);
+      sessionStorage.setItem("dateformat", config?.dateformat);
+      sessionStorage.setItem("currency", config?.currency);
       i18n.changeLanguage(config.language);
       toast({ title: "Settings saved successfully", variant: "default" });
     } else {
@@ -37,6 +39,22 @@ const SettingsModal = ({ isOpen, onClose }) => {
     }
     onClose();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      const currency_format = sessionStorage.getItem("currency") || "";
+      const date_format = sessionStorage.getItem("dateformat") || "";
+      const language = sessionStorage.getItem("language") || "";
+
+      setConfig({
+        language: language,
+        dateformat: date_format,
+        currency: currency_format,
+      });
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
