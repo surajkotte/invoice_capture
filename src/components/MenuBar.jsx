@@ -45,6 +45,10 @@ const Menubar = ({ children }) => {
   const handleLogout = async () => {
     const response = await signOut();
     if (response?.messageType === "S") {
+      sessionStorage.clear();
+      sessionStorage.removeItem("language")
+      sessionStorage.removeItem("dateformat")
+      sessionStorage.removeItem("currency")
       logout();
       toast({ title: "Logged out successfully", variant: "default" });
       navigate("/login", { state: { from: location }, replace: true });

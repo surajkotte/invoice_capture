@@ -34,9 +34,9 @@ const Login = () => {
     const response = await signin(formData);
     if (response?.messageType == "S") {
       const user_settings = response?.data?.user_settings;
-      sessionStorage.setItem("language", user_settings?.language);
-      sessionStorage.setItem("currency", user_settings?.currency_format);
-      sessionStorage.setItem("dateformat", user_settings?.date_format);
+      sessionStorage.setItem("language", user_settings?.language || "");
+      sessionStorage.setItem("currency", user_settings?.currency_format || "");
+      sessionStorage.setItem("dateformat", user_settings?.date_format || "");
       toast({
         title: "Login successful",
         variant: "default",

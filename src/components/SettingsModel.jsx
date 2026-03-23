@@ -42,14 +42,14 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      const currency_format = sessionStorage.getItem("currency") || "";
-      const date_format = sessionStorage.getItem("dateformat") || "";
-      const language = sessionStorage.getItem("language") || "";
+      const currency_format = sessionStorage?.getItem("currency") || "";
+      const date_format = sessionStorage?.getItem("dateformat") || "";
+      const language = sessionStorage?.getItem("language") || "";
 
       setConfig({
-        language: language,
-        dateformat: date_format,
-        currency: currency_format,
+        language: language || "en",
+        dateformat: date_format || "0",
+        currency: currency_format || "0",
       });
     }
   }, [isOpen]);
