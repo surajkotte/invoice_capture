@@ -9,6 +9,7 @@ import Analytics from "./components/Analytics/Analytics";
 import LoginAuthCheck from "./components/LoginAuthCheck";
 import SignUp from "./components/Login/SignUp";
 import UploadFile from "./components/Upload/UploadFile";
+import UserManagement from "./components/Administration/UserManagement";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -44,6 +45,10 @@ export const reactRouter = createBrowserRouter([
       {
         path: "/analytics",
         element: <Analytics />,
+      },
+      {
+        path: "/usermanagement",
+        element: <UserManagement />,
       },
     ],
   },

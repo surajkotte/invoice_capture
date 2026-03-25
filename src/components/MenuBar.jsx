@@ -10,6 +10,7 @@ import {
   Settings,
   Upload,
   ChartArea,
+  FileUser,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -40,15 +41,21 @@ const Menubar = ({ children }) => {
       path: "/analytics",
       icon: ChartArea,
     },
+    {
+      label: "User Management",
+      key: "usermanagement",
+      path: "/usermanagement",
+      icon: FileUser,
+    },
   ];
 
   const handleLogout = async () => {
     const response = await signOut();
     if (response?.messageType === "S") {
       sessionStorage.clear();
-      sessionStorage.removeItem("language")
-      sessionStorage.removeItem("dateformat")
-      sessionStorage.removeItem("currency")
+      sessionStorage.removeItem("language");
+      sessionStorage.removeItem("dateformat");
+      sessionStorage.removeItem("currency");
       logout();
       toast({ title: "Logged out successfully", variant: "default" });
       navigate("/login", { state: { from: location }, replace: true });
