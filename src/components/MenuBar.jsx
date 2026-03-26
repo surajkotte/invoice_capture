@@ -33,7 +33,7 @@ const Menubar = ({ children }) => {
 
   const menuItems = [
     { label: "Dashboard", key: "dashboard", path: "/dashboard", icon: Grid3x3 },
-    { label: "Admin", key: "admin", path: "/admin", icon: Plus },
+    { label: "Configuration", key: "configuration", path: "/admin", icon: Plus },
     { label: "Upload", key: "upload", path: "/upload", icon: Upload },
     {
       label: "Analytics",
