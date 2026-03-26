@@ -36,3 +36,41 @@ export const updateUserManagement = async (modified_data) => {
     return { messageType: "E", message: err.message };
   }
 };
+
+export const create_new = async (username, email_address, permissions) => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/createnewuser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      body: JSON.stringify({ username, email_address, permissions }),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    return { messageType: "E", message: err.message };
+  }
+};
+
+export const set_password = async (token, newPassword) => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/savepassword`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      body: JSON.stringify({ token, newPassword }),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    return { messageType: "E", message: err.message };
+  }
+};

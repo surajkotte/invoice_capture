@@ -11,7 +11,7 @@ import SignUp from "./components/Login/SignUp";
 import UploadFile from "./components/Upload/UploadFile";
 import UserManagement from "./components/Administration/UserManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import SetPassword from "./components/SetPassword";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -84,5 +84,9 @@ export const reactRouter = createBrowserRouter([
   {
     path: "/signup",
     element: <SignUp />,
+  },
+  {
+    path: "/set-password",
+    element: <SetPassword />,
   },
 ]);
