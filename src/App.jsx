@@ -10,6 +10,7 @@ import LoginAuthCheck from "./components/LoginAuthCheck";
 import SignUp from "./components/Login/SignUp";
 import UploadFile from "./components/Upload/UploadFile";
 import UserManagement from "./components/Administration/UserManagement";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -32,23 +33,43 @@ export const reactRouter = createBrowserRouter([
     children: [
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute requiredPermission="dashboard">
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/admin",
-        element: <Admin />,
+        element: (
+          <ProtectedRoute requiredPermission="configuration">
+            <Admin />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/upload",
-        element: <UploadFile />,
+        element: (
+          <ProtectedRoute requiredPermission="upload">
+            <UploadFile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/analytics",
-        element: <Analytics />,
+        element: (
+          <ProtectedRoute requiredPermission="analytics">
+            <Analytics />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/usermanagement",
-        element: <UserManagement />,
+        element: (
+          <ProtectedRoute requiredPermission="usermanagement">
+            <UserManagement />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

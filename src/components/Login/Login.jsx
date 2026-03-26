@@ -18,7 +18,7 @@ import {
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useToast } from "../Hooks/useToastHook";
 import useAuthHok from "../Hooks/useAuthHook";
-
+import { useAuth } from "../../context/AuthContext";
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -29,6 +29,7 @@ const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await signin(formData);
@@ -37,6 +38,10 @@ const Login = () => {
       sessionStorage.setItem("language", user_settings?.language || "");
       sessionStorage.setItem("currency", user_settings?.currency_format || "");
       sessionStorage.setItem("dateformat", user_settings?.date_format || "");
+      login({
+        username: formData.email,
+        permissions: response?.data?.user_authorizations || {}, // E.g., { dashboard: "X", upload: null }
+      });
       toast({
         title: "Login successful",
         variant: "default",

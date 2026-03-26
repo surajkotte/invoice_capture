@@ -28,7 +28,7 @@ const Menubar = ({ children }) => {
   const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, hasPermission } = useAuth();
   const currentPath = location.pathname;
 
   const menuItems = [
@@ -48,7 +48,9 @@ const Menubar = ({ children }) => {
       icon: FileUser,
     },
   ];
-
+  const authorizedMenuItems = menuItems.filter((item) =>
+    hasPermission(item.key),
+  );
   const handleLogout = async () => {
     const response = await signOut();
     if (response?.messageType === "S") {
@@ -91,8 +93,24 @@ const Menubar = ({ children }) => {
           </span>
         </div>
 
-        <div className="flex justify-center gap-3 items-center flex-1">
+        {/* <div className="flex justify-center gap-3 items-center flex-1">
           {menuItems.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <Link to={item.path} key={item.key + "Link"}>
+                <Button
+                  key={item.key}
+                  variant={currentPath === item.path ? "default" : "ghost"}
+                >
+                  <IconComponent size={16} className="mr-2" />
+                  {item.label}
+                </Button>
+              </Link>
+            );
+          })}
+        </div> */}
+        <div className="flex justify-center gap-3 items-center flex-1">
+          {authorizedMenuItems.map((item) => {
             const IconComponent = item.icon;
             return (
               <Link to={item.path} key={item.key + "Link"}>
