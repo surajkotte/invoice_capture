@@ -289,9 +289,11 @@ const Admin = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold">{t('admin.system_configuration.title')}</h2>
+              <h2 className="text-xl font-semibold">
+                {t("admin.system_configuration.title")}
+              </h2>
               <p className="text-sm text-muted-foreground">
-                {t('admin.system_configuration.description')}
+                {t("admin.system_configuration.description")}
               </p>
             </div>
             <Button
@@ -300,7 +302,7 @@ const Admin = () => {
               className="gap-2"
             >
               <Plus className="h-4 w-4" />
-              {t('admin.system_configuration.add_system')}
+              {t("admin.system_configuration.add_system")}
             </Button>
           </div>
 
@@ -332,9 +334,11 @@ const Admin = () => {
         </div>
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold">{t('admin.field_configuration.title')}</h2>
+            <h2 className="text-xl font-semibold">
+              {t("admin.field_configuration.title")}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t('admin.field_configuration.description')}
+              {t("admin.field_configuration.description")}
             </p>
           </div>
 
@@ -344,7 +348,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Header Fields</CardTitle>
                 <CardDescription>
-                 {t('admin.field_configuration.hedaer_field_description')}
+                  {t("admin.field_configuration.hedaer_field_description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -390,7 +394,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Item Fields</CardTitle>
                 <CardDescription>
-                  {t('admin.field_configuration.item_field_description')}
+                  {t("admin.field_configuration.item_field_description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -432,15 +436,15 @@ const Admin = () => {
             </Card>
           </div>
         </div>
-
-        {/* File Configuration */}
         <Card>
           <CardHeader>
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
-                <CardTitle>File Upload Configuration</CardTitle>
+                <CardTitle>
+                  {t("admin.file_upload_configuration.title")}
+                </CardTitle>
                 <CardDescription>
-                  Configure allowed file types and size limits
+                  {t("admin.file_upload_configuration.description")}
                 </CardDescription>
               </div>
               <div className="flex">
@@ -454,7 +458,7 @@ const Admin = () => {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="allowedTypes">Allowed File Types</Label>
+                <Label htmlFor="allowedTypes">{t("admin.file_upload_configuration.alloed_file_types")}</Label>
                 <Input
                   id="allowedTypes"
                   placeholder="PDF, XML, XLSX"
@@ -471,7 +475,7 @@ const Admin = () => {
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="maxSize">Maximum File Size (MB)</Label>
+                <Label htmlFor="maxSize">{t("admin.file_upload_configuration.file_size_limit")}</Label>
                 <Input
                   id="maxSize"
                   placeholder="10"
