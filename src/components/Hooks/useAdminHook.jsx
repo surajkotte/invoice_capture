@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   addDocType,
   addHeaders,
@@ -7,7 +7,7 @@ import {
   getFields,
   getSystems,
   testConnection,
-  delete_systemconfig
+  delete_systemconfig,
 } from "../../adapter/admin";
 
 const useAdminHook = () => {
@@ -20,26 +20,27 @@ const useAdminHook = () => {
     status: false,
     id: "",
   });
+
   const FieldTypes = ["Number", "Boolean", "String", "Date"];
+
   const addSystem = async (name, domain, port, is_default, id) => {
-    const respone = await addSystemConfig(domain, name, port, id, is_default);
-    return respone;
+    return await addSystemConfig(domain, name, port, id, is_default);
   };
+
   const AddFields = async (Fields, Type) => {
     const response = await addHeaders(Fields, Type);
+
     if (response?.messageType === "S") {
       const FieldsResponse =
-        response?.data?.Fields &&
-        response?.data?.Fields?.length != 0 &&
-        response?.data?.Fields?.map((info) => {
-          return {
-            id: info?.id,
-            name: info?.field_label,
-            visible: info?.visible,
-            fieldTechName: info?.name,
-            fieldType: info?.fieldType,
-          };
-        });
+        response?.data?.Fields?.map((info) => ({
+          id: info?.id,
+          name: info?.name || info?.field_label,
+          visible: info?.visible ?? true,
+          fieldTechName: info?.fieldTechName || info?.Field_name,
+          fieldType: info?.fieldType || info?.field_type,
+          translations: info?.translations || [],
+        })) || [];
+
       if (Type === "Header") {
         setHeaderData(FieldsResponse);
       } else {
@@ -48,41 +49,45 @@ const useAdminHook = () => {
     }
     return response;
   };
+
   const getSystem = async () => {
     setIsLoading({ action: "get_system", status: true, id: "" });
-    const respone = await getSystems();
-    if (respone?.messageType == "S") {
-      setSystems(respone?.data);
+    const response = await getSystems();
+    if (response?.messageType === "S") {
+      setSystems(response?.data || []);
     } else {
       setSystems([]);
     }
     setIsLoading({ action: "", status: false, id: "" });
   };
+
   const fetchFields = async () => {
     const response1 = await getFields("Header");
     const response2 = await getFields("Item");
+
     if (response1?.messageType === "S") {
-      const HeaderResponse = response1?.data?.map((info) => {
-        return {
+      const HeaderResponse =
+        response1?.data?.map((info) => ({
           id: info?.id,
-          name: info?.field_label,
+          name: info?.field_label || info?.name,
           visible: true,
-          fieldType: info?.field_type,
-          fieldTechName: info?.field_name,
-        };
-      });
+          fieldType: info?.field_type || info?.fieldType,
+          fieldTechName: info?.field_name || info?.fieldTechName,
+          translations: info?.translations || [],
+        })) || [];
       setHeaderData(HeaderResponse);
     }
+
     if (response2?.messageType === "S") {
-      const ItemResponse = response2?.data?.map((info) => {
-        return {
+      const ItemResponse =
+        response2?.data?.map((info) => ({
           id: info?.id,
-          name: info?.field_label,
+          name: info?.field_label || info?.name,
           visible: true,
-          fieldType: info?.field_type,
-          fieldTechName: info?.field_name,
-        };
-      });
+          fieldType: info?.field_type || info?.fieldType,
+          fieldTechName: info?.field_name || info?.fieldTechName,
+          translations: info?.translations || [], 
+        })) || [];
       setItemData(ItemResponse);
     }
   };
@@ -90,29 +95,19 @@ const useAdminHook = () => {
   const addDocumentType = async (documents, size) => {
     let formattedDocumentTypes = [];
     if (documents) {
-      formattedDocumentTypes = documents.split(",").toString().split(",");
+      formattedDocumentTypes = documents.split(",").map((d) => d.trim());
     }
-    const response = await addDocType(formattedDocumentTypes, size);
-    if (response?.messageType === "S") {
-    } else {
-    }
-    return response;
+    return await addDocType(formattedDocumentTypes, size);
   };
 
   const getDocumentType = async () => {
     const response = await getDocType();
-    if (response?.messageType === "S") {
-      const hasData = response?.data[0]?.mimetypes;
-      let allowedTypes = "";
-      if (hasData) {
-        allowedTypes = response?.data[0]?.mimetypes?.split(",");
-      }
-      let maxSize = response?.data[0]?.size;
+    if (response?.messageType === "S" && response?.data?.length > 0) {
+      const data = response.data[0];
       setUploadConfig({
-        allowedTypes,
-        maxSize,
+        allowedTypes: data?.mimetypes || "",
+        maxSize: data?.size || "",
       });
-    } else {
     }
   };
 
@@ -125,39 +120,35 @@ const useAdminHook = () => {
           prev.map((sys) =>
             sys.id === response?.data?.id
               ? { ...sys, connectionStatus: response?.data?.connectionStatus }
-              : sys
-          )
+              : sys,
+          ),
         );
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       setIsLoading({ action: "", status: false, id: "" });
     }
   };
-    const delete_system = async (id)=>{
-    try{
-      setIsLoading({
-        action: "delete",
-        state: true,
-      })
+
+  const delete_system = async (id) => {
+    try {
+      setIsLoading({ action: "delete", status: true, id: id }); 
       const response = await delete_systemconfig(id);
       return response;
-    }catch(err){
-      console.log(err)
-    }finally{
-        setIsLoading({
-        action: "",
-        state: false,
-      })
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading({ action: "", status: false, id: "" });
     }
-  }
+  };
+
   useEffect(() => {
     getSystem();
     fetchFields();
     getDocumentType();
-    //testConnection("mu2r3d53.otxlab.net", "44300");
   }, []);
+
   return {
     addSystem,
     AddFields,

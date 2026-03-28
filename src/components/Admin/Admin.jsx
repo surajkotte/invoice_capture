@@ -203,15 +203,21 @@ const Admin = () => {
   };
 
   const handleSave = async (id) => {
-    const system_Info =
-      systemConfigs?.length != 0 &&
-      systemConfigs.find((info) => info?.id === id);
+    const system_Info = systemConfigs?.find((info) => info?.id === id);
+    if (!system_Info) {
+      toast({
+        title: "Error",
+        description: "System configuration not found",
+        variant: "destructive",
+      });
+      return;
+    }
     const response = await addSystem(
-      system_Info?.systemName,
-      system_Info?.domain,
-      system_Info?.port,
-      system_Info?.is_default,
-      system_Info?.id || "",
+      system_Info.systemName,
+      system_Info.domain,
+      system_Info.port,
+      system_Info.is_default,
+      system_Info.id.startsWith("new") ? "" : system_Info.id,
     );
     if (response?.messageType === "S") {
       toast({
@@ -289,9 +295,11 @@ const Admin = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold">{t('admin.system_configuration.title')}</h2>
+              <h2 className="text-xl font-semibold">
+                {t("admin.system_configuration.title")}
+              </h2>
               <p className="text-sm text-muted-foreground">
-                {t('admin.system_configuration.description')}
+                {t("admin.system_configuration.description")}
               </p>
             </div>
             <Button
@@ -300,7 +308,7 @@ const Admin = () => {
               className="gap-2"
             >
               <Plus className="h-4 w-4" />
-              {t('admin.system_configuration.add_system')}
+              {t("admin.system_configuration.add_system")}
             </Button>
           </div>
 
@@ -332,9 +340,11 @@ const Admin = () => {
         </div>
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold">{t('admin.field_configuration.title')}</h2>
+            <h2 className="text-xl font-semibold">
+              {t("admin.field_configuration.title")}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t('admin.field_configuration.description')}
+              {t("admin.field_configuration.description")}
             </p>
           </div>
 
@@ -344,7 +354,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Header Fields</CardTitle>
                 <CardDescription>
-                 {t('admin.field_configuration.hedaer_field_description')}
+                  {t("admin.field_configuration.hedaer_field_description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -390,7 +400,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Item Fields</CardTitle>
                 <CardDescription>
-                  {t('admin.field_configuration.item_field_description')}
+                  {t("admin.field_configuration.item_field_description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

@@ -54,6 +54,7 @@ const UploadHeader = ({
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {console.log(fields)}
           {fields?.map((field) => (
             <div
               key={field.id}
