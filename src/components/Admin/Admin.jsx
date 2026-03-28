@@ -442,15 +442,15 @@ const Admin = () => {
             </Card>
           </div>
         </div>
-
-        {/* File Configuration */}
         <Card>
           <CardHeader>
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
-                <CardTitle>File Upload Configuration</CardTitle>
+                <CardTitle>
+                  {t("admin.file_upload_configuration.title")}
+                </CardTitle>
                 <CardDescription>
-                  Configure allowed file types and size limits
+                  {t("admin.file_upload_configuration.description")}
                 </CardDescription>
               </div>
               <div className="flex">
@@ -464,7 +464,7 @@ const Admin = () => {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="allowedTypes">Allowed File Types</Label>
+                <Label htmlFor="allowedTypes">{t("admin.file_upload_configuration.alloed_file_types")}</Label>
                 <Input
                   id="allowedTypes"
                   placeholder="PDF, XML, XLSX"
@@ -481,7 +481,7 @@ const Admin = () => {
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="maxSize">Maximum File Size (MB)</Label>
+                <Label htmlFor="maxSize">{t("admin.file_upload_configuration.file_size_limit")}</Label>
                 <Input
                   id="maxSize"
                   placeholder="10"
