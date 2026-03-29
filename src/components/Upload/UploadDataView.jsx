@@ -148,8 +148,8 @@ const UploadDataView = ({
   useEffect(() => {
     const Header_Data = headerFields?.reduce((acc, field) => {
       const value = data?.normalizedData?.header
-        ? data?.normalizedData?.header[field.name] || ""
-        : data?.normalizedData?.[field.name] || "";
+        ? data?.normalizedData?.header[field.fieldTechName] || ""
+        : data?.normalizedData?.[field.fieldTechName] || "";
       acc[field.fieldTechName] = value;
       return acc;
     }, {});
@@ -157,7 +157,7 @@ const UploadDataView = ({
       (item) => {
         let new_item = {};
         Object.keys(item).forEach((key) => {
-          const field = itemFields?.find((f) => f.name === key);
+          const field = itemFields?.find((f) => f.fieldTechName === key);
           if (field) {
             new_item[field.fieldTechName] = item[key] || "";
           }

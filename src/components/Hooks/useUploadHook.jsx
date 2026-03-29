@@ -34,25 +34,31 @@ const useUploadHook = () => {
     return response;
   };
   const normalizeResponseData = (responseData) => {
-    if (responseData?.header) {
-      return {
-        header: responseData?.header || [],
-        items: responseData?.items || [],
-      };
-    } else if (responseData?.header_fields) {
-      const { header_fields, item_fields } = responseData;
-      return {
-        header: header_fields,
-        items: item_fields || [],
-      };
-    } else {
-      const { items, ...rest } = responseData;
-      return {
-        header: rest,
-        items: items || [],
-      };
-    }
+    return {
+      header: responseData?.headerData || {},
+      items: responseData?.itemsData || [],
+    };
   };
+  // const normalizeResponseData = (responseData) => {
+  //   if (responseData?.header) {
+  //     return {
+  //       header: responseData?.header || [],
+  //       items: responseData?.items || [],
+  //     };
+  //   } else if (responseData?.header_fields) {
+  //     const { header_fields, item_fields } = responseData;
+  //     return {
+  //       header: header_fields,
+  //       items: item_fields || [],
+  //     };
+  //   } else {
+  //     const { items, ...rest } = responseData;
+  //     return {
+  //       header: rest,
+  //       items: items || [],
+  //     };
+  //   }
+  // };
   const submit = async (data) => {
     setIsLoading({
       action: "Submit",
@@ -69,17 +75,25 @@ const useUploadHook = () => {
     });
   };
   const handleUpload = async (file) => {
-    setIsLoading({
-      action: "Upload",
-      state: true,
-    });
+    setIsLoading({ action: "Upload", state: true });
     const formData = new FormData();
     formData.append("file", file);
     try {
-      fetchFields();
+      // NOTE: We completely removed fetchFields() here!
       const response = await uploadInvoice(formData);
+      
       if (response?.messageType == "S") {
         const normalizedData = normalizeResponseData(response?.data);
+        
+        // 1. Immediately set the Translated UI Fields from the backend response
+        if (response?.uiFields) {
+          setFieldsData({
+            headerData: response.uiFields.headerFields,
+            itemData: response.uiFields.itemFields
+          });
+        }
+
+        // 2. Set the Extracted Data
         setData({
           normalizedData,
           fileName: response?.fileName,
@@ -88,6 +102,7 @@ const useUploadHook = () => {
           fileSize: response?.fileSize,
           log_data: response?.log_data,
         });
+        
         setUploadStatus("uploaded");
         return response;
       } else {
@@ -96,12 +111,43 @@ const useUploadHook = () => {
     } catch (error) {
       return { messageType: "E", message: error.message };
     } finally {
-      setIsLoading({
-        action: "",
-        state: false,
-      });
+      setIsLoading({ action: "", state: false });
     }
   };
+  // const handleUpload = async (file) => {
+  //   setIsLoading({
+  //     action: "Upload",
+  //     state: true,
+  //   });
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   try {
+  //     fetchFields();
+  //     const response = await uploadInvoice(formData);
+  //     if (response?.messageType == "S") {
+  //       const normalizedData = normalizeResponseData(response?.data);
+  //       setData({
+  //         normalizedData,
+  //         fileName: response?.fileName,
+  //         base64File: response?.base64Files,
+  //         fileType: response?.fileType,
+  //         fileSize: response?.fileSize,
+  //         log_data: response?.log_data,
+  //       });
+  //       setUploadStatus("uploaded");
+  //       return response;
+  //     } else {
+  //       return response;
+  //     }
+  //   } catch (error) {
+  //     return { messageType: "E", message: error.message };
+  //   } finally {
+  //     setIsLoading({
+  //       action: "",
+  //       state: false,
+  //     });
+  //   }
+  // };
   const fetchFields = async () => {
     const [response1, response2] = await Promise.all([
       getFields("Header"),
