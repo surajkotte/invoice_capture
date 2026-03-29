@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,9 +12,24 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, User } from "lucide-react";
-import parseDate from "../../utils/DateParser";
-import { useEffect, useState } from "react";
+import { formatToUserDisplay, parseToStandardDate } from "../../utils/DateParser";
+const SmartDateInput = ({ value, onChange, onClick }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const standardDate = parseToStandardDate(value); 
+  const displayDate = formatToUserDisplay(value);
 
+  return (
+    <Input
+      type={isFocused ? "date" : "text"}
+      value={isFocused ? standardDate : displayDate}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      onChange={(e) => onChange(e.target.value)}
+      onClick={onClick}
+      className="w-full"
+    />
+  );
+};
 const UploadHeader = ({
   data,
   onChange,
@@ -87,15 +103,22 @@ const UploadHeader = ({
                   </SelectContent>
                 </Select>
               ) : field.fieldType === "Date" ? (
-                <Input
+                <SmartDateInput
+                  value={data[field.fieldTechName] || ""}
+                  onChange={(newVal) =>
+                    updateField(field.fieldTechName, newVal)
+                  }
+                  onClick={() => setActiveField(field.name)}
+                />
+                /* <Input
                   type="date"
-                  value={parseDate(data[field.fieldTechName])}
+                  value={formatToUserDisplay(data[field.fieldTechName])}
                   onChange={(e) =>
                     updateField(field.fieldTechName, e.target.value)
                   }
                   onClick={() => setActiveField(field.name)}
                   className="w-full"
-                />
+                /> */
               ) : field.fieldType === "String" ? (
                 <Input
                   id={field.id}

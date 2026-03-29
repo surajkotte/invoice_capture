@@ -31,7 +31,7 @@ const CHANNEL_STYLES = {
   mail_extraction : "bg-blue-100 text-blue-700 border-blue-200",
   mail_submit : "bg-amber-100 text-amber-700 border-amber-200",
 };
-
+import { formatToUserDisplay } from "../../utils/DateParser";
 function channelBadge(channel = "") {
   const key = channel.toLowerCase();
   const cls = CHANNEL_STYLES[key] ?? "bg-gray-100 text-gray-600 border-gray-200";
@@ -42,10 +42,16 @@ function channelBadge(channel = "") {
   );
 }
 
-function formatDate(val) {
+function formatDateTime(val) {
   if (!val) return "—";
   const d = new Date(val);
-  return isNaN(d) ? val : d.toLocaleString();
+  if (isNaN(d)) return val;
+
+  const isoString = d.toISOString(); // e.g., "2025-12-07T11:39:29.000Z"
+  const customDate = formatToUserDisplay(isoString);
+  const localTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  return `${customDate} ${localTime}`;
 }
 
 function shortSession(id = "") {
@@ -123,7 +129,7 @@ function SessionRow({ session, isOpen, onToggle }) {
           </span>
         </TableCell>
         <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-          {formatDate(latestDate.toISOString())}
+          {formatDateTime(latestDate.toISOString())}
         </TableCell>
         <TableCell className="text-center">
           {/* <span className="text-xs font-semibold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
@@ -164,7 +170,7 @@ function SessionRow({ session, isOpen, onToggle }) {
             </TableCell>
 
             <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-              {formatDate(log.created_date ?? log.created_at)}
+              {formatDateTime(log.created_date ?? log.created_at)}
             </TableCell>
             <TableCell className="text-xs text-muted-foreground">{log.ai_model_name ?? log.model_name ?? "—"}</TableCell>
 

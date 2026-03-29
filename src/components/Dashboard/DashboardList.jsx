@@ -24,6 +24,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { formatToUserDisplay } from "../../utils/DateParser";
 import { useTranslation } from 'react-i18next';
 function getStatusBadge(status) {
   switch (status) {
@@ -87,6 +88,13 @@ const DashboardList = ({
   const itemsPerPage = 20;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const paginatedCourses = data;
+  // 2. Helper function to combine Custom Date + Local Time
+  const formatDateTime = (isoString) => {
+    if (!isoString) return "";
+    const customDate = formatToUserDisplay(isoString);
+    const localTime = new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${customDate} ${localTime}`;
+  };
   return (
     <Card>
       <div className="p-6">
@@ -126,10 +134,12 @@ const DashboardList = ({
                     >
                       {invoice.file_name}
                     </TableCell>
-
-                    <TableCell className="text-muted-foreground">
-                      {new Date(invoice.created_date).toLocaleString()}
+                    <TableCell className="text-muted-foreground whitespace-nowrap">
+                      {formatDateTime(invoice.created_date)}
                     </TableCell>
+                    {/* <TableCell className="text-muted-foreground">
+                      {new Date(invoice.created_date).toLocaleString()}
+                    </TableCell> */}
                     <TableCell>{invoice.created_user}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{invoice.system_name}</Badge>
