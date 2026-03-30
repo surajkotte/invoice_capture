@@ -16,3 +16,8 @@ export const language_mapper = {
   de: "Germany",
   fr: "France",
 };
+export const theme = {
+  0: "Authomatic",
+  1: "Light",
+  2: "Dark",
+};

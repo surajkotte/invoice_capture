@@ -38,6 +38,7 @@ const Login = () => {
       sessionStorage.setItem("language", user_settings?.language || "");
       sessionStorage.setItem("currency", user_settings?.currency_format || "");
       sessionStorage.setItem("dateformat", user_settings?.date_format || "");
+      sessionStorage.setItem("theme", user_settings?.theme || "0")
       login({
         username: formData.email,
         permissions: response?.data?.user_authorizations || {}, // E.g., { dashboard: "X", upload: null }

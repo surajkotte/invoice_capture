@@ -3,19 +3,23 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { setUserSettings } from "../adapter/Dashboard";
 import { useToast } from "./Hooks/useToastHook";
+import { useTheme } from "next-themes";
 import i18n from "../i18n";
 import {
   language_mapper,
   date_format_mapping,
   currency_format_mapping,
+  theme,
 } from "../utils/Mapper";
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { toast } = useToast();
+  const { setTheme } = useTheme();
   const [config, setConfig] = useState({
     language: "",
     dateformat: "",
     currency: "",
+    theme: "",
   });
 
   const handleChange = (field, value) => {
@@ -29,6 +33,8 @@ const SettingsModal = ({ isOpen, onClose }) => {
       sessionStorage.setItem("language", config?.language);
       sessionStorage.setItem("dateformat", config?.dateformat);
       sessionStorage.setItem("currency", config?.currency);
+      sessionStorage.setItem("theme", config?.theme);
+      setTheme(config.theme === "1" ? "light" : "dark");
       i18n.changeLanguage(config.language);
       toast({ title: "Settings saved successfully", variant: "default" });
     } else {
@@ -105,6 +111,20 @@ const SettingsModal = ({ isOpen, onClose }) => {
               className="w-full p-2 rounded-md border border-input bg-background text-sm"
             >
               {Object.entries(currency_format_mapping).map(([code, format]) => (
+                <option key={code} value={code}>
+                  {format}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Theme</label>
+            <select
+              value={config.theme}
+              onChange={(e) => handleChange("theme", e.target.value)}
+              className="w-full p-2 rounded-md border border-input bg-background text-sm"
+            >
+              {Object.entries(theme).map(([code, format]) => (
                 <option key={code} value={code}>
                   {format}
                 </option>

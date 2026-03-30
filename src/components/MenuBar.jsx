@@ -33,7 +33,12 @@ const Menubar = ({ children }) => {
 
   const menuItems = [
     { label: "Dashboard", key: "dashboard", path: "/dashboard", icon: Grid3x3 },
-    { label: "Configuration", key: "configuration", path: "/admin", icon: Plus },
+    {
+      label: "Configuration",
+      key: "configuration",
+      path: "/admin",
+      icon: Plus,
+    },
     { label: "Upload", key: "upload", path: "/upload", icon: Upload },
     {
       label: "Analytics",
@@ -58,6 +63,7 @@ const Menubar = ({ children }) => {
       sessionStorage.removeItem("language");
       sessionStorage.removeItem("dateformat");
       sessionStorage.removeItem("currency");
+      sessionStorage.removeItem("theme");
       logout();
       toast({ title: "Logged out successfully", variant: "default" });
       navigate("/login", { state: { from: location }, replace: true });
@@ -75,6 +81,11 @@ const Menubar = ({ children }) => {
   };
 
   useEffect(() => {
+    const savedTheme = sessionStorage.getItem("theme");
+    if (savedTheme) {
+      // If your storage uses "1" for light and "2" for dark:
+      setTheme(savedTheme === "1" ? "light" : "dark");
+    }
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setShowUserMenu(false);
@@ -82,7 +93,7 @@ const Menubar = ({ children }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [setTheme]);
 
   return (
     <div className="h-screen min-w-screen flex flex-col">
@@ -143,13 +154,13 @@ const Menubar = ({ children }) => {
           {showUserMenu && (
             <div className="absolute right-0 top-full mt-2 w-48 rounded-md shadow-md border border-border bg-popover text-popover-foreground z-50 overflow-hidden">
               <div className="py-1">
-                <button
+                {/* <button
                   onClick={handleThemeToggle}
                   className="w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200 hover:bg-accent hover:text-accent-foreground"
                 >
                   {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
                   {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                </button>
+                </button> */}
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
