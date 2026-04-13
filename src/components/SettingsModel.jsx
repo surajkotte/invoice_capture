@@ -24,10 +24,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   const handleChange = (field, value) => {
     console.log(field, value);
+    console.log(config+" in handle change")
     setConfig((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
+    console.log(config)
     const response = await setUserSettings(config);
     if (response?.messageType === "S") {
       sessionStorage.setItem("language", config?.language);
@@ -51,11 +53,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
       const currency_format = sessionStorage?.getItem("currency") || "";
       const date_format = sessionStorage?.getItem("dateformat") || "";
       const language = sessionStorage?.getItem("language") || "";
-
+      const theme = sessionStorage?.getItem("theme") || "0"
       setConfig({
         language: language || "en",
         dateformat: date_format || "0",
         currency: currency_format || "0",
+        theme: theme || "0"
       });
     }
   }, [isOpen]);
