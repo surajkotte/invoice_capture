@@ -164,3 +164,40 @@ export const delete_systemconfig = async(id)=>{
     return { messageType: "E", message: "Unable to delete system config, Please check with administrator" };
   }
 }
+
+export const update_other_config = async (data) => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/admin/otherconfig`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      credentials: "include",
+      body: JSON.stringify({ data }),
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const get_other_config = async () => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/admin/otherconfig`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    console.log(err);
+  }
+};

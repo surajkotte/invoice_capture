@@ -8,6 +8,8 @@ import {
   getSystems,
   testConnection,
   delete_systemconfig,
+  update_other_config,
+  get_other_config,
 } from "../../adapter/admin";
 
 const useAdminHook = () => {
@@ -15,6 +17,7 @@ const useAdminHook = () => {
   const [headerData, setHeaderData] = useState([]);
   const [itemData, setItemData] = useState([]);
   const [uploadConfig, setUploadConfig] = useState("");
+  const [otherConfig, setOtherConfig] = useState({});
   const [isLoading, setIsLoading] = useState({
     action: "",
     status: false,
@@ -86,7 +89,7 @@ const useAdminHook = () => {
           visible: true,
           fieldType: info?.field_type || info?.fieldType,
           fieldTechName: info?.field_name || info?.fieldTechName,
-          translations: info?.translations || [], 
+          translations: info?.translations || [],
         })) || [];
       setItemData(ItemResponse);
     }
@@ -133,8 +136,9 @@ const useAdminHook = () => {
 
   const delete_system = async (id) => {
     try {
-      setIsLoading({ action: "delete", status: true, id: id }); 
+      setIsLoading({ action: "delete", status: true, id: id });
       const response = await delete_systemconfig(id);
+      setOtherConfig(response?.data || {});
       return response;
     } catch (err) {
       console.error(err);
@@ -142,11 +146,62 @@ const useAdminHook = () => {
       setIsLoading({ action: "", status: false, id: "" });
     }
   };
-
+  const update_otherconfig = async (data) => {
+    try {
+      console.log("Updating other configuration with data:", data);
+      setIsLoading({ action: "update_otherconfig", status: true, id: "" });
+      const response_data = {
+        max_retries: data?.maxRetryAttempts,
+        retry_delay: data?.retryDelay,
+        batch_job: data?.enableBatchPush === true ? 1 : 0,
+        batch_interval: data?.batchPushInterval,
+      }
+      const response = await update_other_config(response_data);
+      if (response?.messageType === "S") {
+        setOtherConfig({
+          maxRetryAttempts: data?.maxRetryAttempts,
+          retryDelay: data?.retryDelay,
+          enableBatchPush: data?.enableBatchPush,
+          batchPushInterval: data?.batchPushInterval,
+        });
+      }
+      return response;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading({ action: "", status: false, id: "" });
+    }
+  };
+  const change_config = (fieldId, value) => {
+    setOtherConfig((prev) => ({
+      ...prev,
+      [fieldId]: value,
+    }));
+  };
+  const fetch_otherconfig = async () => {
+    try {
+      setIsLoading({ action: "fetch_otherconfig", status: true, id: "" });
+      const response = await get_other_config();
+      if (response?.messageType === "S" && response?.data) {
+        setOtherConfig({
+          maxRetryAttempts: response?.data[0]?.max_retries,
+          retryDelay: response?.data[0]?.retry_delay,
+          enableBatchPush: response?.data[0]?.batch_job === 1 ? true : false,
+          batchPushInterval: response?.data[0]?.batch_interval,
+        });
+      }
+      return response;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading({ action: "", status: false, id: "" });
+    }
+  };
   useEffect(() => {
     getSystem();
     fetchFields();
     getDocumentType();
+    fetch_otherconfig();
   }, []);
 
   return {
@@ -155,6 +210,9 @@ const useAdminHook = () => {
     addDocumentType,
     handleTestConnection,
     delete_system,
+    change_config,
+    update_otherconfig,
+    otherConfig,
     isLoading,
     systems,
     FieldTypes,

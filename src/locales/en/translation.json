@@ -53,6 +53,14 @@
       "description": "Configure allowed file types and size limits",
       "alloed_file_types": "Allowed File Types",
       "file_size_limit": "Maximum File Size Limit (MB)"
+    },
+    "other_configurations":{
+      "title": "Other Configurations",
+      "description": "Configure other system settings",
+      "max_retry_attempts": "Maximum Retry Attempts",
+      "retry_delay": "Retry Delay (seconds)",
+      "batch_push": "Batch Push Configuration",
+      "batch_interval": "Batch Push Interval (minutes)"
     }
   },
   "upload": {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Settings, Plus, Save } from "lucide-react";
+import { Settings, Plus, Save, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "../Hooks/useToastHook";
@@ -23,6 +24,9 @@ const Admin = () => {
     addDocumentType,
     handleTestConnection,
     delete_system,
+    change_config,
+    update_otherconfig,
+    otherConfig,
     systems,
     FieldTypes,
     headerData,
@@ -40,7 +44,6 @@ const Admin = () => {
   const [itemFields, setItemFields] = useState(itemData);
   const [headerFieldsVisible, setHeaderFieldsVisible] = useState(true);
   const [itemFieldsVisible, setItemFieldsVisible] = useState(true);
-
   const [fileConfig, setFileConfig] = useState({
     allowedTypes: "",
     maxSize: "",
@@ -197,6 +200,23 @@ const Admin = () => {
       toast({
         title: "Error",
         description: `Error adding Item fields`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handle_otherconfig_save = async () => {
+    const response = await update_otherconfig(otherConfig);
+    if (response?.messageType === "S") {
+      toast({
+        title: "Success",
+        description: "Other configurations updated successfully",
+        variant: "success",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Error updating other configurations",
         variant: "destructive",
       });
     }
@@ -375,27 +395,8 @@ const Admin = () => {
                     Add Header
                   </Button>
                 </div>
-                {/* 
-                {headerFields.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">
-                      Configured Fields:
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {headerFields
-                        .filter((field) => field.name.trim())
-                        .map((field) => (
-                          <Badge key={field.id} variant="secondary">
-                            {field.name}
-                          </Badge>
-                        ))}
-                    </div>
-                  </div>
-                )} */}
               </CardContent>
             </Card>
-
-            {/* Item Fields Section */}
             <Card>
               <CardHeader>
                 <CardTitle>Item Fields</CardTitle>
@@ -464,7 +465,9 @@ const Admin = () => {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="allowedTypes">{t("admin.file_upload_configuration.alloed_file_types")}</Label>
+                <Label htmlFor="allowedTypes">
+                  {t("admin.file_upload_configuration.alloed_file_types")}
+                </Label>
                 <Input
                   id="allowedTypes"
                   placeholder="PDF, XML, XLSX"
@@ -481,7 +484,9 @@ const Admin = () => {
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="maxSize">{t("admin.file_upload_configuration.file_size_limit")}</Label>
+                <Label htmlFor="maxSize">
+                  {t("admin.file_upload_configuration.file_size_limit")}
+                </Label>
                 <Input
                   id="maxSize"
                   placeholder="10"
@@ -511,8 +516,114 @@ const Admin = () => {
             )} */}
           </CardContent>
         </Card>
-
-        {/* Field Manager Modals */}
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between">
+              <div className="flex flex-col gap-2">
+                <CardTitle>{t("admin.other_configurations.title")}</CardTitle>
+                <CardDescription>
+                  {t("admin.other_configurations.description")}
+                </CardDescription>
+              </div>
+              <div className="flex">
+                <Button onClick={handle_otherconfig_save} className="gap-2">
+                  <Save className="h-4 w-4" />
+                  Save
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-col space-y-2">
+                <Label htmlFor="max_retry_attempts">
+                  {t("admin.other_configurations.max_retry_attempts")}
+                </Label>
+                <Input
+                  id="max_retry_attempts"
+                  placeholder="3"
+                  type="number"
+                  value={otherConfig.maxRetryAttempts}
+                  onChange={(e) =>
+                    change_config(
+                      "maxRetryAttempts",
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                />
+                <p className="text-[0.8rem] text-muted-foreground">
+                  By default, max retry attempts is set to 3. Setting this to 0
+                  disables automatic retries.
+                </p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <Label htmlFor="retry_delay">
+                  {t("admin.other_configurations.retry_delay")}
+                </Label>
+                <Input
+                  id="retry_delay"
+                  placeholder="1"
+                  type="number"
+                  value={otherConfig.retryDelay}
+                  onChange={(e) =>
+                    change_config(
+                      "retryDelay",
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                />
+                <p className="text-[0.8rem] text-muted-foreground">
+                  Delay in minutes between attempts. Setting this to 0 triggers
+                  retries immediately.
+                </p>
+              </div>
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-2 pt-2">
+                  <Checkbox
+                    id="enable_batch_push"
+                    checked={otherConfig.enableBatchPush}
+                    onCheckedChange={(checked) =>
+                      change_config("enableBatchPush", !!checked)
+                    }
+                  />
+                  <Label htmlFor="enable_batch_push" className="cursor-pointer">
+                    {t("admin.other_configurations.batch_push")}
+                  </Label>
+                </div>
+                <p className="text-[0.8rem] text-muted-foreground">
+                  Queue extracted data in JSON format and push at specific
+                  intervals instead of immediately.
+                </p>
+              </div>
+              {otherConfig.enableBatchPush != 0  && otherConfig.enableBatchPush && (
+                <div className="flex flex-col space-y-2 animate-in fade-in slide-in-from-top-1">
+                  {console.log(
+                    "Rendering batch interval input with value:",
+                    otherConfig.enableBatchPush,
+                  )}
+                  <Label htmlFor="batch_push_interval">
+                    {t("admin.other_configurations.batch_interval")}
+                  </Label>
+                  <Input
+                    id="batch_push_interval"
+                    placeholder="15"
+                    type="number"
+                    value={otherConfig.batchPushInterval}
+                    onChange={(e) =>
+                      change_config(
+                        "batchPushInterval",
+                        e.target.value === "" ? "" : Number(e.target.value),
+                      )
+                    }
+                  />
+                  <p className="text-[0.8rem] text-muted-foreground">
+                    Interval in minutes for batch processing (default: 15).
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
         <FieldManagerModal
           open={headerModalOpen}
           onOpenChange={setHeaderModalOpen}
