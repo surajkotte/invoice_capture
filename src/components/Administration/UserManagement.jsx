@@ -140,6 +140,8 @@ const UserManagement = () => {
                   <TableHead className="text-center">
                     Analytics Authorization
                   </TableHead>
+                  <TableHead className="text-center">Show Queue</TableHead>
+                  <TableHead className="text-center">Edit Queue</TableHead>
                   <TableHead className="text-center">
                     Usermanagement Authorization
                   </TableHead>
@@ -216,7 +218,24 @@ const UserManagement = () => {
                             }
                           />
                         </TableCell>
-
+                        <TableCell className="text-center">
+                          <Checkbox
+                            id={"getqueue"}
+                            checked={data?.getqueue ? true : false}
+                            onCheckedChange={() =>
+                              change_data(data.id, "getqueue", data?.getqueue)
+                            }
+                          />
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox
+                            id={"updatequeue"}
+                            checked={data?.updatequeue ? true : false}
+                            onCheckedChange={() =>
+                              change_data(data.id, "updatequeue", data?.updatequeue)
+                            }
+                          />
+                        </TableCell>
                         <TableCell className="text-center">
                           <Checkbox
                             id={"usermanagement"}
