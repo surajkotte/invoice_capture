@@ -177,3 +177,22 @@ export const setUserSettings = async (settings) => {
     return { messageType: "E", message: error.message };
   }
 };
+
+export const getQueues = async(page = 1)=>{
+  try{
+    console.log("Fetching queues...");
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/jobs/getqueue?page=${page}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  }catch(error){
+    return { messageType: "E", message: error.message };
+  }
+}

@@ -69,5 +69,21 @@
   },
   "analytics": {
 
+  },
+  "queues":{
+    "title": "Queues",
+    "description": "View and manage your document processing queues",
+    "no_data": "No queued documents found",
+    "fields": {
+      "status": "Status",
+      "created_at": "Created At",
+      "file_type": "File Type",
+      "file_name": "File Name",
+      "error_message": "Error Message",
+      "mail_id": "Mail ID",
+      "id": "ID",
+      "actions": "Retry",
+      "viewattachment": "View Attachment"
+    }
   }
 }

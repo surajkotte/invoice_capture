@@ -52,6 +52,12 @@ const Menubar = ({ children }) => {
       path: "/usermanagement",
       icon: FileUser,
     },
+    {
+      label: "Queues",
+      key: "getqueue",
+      path: "/queues",
+      icon: FileUser,
+    }
   ];
   const authorizedMenuItems = menuItems.filter((item) =>
     hasPermission(item.key),

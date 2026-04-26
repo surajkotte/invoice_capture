@@ -12,6 +12,7 @@ import UploadFile from "./components/Upload/UploadFile";
 import UserManagement from "./components/Administration/UserManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SetPassword from "./components/SetPassword";
+import Queue from "./components/Queues/Queue";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -71,6 +72,14 @@ export const reactRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/queues",
+        element: (
+          <ProtectedRoute requiredPermission="getqueue">
+            <Queue />
+          </ProtectedRoute>
+        ),
+      }
     ],
   },
   {

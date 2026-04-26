@@ -54,5 +54,29 @@
       "alloed_file_types": "Zulässige Dateitypen",
       "file_size_limit": "Maximale Dateigröße (MB)"
     }
+  },
+  "other_configurations":{
+    "title": "Andere Konfigurationen",
+    "description": "Andere Systemeinstellungen konfigurieren",
+    "max_retry_attempts": "Maximale Anzahl von Wiederholungsversuchen"
+  },
+  "queues": {
+    "title": "Warteschlangen",
+    "fields": {
+      "id": "ID",
+      "status": "Status",
+      "file_type": "Dateityp",
+      "file_name": "Dateiname",
+      "created_at": "Erstellt am",
+      "created_user": "Erstellt von",
+      "backend_system": "Backend-System",
+      "file_size": "Dateigröße",
+      "error_message": "Fehlermeldung",
+      "mail_id": "Mail-ID"
+    }
+  },
+  "upload": {
+    "title": "Laden Sie Ihre Rechnung hoch",
+    "description": "Ziehen Sie Ihre Rechnungsdateien hierher oder klicken Sie, um zu durchsuchen. Wir unterstützen PDF-, XML-, TXT- und DOCX-Formate."
   }
 }
