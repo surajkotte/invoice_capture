@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import useAnalyticsHook from "../Hooks/useAnalyticsHook";
 import {
@@ -9,6 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,26 +20,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { ChevronDown, ChevronRight, FileText, Layers } from "lucide-react";
-
+import { ChevronDown, ChevronRight, FileText, Layers, Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 const CHANNEL_STYLES = {
   extraction: "bg-blue-100 text-blue-700 border-blue-200",
-  prompt:     "bg-purple-100 text-purple-700 border-purple-200",
-  chat:       "bg-emerald-100 text-emerald-700 border-emerald-200",
-  submit:     "bg-amber-100 text-amber-700 border-amber-200",
-  mail_upload : "bg-amber-100 text-amber-700 border-amber-200",
-  mail_extraction : "bg-blue-100 text-blue-700 border-blue-200",
-  mail_submit : "bg-amber-100 text-amber-700 border-amber-200",
+  prompt: "bg-purple-100 text-purple-700 border-purple-200",
+  chat: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  submit: "bg-amber-100 text-amber-700 border-amber-200",
+  mail_upload: "bg-amber-100 text-amber-700 border-amber-200",
+  mail_extraction: "bg-blue-100 text-blue-700 border-blue-200",
+  mail_submit: "bg-amber-100 text-amber-700 border-amber-200",
 };
 import { formatToUserDisplay } from "../../utils/DateParser";
 function channelBadge(channel = "") {
   const key = channel.toLowerCase();
-  const cls = CHANNEL_STYLES[key] ?? "bg-gray-100 text-gray-600 border-gray-200";
-  return (
-    <Badge className={cls}>
-      {channel}
-    </Badge>
-  );
+  const cls =
+    CHANNEL_STYLES[key] ?? "bg-gray-100 text-gray-600 border-gray-200";
+  return <Badge className={cls}>{channel}</Badge>;
 }
 
 function formatDateTime(val) {
@@ -49,8 +46,11 @@ function formatDateTime(val) {
 
   const isoString = d.toISOString(); // e.g., "2025-12-07T11:39:29.000Z"
   const customDate = formatToUserDisplay(isoString);
-  const localTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
+  const localTime = d.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return `${customDate} ${localTime}`;
 }
 
@@ -67,12 +67,26 @@ function groupBySession(logs) {
   }
   return [...map.entries()]
     .map(([sessionId, rows]) => {
-      const totalCost = rows.reduce((s, r) => { return r.channel !== "submit" && r.channel !== "MAIL_SUBMIT" && r.channel !== "MAIL_UPLOAD" ? s + Number(r.total_cost ?? 0) : s; }, 0);
+      const totalCost = rows.reduce((s, r) => {
+        return r.channel !== "submit" &&
+          r.channel !== "MAIL_SUBMIT" &&
+          r.channel !== "MAIL_UPLOAD"
+          ? s + Number(r.total_cost ?? 0)
+          : s;
+      }, 0);
       const totalInputTokens = rows.reduce((s, r) => {
-        return r.channel !== "submit" && r.channel !== "MAIL_SUBMIT" && r.channel !== "MAIL_UPLOAD" ? s + Number(r.input_tokens ?? 0) : s;
+        return r.channel !== "submit" &&
+          r.channel !== "MAIL_SUBMIT" &&
+          r.channel !== "MAIL_UPLOAD"
+          ? s + Number(r.input_tokens ?? 0)
+          : s;
       }, 0);
       const totalOutputTokens = rows.reduce((s, r) => {
-        return r.channel !== "submit" && r.channel !== "MAIL_SUBMIT" && r.channel !== "MAIL_UPLOAD" ? s + Number(r.output_tokens ?? 0) : s;
+        return r.channel !== "submit" &&
+          r.channel !== "MAIL_SUBMIT" &&
+          r.channel !== "MAIL_UPLOAD"
+          ? s + Number(r.output_tokens ?? 0)
+          : s;
       }, 0);
       const latestDate = rows.reduce((max, r) => {
         const d = new Date(r.created_date ?? r.created_at ?? 0);
@@ -82,20 +96,85 @@ function groupBySession(logs) {
       const fileName = rows[0]?.file_name ?? "—";
       const fileType = rows[0]?.file_type ?? "";
       const channels = [...new Set(rows.map((r) => r.channel).filter(Boolean))];
-      return { sessionId, rows, totalCost, totalInputTokens, totalOutputTokens, latestDate, docId, fileName, fileType, channels };
+      return {
+        sessionId,
+        rows,
+        totalCost,
+        totalInputTokens,
+        totalOutputTokens,
+        latestDate,
+        docId,
+        fileName,
+        fileType,
+        channels,
+      };
     })
     .sort((a, b) => b.latestDate - a.latestDate);
 }
-
+function AnalyticsSkeletonRows({ rowCount = 5 }) {
+  return Array.from({ length: rowCount }).map((_, i) => (
+    <TableRow key={i}>
+      <TableCell className="w-8">
+        <Skeleton className="h-4 w-4 rounded-sm" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-16 rounded-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4 w-20" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-24 rounded" />
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-3 w-3 rounded-sm" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4 w-28" />
+      </TableCell>
+      <TableCell className="text-center">
+        <div className="flex justify-center">
+          <Skeleton className="h-5 w-14 rounded-full" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex justify-end">
+          <Skeleton className="h-4 w-12" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex justify-end">
+          <Skeleton className="h-4 w-12" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex justify-end">
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </TableCell>
+    </TableRow>
+  ));
+}
 function SessionRow({ session, isOpen, onToggle }) {
-  const { sessionId, rows, totalCost, totalInputTokens, totalOutputTokens, latestDate, docId, fileName, fileType, channels } = session;
+  const {
+    sessionId,
+    rows,
+    totalCost,
+    totalInputTokens,
+    totalOutputTokens,
+    latestDate,
+    docId,
+    fileName,
+    fileType,
+    channels,
+  } = session;
 
   return (
     <>
-      <TableRow
-        className="cursor-pointer"
-        onClick={onToggle}
-      >
+      <TableRow className="cursor-pointer" onClick={onToggle}>
         <TableCell className="w-8">
           <span className="text-muted-foreground">
             {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -110,7 +189,9 @@ function SessionRow({ session, isOpen, onToggle }) {
         </TableCell>
         <TableCell>
           {docId ? (
-            <span className="font-mono text-xs text-amber-600 font-semibold">{docId}</span>
+            <span className="font-mono text-xs text-amber-600 font-semibold">
+              {docId}
+            </span>
           ) : (
             <span className="text-muted-foreground text-xs">—</span>
           )}
@@ -125,7 +206,9 @@ function SessionRow({ session, isOpen, onToggle }) {
           <span className="inline-flex items-center gap-1 text-xs">
             <FileText size={12} className="text-muted-foreground" />
             {fileName.replace(/^\d+-/, "")}
-            {fileType && <span className="text-muted-foreground ml-1">{fileType}</span>}
+            {fileType && (
+              <span className="text-muted-foreground ml-1">{fileType}</span>
+            )}
           </span>
         </TableCell>
         <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
@@ -172,13 +255,21 @@ function SessionRow({ session, isOpen, onToggle }) {
             <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
               {formatDateTime(log.created_date ?? log.created_at)}
             </TableCell>
-            <TableCell className="text-xs text-muted-foreground">{log.ai_model_name ?? log.model_name ?? "—"}</TableCell>
+            <TableCell className="text-xs text-muted-foreground">
+              {log.ai_model_name ?? log.model_name ?? "—"}
+            </TableCell>
 
-            <TableCell className="text-xs text-right font-mono">{Number(log.input_tokens).toLocaleString()}</TableCell>
-            <TableCell className="text-xs text-right font-mono">{Number(log.output_tokens).toLocaleString()}</TableCell>
+            <TableCell className="text-xs text-right font-mono">
+              {Number(log.input_tokens).toLocaleString()}
+            </TableCell>
+            <TableCell className="text-xs text-right font-mono">
+              {Number(log.output_tokens).toLocaleString()}
+            </TableCell>
 
             <TableCell className="text-xs text-right font-mono text-muted-foreground">
-              {log.processing_time_ms ? `${(log.processing_time_ms / 1000).toFixed(1)}s` : "—"}
+              {log.processing_time_ms
+                ? `${(log.processing_time_ms / 1000).toFixed(1)}s`
+                : "—"}
             </TableCell>
 
             <TableCell className="text-right text-xs font-mono text-emerald-600">
@@ -191,16 +282,19 @@ function SessionRow({ session, isOpen, onToggle }) {
 }
 
 const Analytics = () => {
-  const { listData, logs, isLoading } = useAnalyticsHook();
+  const { listData, logs, isLoading, setCurrentPage, currentPage } =
+    useAnalyticsHook();
+
   const [logData, setLogData] = useState([]);
   const [openSessions, setOpenSessions] = useState(new Set());
-
+  const { t } = useTranslation();
   const sessions = useMemo(() => {
     const rows = logData?.data ?? [];
     return groupBySession(rows);
   }, [logData]);
 
   const totalCount = logData?.totalCount ?? 0;
+  const totalPages = Math.ceil(totalCount / 20);
 
   function toggleSession(sessionId) {
     setOpenSessions((prev) => {
@@ -226,7 +320,8 @@ const Analytics = () => {
           <div>
             <h3 className="text-lg font-semibold">Invoice Documents</h3>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {sessions.length} session{sessions.length !== 1 ? "s" : ""} · {totalCount} total calls
+              {sessions.length} session{sessions.length !== 1 ? "s" : ""} ·{" "}
+              {totalCount} total calls
             </p>
           </div>
           <div className="flex gap-2 text-sm">
@@ -263,13 +358,14 @@ const Analytics = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
-                    Loading…
-                  </TableCell>
+                  <AnalyticsSkeletonRows rowCount={10} />
                 </TableRow>
               ) : sessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                  <TableCell
+                    colSpan={10}
+                    className="text-center py-8 text-muted-foreground"
+                  >
                     No logs available.
                   </TableCell>
                 </TableRow>
@@ -287,6 +383,61 @@ const Analytics = () => {
           </Table>
         </div>
       </div>
+      {sessions?.length > 1 && (
+        <div className="mt-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                  name={t("dashboard.previous")}
+                />
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      onClick={() => setCurrentPage(page)}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                  name={t("dashboard.next")}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+      {sessions?.length === 0 && (
+        <div className="text-center py-8">
+          <Eye className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium mb-2">{t("dashboard.no_data")}</h3>
+        </div>
+      )}
     </Card>
   );
 };

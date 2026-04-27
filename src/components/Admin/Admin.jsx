@@ -422,23 +422,6 @@ const Admin = () => {
                     Add Item
                   </Button>
                 </div>
-
-                {/* {itemFields.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">
-                      Configured Fields:
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {itemFields
-                        .filter((field) => field.name.trim())
-                        .map((field) => (
-                          <Badge key={field.id} variant="secondary">
-                            {field.name}
-                          </Badge>
-                        ))}
-                    </div>
-                  </div>
-                )} */}
               </CardContent>
             </Card>
           </div>
@@ -517,6 +500,27 @@ const Admin = () => {
           </CardContent>
         </Card>
         <Card>
+          <CardHeader>
+            <div className="flex justify-between">
+              <div className="flex flex-col gap-2">
+                <CardTitle>{t("admin.LLMConfigurations.title")}</CardTitle>
+                <CardDescription>
+                  {t("admin.LLMConfigurations.description")}
+                </CardDescription>
+              </div>
+              <div className="flex">
+                <Button onClick={() => {}} className="gap-2">
+                  <Save className="h-4 w-4" />
+                  Save
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            
+          </CardContent>
+        </Card>
+        {/* <Card>
           <CardHeader>
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
@@ -623,7 +627,7 @@ const Admin = () => {
               )}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
         <FieldManagerModal
           open={headerModalOpen}
           onOpenChange={setHeaderModalOpen}

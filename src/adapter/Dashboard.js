@@ -141,10 +141,10 @@ export const savePrompt = async (prompt, filename) => {
   }
 };
 
-export const getLogs = async () => {
+export const getLogs = async (page) => {
   try {
     const csrfToken = sessionStorage.getItem("csrfToken");
-    const response = await fetch(`${API_URL}/analytics/logs`, {
+    const response = await fetch(`${API_URL}/analytics/logs?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

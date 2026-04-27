@@ -99,7 +99,7 @@ const UserManagement = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-semibold">Total Users</h3>
-              <p className="text-sm text-muted-foreground mt-0.5">21</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{userdata?.length || 0}</p>
             </div>
             <div className="flex gap-2 text-sm">
               <Button

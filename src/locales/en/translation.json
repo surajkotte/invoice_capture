@@ -54,23 +54,33 @@
       "alloed_file_types": "Allowed File Types",
       "file_size_limit": "Maximum File Size Limit (MB)"
     },
-    "other_configurations":{
+    "other_configurations": {
       "title": "Other Configurations",
       "description": "Configure other system settings",
       "max_retry_attempts": "Maximum Retry Attempts",
       "retry_delay": "Retry Delay (seconds)",
       "batch_push": "Batch Push Configuration",
       "batch_interval": "Batch Push Interval (minutes)"
+    },
+    "LLMConfigurations": {
+      "title": "LLM Configurations",
+      "description": "Manage your LLM API keys and settings",
+      "add_configuration": "Add Configuration",
+      "fields": {
+        "model_name": "Model Name",
+        "provider": "Provider",
+        "created_at": "Created At",
+        "add_configuration": "Add Configuration",
+        "add_config_description": "Please add required information to connect to your LLM provider. This information will be encrypted and securely stored in the database."
+      }
     }
   },
   "upload": {
     "title": "Upload Your Invoice",
     "description": "Drag and drop your invoice files here, or click to browse. We support PDF, XML, TXT, and DOCX formats."
   },
-  "analytics": {
-
-  },
-  "queues":{
+  "analytics": {},
+  "queues": {
     "title": "Queues",
     "description": "View and manage your document processing queues",
     "no_data": "No queued documents found",
