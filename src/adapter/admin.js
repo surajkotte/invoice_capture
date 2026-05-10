@@ -201,3 +201,38 @@ export const get_other_config = async () => {
     console.log(err);
   }
 };
+export const update_llm_config = async (data) => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/admin/llmconfig`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    return { messageType: "E", message: err.message };
+  }
+}
+export const get_llm_config = async () => {
+  try {
+    const csrfToken = sessionStorage.getItem("csrfToken");
+    const response = await fetch(`${API_URL}/admin/llmconfig`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "",
+      },
+      credentials: "include",
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (err) {
+    return { messageType: "E", message: err.message };
+  }
+};

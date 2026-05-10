@@ -8,6 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +33,10 @@ const Admin = () => {
     delete_system,
     change_config,
     update_otherconfig,
+    update_llmconfig,
+    setLlmConfig,
+    llmConfig,
+    llmModels,
     otherConfig,
     systems,
     FieldTypes,
@@ -40,7 +51,6 @@ const Admin = () => {
 
   const [systemConfigs, setSystemConfigs] = useState([]);
   const [headerFields, setHeaderFields] = useState([]);
-
   const [itemFields, setItemFields] = useState(itemData);
   const [headerFieldsVisible, setHeaderFieldsVisible] = useState(true);
   const [itemFieldsVisible, setItemFieldsVisible] = useState(true);
@@ -217,6 +227,23 @@ const Admin = () => {
       toast({
         title: "Error",
         description: "Error updating other configurations",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handle_llm_config_save = async () => {
+    const response = await update_llmconfig(llmConfig);
+    if (response?.messageType === "S") {
+      toast({
+        title: "Success",
+        description: "LLM configurations updated successfully",
+        variant: "success",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Error updating LLM configurations",
         variant: "destructive",
       });
     }
@@ -509,7 +536,12 @@ const Admin = () => {
                 </CardDescription>
               </div>
               <div className="flex">
-                <Button onClick={() => {}} className="gap-2">
+                <Button
+                  onClick={() => {
+                    handle_llm_config_save(llmConfig);
+                  }}
+                  className="gap-2"
+                >
                   <Save className="h-4 w-4" />
                   Save
                 </Button>
@@ -517,7 +549,202 @@ const Admin = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label>{t("admin.LLMConfigurations.fields.provider")}</Label>
+
+                <Select
+                  value={llmConfig.provider}
+                  onValueChange={(value) =>
+                    setLlmConfig((prev) => ({
+                      ...prev,
+                      provider: value,
+                      model: "",
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select LLM Provider" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {llmModels.map((model) => (
+                      <SelectItem key={model.name} value={model.name}>
+                        {model.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {llmConfig.provider !== "Other" ? (
+                <>
+                  <div className="space-y-2">
+                    <Label>
+                      {t("admin.LLMConfigurations.fields.model_name")}
+                    </Label>
+
+                    <Select
+                      value={llmConfig.model}
+                      onValueChange={(value) =>
+                        setLlmConfig((prev) => ({
+                          ...prev,
+                          model: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select LLM Model" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {llmModels
+                          .find((model) => model.name === llmConfig.provider)
+                          ?.models.map((model) => (
+                            <SelectItem key={model} value={model}>
+                              {model}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("admin.LLMConfigurations.fields.apiKey")}</Label>
+
+                    <Input
+                      type="password"
+                      placeholder={t(
+                        "admin.LLMConfigurations.fields.api_key_placeholder",
+                      )}
+                      value={llmConfig.apiKey}
+                      onChange={(e) =>
+                        setLlmConfig((prev) => ({
+                          ...prev,
+                          apiKey: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label>
+                      {t("admin.LLMConfigurations.fields.custom_model_name")}
+                    </Label>
+
+                    <Input
+                      placeholder={t(
+                        "admin.LLMConfigurations.fields.custom_model_name_placeholder",
+                      )}
+                      value={llmConfig.model}
+                      onChange={(e) =>
+                        setLlmConfig((prev) => ({
+                          ...prev,
+                          model: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <Button
+                      type="button"
+                      className="gap-2"
+                      onClick={() =>
+                        setLlmConfig((prev) => ({
+                          ...prev,
+                          additionalFields: [
+                            ...prev.additionalFields,
+                            {
+                              key: "",
+                              value: "",
+                            },
+                          ],
+                        }))
+                      }
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add Additional Configuration Field
+                    </Button>
+                  </div>
+                  <div className="md:col-span-2 space-y-4">
+                    {llmConfig.additionalFields.map((field, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col md:flex-row gap-3 items-start md:items-center"
+                      >
+                        <div className="w-full">
+                          <Label>Field Name</Label>
+
+                          <Input
+                            placeholder="e.g. base_url"
+                            value={field.key || ""}
+                            onChange={(e) =>
+                              setLlmConfig((prev) => {
+                                const updatedFields = [
+                                  ...prev.additionalFields,
+                                ];
+
+                                updatedFields[index] = {
+                                  ...updatedFields[index],
+                                  key: e.target.value,
+                                };
+
+                                return {
+                                  ...prev,
+                                  additionalFields: updatedFields,
+                                };
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="w-full">
+                          <Label>Field Value</Label>
+
+                          <Input
+                            placeholder="Enter field value"
+                            value={field.value || ""}
+                            onChange={(e) =>
+                              setLlmConfig((prev) => {
+                                const updatedFields = [
+                                  ...prev.additionalFields,
+                                ];
+
+                                updatedFields[index] = {
+                                  ...updatedFields[index],
+                                  value: e.target.value,
+                                };
+
+                                return {
+                                  ...prev,
+                                  additionalFields: updatedFields,
+                                };
+                              })
+                            }
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          className="mt-6"
+                          onClick={() =>
+                            setLlmConfig((prev) => ({
+                              ...prev,
+                              additionalFields: prev.additionalFields.filter(
+                                (_, i) => i !== index,
+                              ),
+                            }))
+                          }
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </CardContent>
         </Card>
         {/* <Card>

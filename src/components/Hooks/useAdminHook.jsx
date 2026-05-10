@@ -10,6 +10,8 @@ import {
   delete_systemconfig,
   update_other_config,
   get_other_config,
+  update_llm_config,
+  get_llm_config,
 } from "../../adapter/admin";
 
 const useAdminHook = () => {
@@ -23,7 +25,29 @@ const useAdminHook = () => {
     status: false,
     id: "",
   });
-
+  const [llmModels, setLLMModels] = useState([
+    {
+      name: "Anthropic",
+      models: ["claude-2", "claude-instant-100k", "claude-sonnet-4-20250514"],
+    },
+    {
+      name: "OpenAI",
+      models: ["gpt-4", "gpt-3.5-turbo"],
+    },
+    {
+      name: "Gemini",
+      models: ["gpt-4", "gpt-3.5-turbo"],
+    },
+    {
+      name: "Other",
+    },
+  ]);
+  const [llmConfig, setLlmConfig] = useState({
+    provider: "",
+    model: "",
+    apiKey: "",
+    additionalFields: [],
+  });
   const FieldTypes = ["Number", "Boolean", "String", "Date"];
 
   const addSystem = async (name, domain, port, is_default, id) => {
@@ -155,7 +179,7 @@ const useAdminHook = () => {
         retry_delay: data?.retryDelay,
         batch_job: data?.enableBatchPush === true ? 1 : 0,
         batch_interval: data?.batchPushInterval,
-      }
+      };
       const response = await update_other_config(response_data);
       if (response?.messageType === "S") {
         setOtherConfig({
@@ -197,11 +221,43 @@ const useAdminHook = () => {
       setIsLoading({ action: "", status: false, id: "" });
     }
   };
+  const update_llmconfig = (data) => {
+    try {
+      setIsLoading({ action: "update_llmconfig", status: true, id: "" });
+      const response = update_llm_config(data);
+      return response;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading({ action: "", status: false, id: "" });
+    }
+  };
+  const fetch_llmconfig = async () => {
+    try {
+      setIsLoading({ action: "fetch_llmconfig", status: true, id: "" });
+      const response = await get_llm_config();
+      if (response?.messageType === "S" && response?.data) {
+        setLlmConfig({
+          provider: response?.data[0]?.provider || "",
+          model: response?.data[0]?.model || "",
+          apiKey: response?.data[0]?.api_key || "",
+          additionalFields: response?.data[0]?.additional_fields || [],
+        });
+      }
+      return response;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading({ action: "", status: false, id: "" });
+    }
+  };
+
   useEffect(() => {
     getSystem();
     fetchFields();
     getDocumentType();
     fetch_otherconfig();
+    fetch_llmconfig();
   }, []);
 
   return {
@@ -212,6 +268,10 @@ const useAdminHook = () => {
     delete_system,
     change_config,
     update_otherconfig,
+    update_llmconfig,
+    setLlmConfig,
+    llmConfig,
+    llmModels,
     otherConfig,
     isLoading,
     systems,

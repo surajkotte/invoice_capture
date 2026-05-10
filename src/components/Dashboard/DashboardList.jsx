@@ -25,7 +25,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { formatToUserDisplay } from "../../utils/DateParser";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 function getStatusBadge(status) {
   switch (status) {
     case "completed":
@@ -83,7 +83,7 @@ const DashboardList = ({
   currentPage,
   setCurrentPage,
 }) => {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   const data = list_data;
   const itemsPerPage = 20;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -92,7 +92,10 @@ const DashboardList = ({
   const formatDateTime = (isoString) => {
     if (!isoString) return "";
     const customDate = formatToUserDisplay(isoString);
-    const localTime = new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const localTime = new Date(isoString).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     return `${customDate} ${localTime}`;
   };
   return (
@@ -103,14 +106,26 @@ const DashboardList = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('dashboard.dashboard_fields.reg_id')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.status')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.file_type')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.file_name')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.created_at')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.created_user')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.backend_system')}</TableHead>
-                <TableHead>{t('dashboard.dashboard_fields.file_size')}</TableHead>
+                <TableHead>{t("dashboard.dashboard_fields.reg_id")}</TableHead>
+                <TableHead>{t("dashboard.dashboard_fields.status")}</TableHead>
+                <TableHead>
+                  {t("dashboard.dashboard_fields.file_type")}
+                </TableHead>
+                <TableHead>
+                  {t("dashboard.dashboard_fields.file_name")}
+                </TableHead>
+                <TableHead>
+                  {t("dashboard.dashboard_fields.created_at")}
+                </TableHead>
+                <TableHead>
+                  {t("dashboard.dashboard_fields.created_user")}
+                </TableHead>
+                <TableHead>
+                  {t("dashboard.dashboard_fields.backend_system")}
+                </TableHead>
+                <TableHead>
+                  {t("dashboard.dashboard_fields.file_size")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -145,14 +160,14 @@ const DashboardList = ({
                       <Badge variant="outline">{invoice.system_name}</Badge>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {Math.round((invoice.file_size / 1048476)*100)/100} MB
+                      {Math.round((invoice.file_size / 1048476) * 100) / 100} MB
                     </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
         </div>
-        {totalPages > 1 && (
+        {paginatedCourses && totalPages > 1 && (
           <div className="mt-4">
             <Pagination>
               <PaginationContent>
@@ -161,13 +176,12 @@ const DashboardList = ({
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(1, prev - 1))
                     }
-
                     className={
                       currentPage === 1
                         ? "pointer-events-none opacity-50"
                         : "cursor-pointer"
                     }
-                    name={t('dashboard.previous')}
+                    name={t("dashboard.previous")}
                   />
                 </PaginationItem>
 
@@ -182,7 +196,7 @@ const DashboardList = ({
                         {page}
                       </PaginationLink>
                     </PaginationItem>
-                  )
+                  ),
                 )}
 
                 <PaginationItem>
@@ -195,7 +209,7 @@ const DashboardList = ({
                         ? "pointer-events-none opacity-50"
                         : "cursor-pointer"
                     }
-                    name={t('dashboard.next')}
+                    name={t("dashboard.next")}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -203,10 +217,10 @@ const DashboardList = ({
           </div>
         )}
       </div>
-      {paginatedCourses?.length === 0 && (
+      {(!paginatedCourses || paginatedCourses?.length === 0) && (
         <div className="text-center py-8">
           <Eye className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">{t('dashboard.no_data')}</h3>
+          <h3 className="text-lg font-medium mb-2">{t("dashboard.no_data")}</h3>
         </div>
       )}
     </Card>

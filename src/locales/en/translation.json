@@ -71,7 +71,11 @@
         "provider": "Provider",
         "created_at": "Created At",
         "add_configuration": "Add Configuration",
-        "add_config_description": "Please add required information to connect to your LLM provider. This information will be encrypted and securely stored in the database."
+        "add_config_description": "Please add required information to connect to your LLM provider. This information will be encrypted and securely stored in the database.",
+        "apiKey": "API Key",
+        "api_key_placeholder": "Enter API key for selected provider. This key will be securely stored and used for all interactions with the selected LLM provider. or you can set it as environment variable with key ANTHROPIC_API_KEY for Anthropic and OPENAI_API_KEY for OpenAI",
+        "custom_model_name": "Custom Model Name",
+        "custom_model_name_placeholder": "Enter custom model name if your provider requires it. For example, OpenAI's GPT-4 models are named like 'gpt-4' or 'gpt-4-32k'. This field is optional and can be left blank if not needed."
       }
     }
   },
