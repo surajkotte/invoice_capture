@@ -221,10 +221,10 @@ const useAdminHook = () => {
       setIsLoading({ action: "", status: false, id: "" });
     }
   };
-  const update_llmconfig = (data) => {
+  const update_llmconfig = async (data) => {
     try {
       setIsLoading({ action: "update_llmconfig", status: true, id: "" });
-      const response = update_llm_config(data);
+      const response = await update_llm_config(data);
       return response;
     } catch (err) {
       console.error(err);

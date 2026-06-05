@@ -344,7 +344,7 @@ const UploadDashboard = ({
               ref={containerRef} // <-- ATTACH REF HERE
               className="h-full w-full overflow-y-auto bg-slate-100 p-4"
             >
-              {data?.fileName && data?.fileType === ".pdf" ? (
+              {false && data?.fileName && data?.fileType === ".pdf" ? (
                 <Document
                   file={`${API_URL}/files/${data.fileName}`}
                   onLoadSuccess={onDocumentLoadSuccess}
@@ -370,7 +370,7 @@ const UploadDashboard = ({
                           }}
                           onClick={(e) => handlePdfClick(e, pageNum)}
                         />
-                        {renderHighlightLayer(pageNum)}
+                        {/* {renderHighlightLayer(pageNum)} */}
                       </div>
                     );
                   })}
